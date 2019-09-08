@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<title>&nbsp;</title>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="./lib/jquery.mobile-1.4.5.css" />
+    <link rel="stylesheet" href="./lib/jquery.mobile.theme-1.4.5.css" />
+    <script src="./lib/jquery-3.4.1.js"></script>
+    <script src="./lib/jquery-migrate-3.1.0.js"></script>
+    <script src="./lib/jquery.mobile-1.4.5.js"></script>
+    <script src="./lib/knockout-3.5.0.js"></script>
+    <script src="./lib/jspdf.js"></script>
+    <script src="./scripts/settings.js"></script>
+    <script src="./scripts/common.js"></script>
+
+    <script src="./scripts/cutlist.js"></script>
+    <script src="./scripts/cutlistMetric.js"></script>
+    <script src="./scripts/volume.js"></script>
+    <script src="./scripts/boardfeet.js"></script>
+
+</head>
+
+<body>
+    <!-- Start of page -->
+    <div data-role="page" id="pageSettings" data-add-back-btn="true">
+        <script>
+            // Must call this so that we don't get more than one pageinit called.
+            $("#pageSettings").on("pageinit", function() {
+                // Model for calculations and storing data.
+
+                ko.applyBindings(settingsModel, document.getElementById("pageSettings"));
+
+                $("#bottomOfBlade").checkboxradio("refresh");
+                $("#topOfBlade").checkboxradio("refresh");
+            });
+        </script>
+        <!-- Header -->
+        <div data-role="header" data-add-back-btn="true">
+            <h1>Settings</h1>
+        </div>
+
+        <!-- Content    -->
+        <div data-role="content">
+
+            <fieldset data-role="controlgroup">
+                <legend>Side of Blade to Measure for Cut List</legend>
+                <input type="radio" name="radio-choice-1" id="bottomOfBlade" value="bottom" data-bind="checked: sideOfBlade">
+                <label for="bottomOfBlade">Bottom or Right of Blade</label>
+                <input type="radio" name="radio-choice-1" id="topOfBlade" value="top" data-bind="checked: sideOfBlade">
+                <label for="topOfBlade">Top or Left of Blade</label>
+            </fieldset>
+            <hr/>
+
+            <fieldset data-role="controlgroup">
+                <legend>Board Feet Max Quantity</legend>
+                <input id="maxQuantity" data-bind="value: maxQuantity">
+            </fieldset>
+
+        </div>
+
+        <!-- footer -->
+        <div data-role="footer">
+            <h4>&copy; 2015 MicaPeak Solutions</h4>
+        </div>
+    </div>
+
+</body>
+
+</html>

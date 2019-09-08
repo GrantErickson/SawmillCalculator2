@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+	<title>&nbsp;</title>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+		<link rel="stylesheet" href="./lib/jquery.mobile-1.4.5.css" />
+		<link rel="stylesheet" href="./lib/jquery.mobile.theme-1.4.5.css" />
+		<script src="./lib/jquery-3.4.1.js"></script>
+		<script src="./lib/jquery-migrate-3.1.0.js"></script>
+		<script src="./lib/jquery.mobile-1.4.5.js"></script>
+		<script src="./lib/knockout-3.5.0.js"></script>
+		<script src="./lib/jspdf.js"></script>
+		<script src="./scripts/settings.js"></script>
+		<script src="./scripts/common.js"></script>
+
+        <script src="./scripts/cutlist.js"></script>
+        <script src="./scripts/cutlistMetric.js"></script>
+        <script src="./scripts/volume.js"></script>
+        <script src="./scripts/boardfeet.js"></script>
+
+	</head>
+
+	<body>
+		<!-- Start of first page I -->
+		<div data-role="page" id="page1">
+
+			<!-- Header -->
+			<div data-role="header" >
+				<h1>Saw Calc Pro</h1>
+			</div>
+
+			<!-- Content    -->
+			<div data-role="content">
+
+				<!-- Main Links -->
+				<ul data-role="listview" data-inset="true" data-divider-theme="b">
+					<li data-role="list-divider">
+						Tools
+					</li>
+                    <li>
+                        <a href="cutlist.html">Cut List (US)</a>
+                    </li>
+                    <li>
+                        <a href="cutlistMetric.html">Cut List (Metric)</a>
+                    </li>
+					<li>
+						<a href="boardfeet.html">Board Feet</a>
+					</li>
+					<li>
+						<a href="volume.html">Log Volume</a>
+					</li>
+				</ul>
+
+				<!-- Options Links -->
+				<ul data-role="listview" data-inset="true" data-divider-theme="b">
+					<li data-role="list-divider">
+						Options
+					</li>
+					<li>
+						<a href="settings.html">Settings</a>
+					</li>
+					<li>
+						<a href="about.html">About</a>
+					</li>
+				</ul>
+
+			</div>
+
+			<!-- footer -->
+			<div data-role="footer">
+				<h4>&copy; 2015 MicaPeak Solutions</h4>
+			</div>
+			<!-- /footer -->
+		</div>
+		<!-- /page -->
+
+	</body>
+</html>

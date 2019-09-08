@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<title>&nbsp;</title>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="./lib/jquery.mobile-1.4.5.css" />
+    <link rel="stylesheet" href="./lib/jquery.mobile.theme-1.4.5.css" />
+    <link rel="stylesheet" href="./lib/jquery.mobile.structure-1.4.5.css" />
+    <script src="./lib/jquery-3.4.1.js"></script>
+    <script src="./lib/jquery-migrate-3.1.0.js"></script>
+    <script src="./lib/jquery.mobile-1.4.5.js"></script>
+    <script src="./lib/knockout-3.5.0.js"></script>
+    <script src="./lib/jspdf.js"></script>
+    <script src="./scripts/settings.js"></script>
+    <script src="./scripts/common.js"></script>
+
+    <script src="./scripts/cutlist.js"></script>
+    <script src="./scripts/cutlistMetric.js"></script>
+    <script src="./scripts/volume.js"></script>
+    <script src="./scripts/boardfeet.js"></script>
+
+
+</head>
+
+<body>
+    <style>
+        #bfThickness:after {
+            content: "/4";
+        }
+    </style>
+
+    <!-- Start of page -->
+    <div data-role="page" id="pageBoardFeet" data-add-back-btn="true">
+        <!-- Header -->
+        <div data-role="header" data-add-back-btn="true">
+            <h1>Board Feet</h1>
+        </div>
+
+        <!-- Content    -->
+        <div data-role="content">
+            <fieldset data-bind="value: woodType, jqCheckboxRadio: { type: 'horizontal' }">
+                <label>
+						<input type="radio" name="woodType" id="softwood" value="soft" data-bind="checked: woodType"/>
+						Softwood
+					</label>
+                <label>
+						<input type="radio" name="woodType" id="hardwood" value="hard" data-bind="checked: woodType"/>
+						Hardwood
+					</label>
+            </fieldset>
+
+            <label for="bfThickness">
+					<span data-bind="text: thicknessText"></span>
+					<span style="float:right; margin-right: 15px;" data-bind="visible: woodType() == WoodTypes.Hardwood, text: thickness() + '/4'"></span>
+				</label>
+            <input id="bfThickness" type="range" min="1" max="48" data-bind="value: thickness">
+
+            <label for="bfWidth">Nominal Width in inches:</label>
+            <input id="bfWidth" type="range" min="1" max="24" data-bind="value: width">
+
+            <label for="bfLength">Length in feet:</label>
+            <input id="bfLength" type="range" min="1" max="24" data-bind="value: length">
+
+            <label for="bfQuantity">Quantity:</label>
+            <input id="bfQuantity" type="range" min="1" max="100" data-bind="value: quantity, attr: { 'max': $root.maxQuantity }">
+
+            <label for="bfPricePer1000">Price per 1000bft:</label>
+            <input id="bfPricePer1000" type="number" step="1" value="1.00" data-bind="value: pricePer1000, valueUpdate: 'keyup'">
+
+
+            <ul data-role="listview" data-inset="true" data-theme="b">
+                <li class="">
+                    <div class="ui-grid-b">
+                        <div class="ui-block-a" style="text-align:left;">
+                            <span data-bind="text:Number(totalBft()).formatBft2()"></span> Bft
+                        </div>
+                        <div class="ui-block-b" style="text-align:center;">
+                            Totals
+                        </div>
+                        <div class="ui-block-c" style="text-align:right;">
+                            $<span data-bind="text:totalPrice().formatMoney()"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <button data-icon="plus" data-role="button" data-bind="event: { vclick: addLumberItem }">Add to List  
+					(<span data-bind="text: lumberItems().length"></span>)
+				</button>
+
+
+            <h3 style="margin-bottom: 0px;">Lumber List</h3>
+            <ul data-role="listview" data-bind="foreach: lumberItems" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow"
+                style="margin-top: 0px;">
+                <li class="ui-li ui-li-static ui-btn-up-c ui-corner-top" style="padding-right: 2px;">
+                    <h1 data-bind="text: $index() + 1" style="float: left; margin-right: 10px;" ></h1>
+                    <h3 class="" style="margin-top:0px; margin-bottom:0px;">
+                        <span style="float:left">
+                                <span data-bind="text: Number(totalBft()).formatBft2()"></span> bft
+                        </span>
+                        <span class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" 
+                            style="float:right; background-color: red; margin-top: 3px; " 
+                            data-bind="event: { vclick: deleteItem }">&nbsp;</span>
+                        <span style="float:right; margin-right:10px;">
+                            $<span data-bind="text: Number(totalPrice()).formatMoney()"></span>
+                        </span>
+                    </h3>
+                    <div class="ui-grid-c" style="font-size:.7em; margin-left: 20px; margin-right: 39px; margin-top: -15px;">
+                        <div class="ui-block-a">
+                            <span data-bind="text: thickness"></span><span data-bind="visible: woodType() == WoodTypes.Hardwood">/4</span>" x <span data-bind="text: width"></span>"
+                        </div>
+                        <div class="ui-block-b" style="text-align: center;">Length: <span data-bind="text: length"></span>'</div>
+                        <div class="ui-block-c" style="text-align: center;">Qty: <span data-bind="text: quantity"></span></div>
+                        <div class="ui-block-d"><span style="float:right">$/k: $<span data-bind="text: Number(pricePer1000()).formatMoney()"></span></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <ul data-role="listview" data-inset="true" data-theme="b">
+                <li class="">
+                    <div class="ui-grid-b">
+                        <div class="ui-block-a" style="text-align:left;">
+                            <span data-bind="text:Number(grandTotalBft()).formatBft2()"></span> Bft
+                        </div>
+                        <div class="ui-block-b" style="text-align:center;">
+                            Lumber Totals
+                        </div>
+                        <div class="ui-block-c" style="text-align:right;">
+                            $<span data-bind="text:grandTotalPrice().formatMoney()"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <button data-icon="forward" data-role="button" data-bind="event: { vclick: sendEmail }">Send Email</button>
+
+            <button data-icon="delete" data-role="button" data-bind="event: { vclick: clearLumberItems }" >Clear List</button>
+
+
+
+        </div>
+
+        <!-- footer -->
+        <div data-role="footer">
+            <h4>&copy; 2015 MicaPeak Solutions</h4>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+	<title>&nbsp;</title>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" href="./lib/jquery.mobile-1.4.5.css" />
+		<link rel="stylesheet" href="./lib/jquery.mobile.theme-1.4.5.css" />
+		<script src="./lib/jquery-3.4.1.js"></script>
+		<script src="./lib/jquery-migrate-3.1.0.js"></script>
+		<script src="./lib/jquery.mobile-1.4.5.js"></script>
+		<script src="./lib/knockout-3.5.0.js"></script>
+		<script src="./lib/jspdf.js"></script>
+		<script src="./scripts/settings.js"></script>
+		<script src="./scripts/common.js"></script>
+
+        <script src="./scripts/cutlist.js"></script>
+        <script src="./scripts/cutlistMetric.js"></script>
+        <script src="./scripts/volume.js"></script>
+        <script src="./scripts/boardfeet.js"></script>
+
+	</head>
+	<body>
+		<!-- Start of page -->
+		<div data-role="page" id="pageVolume">
+			<!-- Header -->
+			<div data-role="header" data-add-back-btn="true">
+				<h1>Log Volume</h1>
+			</div>
+
+			<!-- Content    -->			
+			<div data-role="content">
+				<label for="slider">Diameter in inches:</label>
+				<input id="volumeDiameter" type="range" min="1" max="40" data-bind="value: diameter">
+				
+				<label for="slider">Length in feet:</label>
+				<input id="volumeLength" type="range" min="1" max="40" data-bind="value: length">
+
+				<label for="slider">Quantity:</label>
+				<input id="volumeQuantity" type="range" min="1" max="100" data-bind="value: quantity">
+
+				<ul class="calculations" data-role="listview" data-inset="true" data-divider-theme="b">
+				    <li data-role="list-divider">Calculations</li>
+					<li>
+						<div class="ui-grid-a">
+							<div class="ui-block-a">Doyle</div>
+							<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(doyle()).formatBft() + ' bft'"></div>
+						</div>
+					</li>
+					<li>
+						<div class="ui-grid-a">
+							<div class="ui-block-a">Scribner</div>
+							<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(scribner()).formatBft()  + ' bft'"></div>
+						</div>
+					</li>
+					<li>
+						<div class="ui-grid-a">
+							<div class="ui-block-a">International</div>
+							<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(international()).formatBft()  + ' bft'"></div>
+						</div>
+					</li>
+					<li>
+						<div class="ui-grid-a">
+							<div class="ui-block-a">ROY</div>
+							<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(roy()).formatBft()  + ' bft'"></div>
+						</div>
+					</li>
+				</ul>
+				
+				
+				<!-- Area for saving and loading information -->
+				<button data-bind="event: { vclick: addItem }">Add to List  
+					(<span data-bind="text: items().length"></span>)
+				</button>
+
+				
+				<h3 style="margin-bottom: 0px;">Volume List</h3>	
+				<ul data-role="listview" data-bind="foreach: items" data-inset="true"
+					style="margin-top: 0px;">
+					<li >
+						<h1 data-bind="text: $index() + 1" style="float: left; margin-right: 10px;" ></h1>
+						<div class="" style="margin-top:0px; margin-bottom:0px; font-weight: bold;" >
+							<span class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" 
+                            	  style="float:right; background-color: red; margin-top: 3px; margin-right: 0px; margin-left:5px;" 
+								  data-bind="event: { vclick: deleteItem }">&nbsp;</span>
+							<div class="ui-grid-c" style="font-size: .9em;">
+								<div class="ui-block-a" style="text-align: left;">D:
+									<span data-bind="text: Number(doyle()).formatBft()"></span>
+								</div>
+								<div class="ui-block-b" style="text-align: center;">S: 
+									<span data-bind="text: Number(scribner()).formatBft()"></span>
+								</div>
+								<div class="ui-block-c" style="text-align: center;">I: 
+									<span data-bind="text: Number(international()).formatBft()"></span>
+								</div>
+								<div class="ui-block-d" style="text-align: right;">R: 
+									<span data-bind="text: Number(roy()).formatBft()"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="ui-grid-b" style="font-size:.7em; margin-top: 5px;">
+							<div class="ui-block-a">Diameter: <span data-bind="text: diameter"></span>"</div>
+							<div class="ui-block-b" style="text-align: center;">Length: <span data-bind="text: length"></span>'</div>
+							<div class="ui-block-c" style="text-align: right;">Qty: <span data-bind="text: quantity"></span></div>
+						</div>
+					</li>	
+				</ul>
+
+				<ul class="calculations" data-role="listview" data-inset="true" data-divider-theme="b">
+						<li data-role="list-divider">Totals</li>
+						<li>
+							<div class="ui-grid-a">
+								<div class="ui-block-a">Doyle</div>
+								<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(grandTotalDoyle()).formatBft() + ' bft'"></div>
+							</div>
+						</li>
+						<li>
+							<div class="ui-grid-a">
+								<div class="ui-block-a">Scribner</div>
+								<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(grandTotalScribner()).formatBft()  + ' bft'"></div>
+							</div>
+						</li>
+						<li>
+							<div class="ui-grid-a">
+								<div class="ui-block-a">International</div>
+								<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(grandTotalInternational()).formatBft()  + ' bft'"></div>
+							</div>
+						</li>
+						<li>
+							<div class="ui-grid-a">
+								<div class="ui-block-a">ROY</div>
+								<div class="ui-block-b" style="text-align: right;" data-bind="text: Number(grandTotalRoy()).formatBft()  + ' bft'"></div>
+							</div>
+						</li>
+					</ul>
+	
+				
+				<div style="margin-top:20px;">
+					<button class="ui-btn" data-bind="event: { vclick: sendEmail }" data-mini="true">Send Email</button>
+				</div>
+				
+ 				<div>
+					<button class="ui-btn" data-bind="event: { vclick: clearItems }" data-mini="true">Clear List</button>
+				</div>
+ 				
+ 
+				
+
+			</div>
+
+			<!-- footer -->
+			<div data-role="footer">
+				<h4>&copy; 2014 MicaPeak Solutions</h4>
+			</div>
+		</div>
+
+
+	</body>
+</html>

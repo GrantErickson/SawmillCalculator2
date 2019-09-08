@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+	<title>&nbsp;</title>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" href="./lib/jquery.mobile-1.4.5.css" />
+		<link rel="stylesheet" href="./lib/jquery.mobile.theme-1.4.5.css" />
+		<script src="./lib/jquery-3.4.1.js"></script>
+		<script src="./lib/jquery-migrate-3.1.0.js"></script>
+		<script src="./lib/jquery.mobile-1.4.5.js"></script>
+		<script src="./lib/knockout-3.5.0.js"></script>
+		<script src="./lib/jspdf.js"></script>
+		<script src="./scripts/settings.js"></script>
+		<script src="./scripts/common.js"></script>
+
+        <script src="./scripts/cutlist.js"></script>
+        <script src="./scripts/cutlistMetric.js"></script>
+        <script src="./scripts/volume.js"></script>
+        <script src="./scripts/boardfeet.js"></script>
+		
+	</head>
+	<body>
+		<!-- Start of first page 2 -->
+		<div data-role="page" id="pageCutListMetric" data-add-back-btn="true">
+			<!-- Header -->
+			<div data-role="header" data-add-back-btn="true">
+				<h1>Cut List (Metric)</h1>
+			</div>
+			
+			<!-- Content    -->			
+			<div data-role="content">
+			
+				<div data-role="collapsible" data-collapsed="false" data-theme="b" data-content-theme="b">
+					<h3>Mill Specs and Board Dimensions</h3>
+					
+					<label for="select-native-1">Kerf:</label>
+				    <select name="kerf" id="kerf" data-bind="value:kerf, selectRefresh:{}">
+				        <option value="0">None</option>
+				        <option value="1">1mm</option>
+				        <option value="2">2mm</option>
+				        <option value="3">3mm</option>
+				        <option value="4">4mm</option>
+				        <option value="5">5mm</option>
+				        <option value="6">6mm</option>
+				        <option value="7">7mm</option>
+				        <option value="8">8mm</option>
+				        <option value="9">9mm</option>
+				        <option value="10">10mm</option>
+				    </select>
+	
+					<label for="select-native-1">Thickness:</label>
+				    <select name="thickness" id="thickness" data-bind="value:thickness, selectRefresh:{}">
+				        <option value="4">4mm</option>
+				        <option value="5">5mm</option>
+				        <option value="6">6mm</option>
+				        <option value="7">7mm</option>
+				        <option value="8">8mm</option>
+				        <option value="9">9mm</option>
+				        <option value="10">10mm</option>
+				        <option value="15">15mm</option>
+				        <option value="19">19mm (.75")</option>
+				        <option value="20">20mm</option>
+				        <option value="25">25mm</option>
+				        <option value="30">30mm</option>
+				        <option value="32">32mm</option>
+				        <option value="35">35mm</option>
+				        <option value="38">38mm (1.5")</option>
+				        <option value="40">40mm</option>
+				        <option value="45">45mm</option>
+				        <option value="50">50mm</option>
+				        <option value="55">55mm</option>
+				        <option value="60">60mm</option>
+				        <option value="64">64mm (2.5")</option>
+				        <option value="65">65mm</option>
+				        <option value="70">70mm</option>
+				        <option value="80">80mm</option>
+				        <option value="89">89mm (3.5")</option>
+				        <option value="90">90mm</option>
+				        <option value="100">100mm</option>
+                        <option value="114">114mm (4.5")</option>
+                        <option value="120">120mm</option>
+                        <option value="140">140mm</option>
+                        <option value="160">160mm</option>
+                        <option value="180">180mm</option>
+                        <option value="184">184mm</option>
+                        <option value="200">200mm</option>
+                        <option value="220">220mm</option>
+                        <option value="235">235mm</option>
+                        <option value="250">250mm</option>
+                        <option value="275">275mm</option>
+                        <option value="286">286mm</option>
+                        <option value="300">300mm</option>
+                        <option value="350">350mm</option>
+                        <option value="400">400mm</option>
+                        <option value="450">450mm</option>
+                        <option value="500">500mm</option>
+				    </select>
+				    
+					<label for="select-native-1">Approximate Total Thickness:</label>
+				    <select name="total" id="total" data-bind="value:total, selectRefresh:{}">
+                        <option value="50">50mm</option>
+                        <option value="75">75mm</option>
+                        <option value="100">100mm</option>
+                        <option value="200">200mm</option>
+                        <option value="300">300mm</option>
+                        <option value="350">350mm</option>
+                        <option value="400">400mm</option>
+                        <option value="450">450mm</option>
+                        <option value="500">500mm</option>
+                        <option value="600">600mm</option>
+                        <option value="700">700mm</option>
+                        <option value="800">800mm</option>
+                        <option value="900">900mm</option>
+                        <option value="1000">1m</option>
+                    </select>
+	
+	
+					<label for="select-native-1">Flitch Remaining (Slab):</label>
+				    <select name="flitch" id="flitch" data-bind="value:flitch, selectRefresh:{}">
+				        <option value="0">None</option>
+                        <option value="4">4mm</option>
+                        <option value="5">5mm</option>
+                        <option value="6">6mm</option>
+                        <option value="7">7mm</option>
+                        <option value="8">8mm</option>
+                        <option value="9">9mm</option>
+                        <option value="10">10mm</option>
+                        <option value="15">15mm</option>
+                        <option value="19">19mm (.75")</option>
+                        <option value="20">20mm</option>
+                        <option value="25">25mm</option>
+                        <option value="30">30mm</option>
+                        <option value="32">32mm</option>
+                        <option value="35">35mm</option>
+                        <option value="38">38mm (1.5")</option>
+                        <option value="40">40mm</option>
+                        <option value="45">45mm</option>
+                        <option value="50">50mm</option>
+                        <option value="55">55mm</option>
+                        <option value="60">60mm</option>
+                        <option value="64">64mm (2.5")</option>
+                        <option value="65">65mm</option>
+                        <option value="70">70mm</option>
+                        <option value="80">80mm</option>
+                        <option value="89">89mm (3.5")</option>
+                        <option value="90">90mm</option>
+                        <option value="100">100mm</option>
+                        <option value="114">114mm (4.5")</option>
+                        <option value="120">120mm</option>
+                        <option value="140">140mm</option>
+                        <option value="160">160mm</option>
+                        <option value="180">180mm</option>
+                        <option value="184">184mm</option>
+                        <option value="200">200mm</option>
+                        <option value="220">220mm</option>
+                        <option value="235">235mm</option>
+                        <option value="250">250mm</option>
+                        <option value="275">275mm</option>
+                        <option value="286">286mm</option>
+                        <option value="300">300mm</option>
+                        <option value="350">350mm</option>
+                        <option value="400">400mm</option>
+                        <option value="450">450mm</option>
+                        <option value="500">500mm</option>				    
+                    </select>
+				</div>
+				
+				<div data-role="collapsible" data-collapsed="false" data-theme="b" data-content-theme="a">
+					<h3>Cut List</h3>
+					
+					<fieldset id="cutList" data-role="controlgroup" data-bind="foreach: cutList, afterRender: renderedHandler">
+ 							<label data-bind="attr: {for: id}, text: measurement"></label>
+ 							<input type="checkbox" data-bind="attr: {id: id, name: id}, checkbox: checked"/>
+					</fieldset>	
+					
+				</div>
+
+			</div>
+
+			<!-- footer -->
+			<div data-role="footer">
+				<h4>&copy; 2015 MicaPeak Solutions</h4>
+			</div>
+
+		</div>
+		<!-- /page -->
+
+	</body>
+</html>
