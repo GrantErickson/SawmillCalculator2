@@ -49,7 +49,7 @@ function commonSendEmail(subject, body) {
 	alert("Got PDF Bytes");
         cordova.plugins.email.open({
             subject: subject,
-            attachments: ['base64:Results.pdf//' + pdf],
+            //attachments: ['base64:Results.pdf//' + pdf],
             isHtml: true,
             body: body
         });
