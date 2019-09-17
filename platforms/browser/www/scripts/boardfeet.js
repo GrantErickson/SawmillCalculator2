@@ -203,7 +203,7 @@ $(document).delegate("#pageBoardFeet", "pageinit", function() {
                 '</tfoot>\n';
             text += '</table>\n';
 
-            commonSendEmail(subject, text);
+            commonSendEmail(subject, text, "BoardFeet.pdf");
             //window.location.href = 'mailto:?subject=' + subject + '&body=' + encodeURIComponent(text);
 
             return;

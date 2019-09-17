@@ -34,20 +34,21 @@ function round(num, places){
 }
 
 // Sends emails
-function commonSendEmail(subject, body) {
+function commonSendEmail(subject, body, filename) {
     //alert("Starting email");
     var doc = new jsPDF("p", "pt", "letter");
     doc.fromHTML(body, 15, 15);
     if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
         console.log(body);
-        doc.save("test.pdf");
+        doc.save("test.pdf"); 
+        return;
     }
     //alert("PDF built");
 	
     try {
         let pdfString = doc.output('datauri');
         let uristringparts = pdfString.split(',');
-        uristringparts[0] = "base64:boardfeet.pdf//";
+        uristringparts[0] = "base64:" + filename + "//";
         let pdfUri = uristringparts.join("");
 	    //alert("Got PDF Bytes");
         cordova.plugins.email.open({
@@ -56,7 +57,7 @@ function commonSendEmail(subject, body) {
             isHtml: true,
             body: body
         });
-	alert("Email API called");
+	    //alert("Email API called");
     }
     catch(error) {
         alert(error);

@@ -215,7 +215,7 @@ $(document).delegate("#pageVolume", "pageinit", function() {
 					'</tfoot>\n';
 			text += '</table>\n';
 
-            commonSendEmail(subject, text);
+            commonSendEmail(subject, text, "LogVolume.pdf");
 			//window.location.href = 'mailto:?subject=' + subject + '&body=' + encodeURIComponent(text);
 			
 			return;
