@@ -41,8 +41,8 @@ function commonSendEmail(subject, body) {
         console.log(body);
         doc.save("test.pdf");
     }
-
-    if (!!window.cordova) {
+    
+    try {
         var pdf = doc.output('datauri');
         cordova.plugins.email.open({
             subject: subject,
@@ -51,6 +51,10 @@ function commonSendEmail(subject, body) {
             body: body
         });
     }
+    catch(error) {
+        console.log(error);
+    }
+
 }
 
 var pdfStyles = '<style>\n' +
