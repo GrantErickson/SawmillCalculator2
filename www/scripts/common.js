@@ -35,21 +35,24 @@ function round(num, places){
 
 // Sends emails
 function commonSendEmail(subject, body) {
-    alert("Starting email");
+    //alert("Starting email");
     var doc = new jsPDF("p", "pt", "letter");
     doc.fromHTML(body, 15, 15);
     if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
         console.log(body);
         doc.save("test.pdf");
     }
-    alert("PDF built");
+    //alert("PDF built");
 	
     try {
-        var pdf = doc.output('datauri');
-	alert("Got PDF Bytes");
+        let pdfString = doc.output('datauri');
+        let uristringparts = pdfString.split(',');
+        uristringparts[0] = "base64:boardfeet.pdf//";
+        let pdfUri = uristringparts.join("");
+	    //alert("Got PDF Bytes");
         cordova.plugins.email.open({
             subject: subject,
-            //attachments: ['base64:Results.pdf//' + pdf],
+            attachments: [pdfUri],
             isHtml: true,
             body: body
         });
