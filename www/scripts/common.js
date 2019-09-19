@@ -1,3 +1,6 @@
+StatusBar.overlaysWebView(false);
+StatusBar.styleDefault();
+
 // Formats money . and ,.
 Number.prototype.formatMoney = function(c, d, t){
 var n = this, 
