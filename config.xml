@@ -22,7 +22,7 @@ It has three major features:
     <plugin name="cordova-plugin-device-orientation" source="npm" spec="~1.0.2" />
     <plugin name="cordova-plugin-dialogs" source="npm" spec="~1.2.0" />
     <plugin name="cordova-plugin-splashscreen" source="npm" spec="~5.0.3" />
-    <plugin name="cordova-plugin-statusbar" source="npm" spec="~2.1.2" />
+    <plugin name="cordova-plugin-statusbar" source="npm" spec="~2.4.3" />
     <plugin name="cordova-plugin-email-composer" version="0.8.3" source="npm" />
 
     <platform name="ios">
