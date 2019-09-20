@@ -1,7 +1,7 @@
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
     StatusBar.overlaysWebView(false);
-    StatusBar.styleDefault();
+    StatusBar.styleLightContent();
 }
 
 
