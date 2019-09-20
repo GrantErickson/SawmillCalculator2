@@ -1,12 +1,12 @@
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
-    StatusBar.overlaysWebView(false);
-    StatusBar.styleDefault();
     setTimeout(() => {
         StatusBar.backgroundColorByHexString("#ffffff");        
-    }, 1500);
+        StatusBar.overlaysWebView(false);
+        StatusBar.styleDefault();
+        }, 2000);
 
-    $("").pagecontainer({
+    $("#page1").pagecontainer({
         load: function (event, ui) {
             StatusBar.styleDefault();
             StatusBar.backgroundColorByHexString("#00ffff");
