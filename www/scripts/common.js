@@ -5,13 +5,6 @@ function onDeviceReady() {
         StatusBar.overlaysWebView(false);
         StatusBar.styleDefault();
         }, 2000);
-
-    $("#page1").pagecontainer({
-        load: function (event, ui) {
-            StatusBar.styleDefault();
-            StatusBar.backgroundColorByHexString("#00ffff");
-        }
-    });
 }
 
 
