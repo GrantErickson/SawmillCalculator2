@@ -3,6 +3,13 @@ function onDeviceReady() {
     StatusBar.overlaysWebView(false);
     StatusBar.styleDefault();
     StatusBar.backgroundColorByHexString("#ffffff");
+
+    $( "" ).pagecontainer({
+        load: function( event, ui ) {
+            StatusBar.styleDefault();
+            StatusBar.backgroundColorByHexString("#00ffff");
+                }
+      });
 }
 
 
