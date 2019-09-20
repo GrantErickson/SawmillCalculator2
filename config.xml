@@ -17,7 +17,7 @@ It has three major features:
     <preference name="phonegap-version" value="cli-7.1.0" />
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#000000" />
-    <preference name="StatusBarStyle" value="lightcontent" />
+    <preference name="PreferredStatusBarStyle" value="lightcontent" />
     <preference name="Fullscreen" value="false" />
     <plugin name="cordova-plugin-device" source="npm" spec="~1.1.1" />
     <plugin name="cordova-plugin-device-orientation" source="npm" spec="~1.0.2" />
