@@ -4,7 +4,7 @@ function onDeviceReady() {
         StatusBar.backgroundColorByHexString("#ffffff");        
         StatusBar.overlaysWebView(false);
         StatusBar.styleDefault();
-        }, 2000);
+        }, 2500);
 }
 
 
