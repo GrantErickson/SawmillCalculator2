@@ -14,7 +14,8 @@ It has three major features:
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="14" />
-    <preference name="phonegap-version" value="cli-7.1.0" />
+    <preference name="android-targetSdkVersion" value="28" />
+    <preference name="phonegap-version" value="cli-9.0.0" />
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#000000" />
     <preference name="PreferredStatusBarStyle" value="lightcontent" />
