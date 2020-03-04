@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html>
+<title>&nbsp;</title>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="./lib/jquery.mobile-1.4.5.css" />
+    <link rel="stylesheet" href="./lib/jquery.mobile.theme-1.4.5.css" />
+    <link rel="stylesheet" href="./lib/jquery.mobile.structure-1.4.5.css" />
+    <script src="./lib/jquery-3.4.1.js"></script>
+    <script src="./lib/jquery-migrate-3.1.0.js"></script>
+    <script src="./lib/jquery.mobile-1.4.5.js"></script>
+    <script src="./lib/knockout-3.5.0.js"></script>
+    <script src="./lib/jspdf.js"></script>
+    <script src="./scripts/settings.js"></script>
+    <script src="./scripts/common.js"></script>
+
+    <script src="./scripts/cutlist.js"></script>
+    <script src="./scripts/cutlistMetric.js"></script>
+    <script src="./scripts/volume.js"></script>
+    <script src="./scripts/boardfeet.js"></script>
+    <script src="./scripts/boardfeetMetric.js"></script>
+
+
+</head>
+
+<body>
+    <style>
+        #bfThickness:after {
+            content: "/4";
+        }
+    </style>
+
+    <!-- Start of page -->
+    <div data-role="page" id="pageBoardFeetMetric" data-add-back-btn="true">
+        <!-- Header -->
+        <div data-role="header" data-add-back-btn="true">
+            <h1>Board Feet</h1>
+        </div>
+
+        <!-- Content    -->
+        <div data-role="content">
+            <label for="bfWidth">Thickness in mm:</label>
+            <input id="bfThickness" type="range" min="5" max="400" step="5" data-bind="value: thickness">
+
+            <label for="bfWidth">Width in mm:</label>
+            <input id="bfWidth" type="range" min="5" max="400" step="5" data-bind="value: width">
+
+            <label for="bfLength">Length in mm:</label>
+            <input id="bfLength" type="range" min="100" max="10000" step="100" data-bind="value: length">
+
+            <label for="bfQuantity">Quantity:</label>
+            <input id="bfQuantity" type="range" min="1" max="100" data-bind="value: quantity, attr: { 'max': $root.maxQuantity }">
+
+            <label for="bfPricePerMeter3">Price per cubic meter:</label>
+            <input id="bfPricePerMeter3" type="number" step="1" value="1.00" data-bind="value: pricePerMeter3, valueUpdate: 'keyup'">
+
+
+            <ul data-role="listview" data-inset="true" data-theme="b">
+                <li class="">
+                    <div class="ui-grid-b">
+                        <div class="ui-block-a" style="text-align:left;">
+                            <span data-bind="text:Number(totalBft()).formatM3()"></span> m<span>&#179;</span>
+                        </div>
+                        <div class="ui-block-b" style="text-align:center;">
+                            Totals
+                        </div>
+                        <div class="ui-block-c" style="text-align:right;">
+                            $<span data-bind="text:totalPrice().formatMoney()"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <button data-icon="plus" data-role="button" data-bind="event: { vclick: addLumberItem }">Add to List  
+					(<span data-bind="text: lumberItems().length"></span>)
+				</button>
+
+
+            <h3 style="margin-bottom: 0px;">Lumber List</h3>
+            <ul data-role="listview" data-bind="foreach: lumberItems" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow"
+                style="margin-top: 0px;">
+                <li class="ui-li ui-li-static ui-btn-up-c ui-corner-top" style="padding-right: 2px;">
+                    <h1 data-bind="text: $index() + 1" style="float: left; margin-right: 10px;" ></h1>
+                    <h3 class="" style="margin-top:0px; margin-bottom:0px;">
+                        <span style="float:left">
+                                <span data-bind="text: Number(totalBft()).formatM3()"></span> m<span>&#179;</span>
+                        </span>
+                        <span class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" 
+                            style="float:right; background-color: red; margin-top: 3px; " 
+                            data-bind="event: { vclick: deleteItem }">&nbsp;</span>
+                        <span style="float:right; margin-right:10px;">
+                            $<span data-bind="text: Number(totalPrice()).formatMoney()"></span>
+                        </span>
+                    </h3>
+                    <div class="ui-grid-c" style="font-size:.7em; margin-left: 20px; margin-right: 39px; margin-top: -15px;">
+                        <div class="ui-block-a">
+                            <span data-bind="text: thickness"></span>mm x <span data-bind="text: width"></span>mm
+                        </div>
+                        <div class="ui-block-b" style="text-align: center;">Length: <span data-bind="text: length"></span>mm</div>
+                        <div class="ui-block-c" style="text-align: center;">Qty: <span data-bind="text: quantity"></span></div>
+                        <div class="ui-block-d"><span style="float:right">$/m<span>&#179;</span>: $<span data-bind="text: Number(pricePerMeter3()).formatMoney()"></span></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <ul data-role="listview" data-inset="true" data-theme="b">
+                <li class="">
+                    <div class="ui-grid-b">
+                        <div class="ui-block-a" style="text-align:left;">
+                            <span data-bind="text:Number(grandTotalBft()).formatM3()"></span> m<span>&#179;</span>
+                        </div>
+                        <div class="ui-block-b" style="text-align:center;">
+                            Lumber Totals
+                        </div>
+                        <div class="ui-block-c" style="text-align:right;">
+                            $<span data-bind="text:grandTotalPrice().formatMoney()"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <button data-icon="forward" data-role="button" data-bind="event: { vclick: sendEmail }">Send Email</button>
+
+            <button data-icon="delete" data-role="button" data-bind="event: { vclick: clearLumberItems }" >Clear List</button>
+
+
+
+        </div>
+
+        <!-- footer -->
+        <div data-role="footer">
+            <h4>&copy; 2020 MicaPeak Solutions</h4>
+        </div>
+    </div>
+
+</body>
+
+</html>

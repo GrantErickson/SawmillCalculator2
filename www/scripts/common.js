@@ -31,6 +31,11 @@ Number.prototype.formatBft2 = function () {
     return this.formatMoney(2, ".", ",");
 };
 
+// Format a number for Cubic Meters. 
+Number.prototype.formatM3 = function () {
+    return this.formatMoney(4, ".", ",");
+};
+
 
 // Format a number for Bft. 
 Number.prototype.round = function (places) {
