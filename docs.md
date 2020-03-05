@@ -1,4 +1,7 @@
 # Installation and running instructions for SawmillCalculator
+1. Clone Repo
+2. `npm i http-server -g`
+3. run `http-server` rom the www folder
 
 ## Generating Icons and Splash Screens
 `https://pgicons.abiro.com/`
