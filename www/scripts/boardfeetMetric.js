@@ -191,7 +191,14 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
     $("#bfThickness").slider("refresh");
     $("#bfLength").slider("refresh");
     $("#bfQuantity").slider("refresh");
-
+    $(".ui-slider input").focus(function() {
+        $(this).attr("step","1");
+        console.log("Step: 1");
+    })
+    $(".ui-slider .ui-slider-handle").focus(function() {
+        $(this).parent().parent().children("input").attr("step","5");
+        console.log("Step: 5");
+    })
 
     // Work with the slider.
     ko.bindingHandlers.slider = {
