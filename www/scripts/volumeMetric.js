@@ -29,8 +29,8 @@ $(document).delegate("#pageVolumeMetric", "pageinit", function() {
 		var m3PerBft = 0.00235974;
 
 		// Values for the calculation.
-		self.length = ko.observable(Number(window.localStorage.getItem("VolumeMetricLength")) || 36);  // mm
-		self.diameter = ko.observable(Number(window.localStorage.getItem("VolumeMetricDiameter")) || 4);  // m
+		self.length = ko.observable(Number(window.localStorage.getItem("VolumeMetricLength")) || 4);  // m
+		self.diameter = ko.observable(Number(window.localStorage.getItem("VolumeMetricDiameter")) || 300);  // mm
 		self.quantity = ko.observable(Number(window.localStorage.getItem("VolumeMetricQuantity")) || 1);  // Count
 
 		// Load the array of saved items.
@@ -187,14 +187,14 @@ $(document).delegate("#pageVolumeMetric", "pageinit", function() {
 				var international = Number(this.international());
 				var roy = Number(this.roy());
 				text += '  <tr>' +
-							'<td class="left">' + index + '. </td>' +
+							'<td class="left">' + index + '</td>' +
 							'<td>' + this.quantity() + '</td>' +
-							'<td>' + this.diameter() + 'mm</td>' +
-							'<td>' + this.length() + "m</td>" +
-							'<td>' + doyle.formatM3() + '</td>' +
-							'<td>' + scribner.formatM3() + '</td>' +
-							'<td>' + international.formatM3() + '</td>' +
-							'<td>' + roy.formatM3() + '</td>' +
+							'<td>' + this.diameter() + ' mm</td>' +
+							'<td>' + this.length() + " m</td>" +
+							'<td>' + doyle.formatM3() + ' m&#179;</td>' +
+							'<td>' + scribner.formatM3() + ' m&#179;</td>' +
+							'<td>' + international.formatM3() + ' m&#179;</td>' +
+							'<td>' + roy.formatM3() + ' m&#179;</td>' +
 						'</tr>\n';
 				totalDoyle += doyle;
 				totalScribner += scribner;
@@ -210,7 +210,7 @@ $(document).delegate("#pageVolumeMetric", "pageinit", function() {
 					'<th></th>' +
 					'<th></th>' +
 					'<th></th>' +
-					'<th>' + Number(totalDoyle).formatM3() +'</th>' +
+					'<th>' + Number(totalDoyle).formatM3() +' </th>' +
 					'<th>' + Number(totalScribner).formatM3() +'</th>' +
 					'<th>' + Number(totalInternational).formatM3() +'</th>' +
 					'<th>' + Number(totalRoy).formatM3() +'</th>' +

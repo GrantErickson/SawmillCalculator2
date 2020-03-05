@@ -170,7 +170,7 @@ $(document).delegate("#pageBoardFeet", "pageinit", function() {
                 var totalBft = Number(this.totalBft()).round(2);
                 var pieceBft = Number(this.pieceBft()).round(2);
                 text += '  <tr>' +
-                    '<td class="left">' + index + '. </td>' +
+                    '<td class="left">' + index + '</td>' +
                     '<td>' + this.quantity() + '</td>' +
                     '<td>' + this.thickness() + ((this.woodType() == WoodTypes.Hardwood) ? '/4' : '') + '"</td>' +
                     '<td>' + this.width() + '"</td>' +

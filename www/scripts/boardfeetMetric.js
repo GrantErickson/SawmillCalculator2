@@ -9,9 +9,9 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
         self.maxQuantity = ko.observable(window.localStorage.getItem("maxQuantity") || "100");
 
         // Values for the calculation.
-        self.width = ko.observable(Number(window.localStorage.getItem("BfWidthMetric")) || 6); // Inches
-        self.thickness = ko.observable(Number(window.localStorage.getItem("BfThicknessMetric")) || 2); // Inches
-        self.length = ko.observable(Number(window.localStorage.getItem("BfLengthMetric")) || 16); // Feet
+        self.width = ko.observable(Number(window.localStorage.getItem("BfWidthMetric")) || 100); // mm
+        self.thickness = ko.observable(Number(window.localStorage.getItem("BfThicknessMetric")) || 50); // mm
+        self.length = ko.observable(Number(window.localStorage.getItem("BfLengthMetric")) || 3000); // mm
         self.quantity = ko.observable(Number(window.localStorage.getItem("BfQuantityMetric")) || 1); // Count
         self.pricePerMeter3 = ko.observable(Number(window.localStorage.getItem("BfPricePerMetric")) || 1); // Count
 
@@ -121,9 +121,9 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
                 '<th>Thickness</th>' +
                 '<th>Width</th>' +
                 '<th>Length</th>' +
-                '<th>M/piece</th>' +
-                '<th>Total m<span>&#179;</span></th>' +
-                '<th>$/M3</th>' +
+                '<th>m&#179;/piece</th>' +
+                '<th>Total m&#179;</th>' +
+                '<th>$/m&#179;</th>' +
                 '<th>$/piece</th>' +
                 '<th>Total</th>\n' +
                 '</tr>' +
@@ -140,11 +140,11 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
                 var totalBft = Number(this.totalBft()).round(2);
                 var pieceBft = Number(this.pieceBft()).round(2);
                 text += '  <tr>' +
-                    '<td class="left">' + index + '. </td>' +
+                    '<td class="left">' + index + '</td>' +
                     '<td>' + this.quantity() + '</td>' +
-                    '<td>' + this.thickness() + '</td>' +
-                    '<td>' + this.width() + '"</td>' +
-                    '<td>' + this.length() + "'</td>" +
+                    '<td>' + this.thickness() + ' mm</td>' +
+                    '<td>' + this.width() + ' mm</td>' +
+                    '<td>' + this.length() + " mm</td>" +
                     '<td>' + pieceBft.formatM3() + '</td>' +
                     '<td>' + totalBft.formatM3() + '</td>' +
                     '<td>$' + pricePerMeter3.formatMoney() + '</td>' +

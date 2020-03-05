@@ -184,7 +184,7 @@ $(document).delegate("#pageVolume", "pageinit", function() {
 				var international = Number(this.international());
 				var roy = Number(this.roy());
 				text += '  <tr>' +
-							'<td class="left">' + index + '. </td>' +
+							'<td class="left">' + index + '</td>' +
 							'<td>' + this.quantity() + '</td>' +
 							'<td>' + this.diameter() + '"</td>' +
 							'<td>' + this.length() + "'</td>" +
