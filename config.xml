@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="net.micapeak.SawmillCalculatorPro" version="2.0.11" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>Sawmill Calculator Pro 2.0</name>
+<widget id="net.micapeak.SawmillCalculatorPro" version="2.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Sawmill Calculator Pro 2.1</name>
     <description>
 Sawmill Calculator Pro assists you with lumber and timber calculations. 
 It has three major features:
 1. Generation of a list of cuts to make the desired boards accounting for blade kerf. As cuts are made, they can be checked off in the app. Both imperial and metric are supported.
 2. Calculation of board feet where lists can be saved and emailed as a table and PDF. Hardwoods and softwoods are supported.
 3. Calculation of log volume on the Doyle, Scribner, International 1/4", and ROY scales. Log volumes can be saved and emailed as a table and PDF.
+4. All calculations support both US and Metric.
     </description>
     <author email="grant@micapeak.net" href="http://micapeak.net">
         MicaPeak Solutions
