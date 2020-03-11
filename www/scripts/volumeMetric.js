@@ -210,10 +210,10 @@ $(document).delegate("#pageVolumeMetric", "pageinit", function() {
 					'<th></th>' +
 					'<th></th>' +
 					'<th></th>' +
-					'<th>' + Number(totalDoyle).formatM3() +' </th>' +
-					'<th>' + Number(totalScribner).formatM3() +'</th>' +
-					'<th>' + Number(totalInternational).formatM3() +'</th>' +
-					'<th>' + Number(totalRoy).formatM3() +'</th>' +
+					'<th>' + Number(totalDoyle).formatM3() + ' m&#179;</th>' +
+					'<th>' + Number(totalScribner).formatM3() + ' m&#179;</th>' +
+					'<th>' + Number(totalInternational).formatM3() + ' m&#179;</th>' +
+					'<th>' + Number(totalRoy).formatM3() + ' m&#179;</th>' +
 					'</tr>' +
 					'</tfoot>\n';
 			text += '</table>\n';

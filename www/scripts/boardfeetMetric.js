@@ -165,7 +165,7 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
                 '<th></th>' +
                 '<th></th>' +
                 '<th></th>' +
-                '<th>' + totalBftSum.formatM3() + '</th>' +
+                '<th>' + totalBftSum.formatM3() + ' m&#179;</th>' +
                 '<th></th>' +
                 '<th></th>' +
                 '<th>$' + totalPriceSum.formatMoney() + '</th>' +
@@ -191,12 +191,14 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
     $("#bfThickness").slider("refresh");
     $("#bfLength").slider("refresh");
     $("#bfQuantity").slider("refresh");
-    $(".ui-slider input").focus(function() {
+
+    // Allows for changing the actual numbers for certain parameters by 1 and then setting it back to 5 when using the slider.
+    $(".ui-slider input.change-step").focus(function() {
         $(this).attr("step","1");
         console.log("Step: 1");
     })
     $(".ui-slider .ui-slider-handle").focus(function() {
-        $(this).parent().parent().children("input").attr("step","5");
+        $(this).parent().parent().children("input.change-step").attr("step","5");
         console.log("Step: 5");
     })
 
