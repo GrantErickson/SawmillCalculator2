@@ -153,8 +153,8 @@ $(document).delegate("#pageBoardFeet", "pageinit", function() {
                 '<th>Length</th>' +
                 '<th>Bft/piece</th>' +
                 '<th>Total Bft</th>' +
-                '<th>$/1000</th>' +
-                '<th>$/piece</th>' +
+                '<th>' + settingsModel.moneySymbol() + '/1000</th>' +
+                '<th>' + settingsModel.moneySymbol() + '/piece</th>' +
                 '<th>Total</th>\n' +
                 '</tr>' +
                 '</thead>\n';
@@ -177,9 +177,9 @@ $(document).delegate("#pageBoardFeet", "pageinit", function() {
                     '<td>' + this.length() + "'</td>" +
                     '<td>' + pieceBft.formatBft2() + '</td>' +
                     '<td>' + totalBft.formatBft2() + '</td>' +
-                    '<td>$' + pricePer1000.formatMoney() + '</td>' +
-                    '<td>$' + piecePrice.formatMoney() + '</td>' +
-                    '<td>$' + totalPrice.formatMoney() + '</td>' +
+                    '<td>' + pricePer1000.formatMoney() + '</td>' +
+                    '<td>' + piecePrice.formatMoney() + '</td>' +
+                    '<td>' + totalPrice.formatMoney() + '</td>' +
                     '</tr>\n';
                 totalPriceSum += totalPrice;
                 totalBftSum += totalBft;
@@ -198,7 +198,7 @@ $(document).delegate("#pageBoardFeet", "pageinit", function() {
                 '<th>' + totalBftSum.formatBft2() + '</th>' +
                 '<th></th>' +
                 '<th></th>' +
-                '<th>$' + totalPriceSum.formatMoney() + '</th>' +
+                '<th>' + totalPriceSum.formatMoney() + '</th>' +
                 '</tr>' +
                 '</tfoot>\n';
             text += '</table>\n';

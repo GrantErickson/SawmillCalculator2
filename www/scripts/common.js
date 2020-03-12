@@ -8,9 +8,18 @@ function onDeviceReady() {
 }
 
 
-// Formats money . and ,.
+// Formats Money
 Number.prototype.formatMoney = function (c, d, t) {
-    var n = this,
+    if (settingsModel.moneySymbolLocation() == 'before'){
+        return settingsModel.moneySymbol() + this.formatNumber(c, d,t);
+    }else{
+        return  this.formatNumber(c, d,t) + settingsModel.moneySymbol();
+    }
+};
+
+// Formats numbers with . and ,.
+Number.prototype.formatNumber = function (c, d, t) {
+    var n = this, 
         c = isNaN(c = Math.abs(c)) ? 2 : c,
         d = d == undefined ? "." : d,
         t = t == undefined ? "," : t,
@@ -23,17 +32,17 @@ Number.prototype.formatMoney = function (c, d, t) {
 
 // Format a number for Bft. 
 Number.prototype.formatBft = function () {
-    return this.formatMoney(0, ".", ",");
+    return this.formatNumber(0, ".", ",");
 };
 
 // Format a number for Bft. 
 Number.prototype.formatBft2 = function () {
-    return this.formatMoney(2, ".", ",");
+    return this.formatNumber(2, ".", ",");
 };
 
 // Format a number for Cubic Meters. 
 Number.prototype.formatM3 = function (places) {
-    return this.formatMoney(places || 4, ".", ",");
+    return this.formatNumber(places || 4, ".", ",");
 };
 
 

@@ -5,16 +5,22 @@ var SettingsModel = function() {
 	
 	// Settings to save.
 	self.sideOfBlade = ko.observable(window.localStorage.getItem("sideOfBlade") || "bottom"); 
-	// Settings to save.
 	self.maxQuantity = ko.observable(window.localStorage.getItem("maxQuantity") || "100");
+	self.moneySymbol = ko.observable(window.localStorage.getItem("moneySymbol") || "$");
+	self.moneySymbolLocation = ko.observable(window.localStorage.getItem("moneySymbolLocation") || "before");
 
 	// Save the values. 
 	self.sideOfBlade.subscribe(function(value) {
 		window.localStorage.setItem("sideOfBlade",value);
 	});
-	
 	self.maxQuantity.subscribe(function(value) {
 		window.localStorage.setItem("maxQuantity",value);
+	});
+	self.moneySymbol.subscribe(function(value) {
+		window.localStorage.setItem("moneySymbol",value);
+	});
+	self.moneySymbolLocation.subscribe(function(value) {
+		window.localStorage.setItem("moneySymbolLocation",value);
 	});
 };
 			

@@ -68,7 +68,7 @@
                             Totals
                         </div>
                         <div class="ui-block-c" style="text-align:right;">
-                            $<span data-bind="text:totalPrice().formatMoney()"></span>
+                            <span data-bind="text:totalPrice().formatMoney()"></span>
                         </div>
                     </div>
                 </li>
@@ -92,16 +92,15 @@
                             style="float:right; background-color: red; margin-top: 3px; " 
                             data-bind="event: { vclick: deleteItem }">&nbsp;</span>
                         <span style="float:right; margin-right:10px;">
-                            $<span data-bind="text: Number(totalPrice()).formatMoney()"></span>
+                            <span data-bind="text: Number(totalPrice()).formatMoney()"></span>
                         </span>
                     </h3>
-                    <div class="ui-grid-c" style="font-size:.7em; margin-left: 20px; margin-right: 39px; margin-top: -15px;">
+                    <div class="ui-grid-b" style="font-size:.7em; margin-left: 20px; margin-right: 39px; margin-top: -15px;">
                         <div class="ui-block-a">
-                            <span data-bind="text: thickness"></span> mm x <span data-bind="text: width"></span> mm
+                            <span data-bind="text: thickness"></span>x<span data-bind="text: width"></span>x<span data-bind="text: length"></span>
                         </div>
-                        <div class="ui-block-b" style="text-align: center;">Length: <span data-bind="text: length"></span> mm</div>
-                        <div class="ui-block-c" style="text-align: center;">Qty: <span data-bind="text: quantity"></span></div>
-                        <div class="ui-block-d"><span style="float:right">$/m<span>&#179;</span>: $<span data-bind="text: Number(pricePerMeter3()).formatMoney()"></span></span>
+                        <div class="ui-block-b" style="text-align: center;">x<span data-bind="text: quantity"></span></div>
+                        <div class="ui-block-c"><span style="float:right"><span data-bind="text: Number(pricePerMeter3()).formatMoney()"></span>/m<span>&#179;</span></span>
                         </div>
                     </div>
                 </li>
@@ -117,7 +116,7 @@
                             Lumber Totals
                         </div>
                         <div class="ui-block-c" style="text-align:right;">
-                            $<span data-bind="text:grandTotalPrice().formatMoney()"></span>
+                            <span data-bind="text:grandTotalPrice().formatMoney()"></span>
                         </div>
                     </div>
                 </li>

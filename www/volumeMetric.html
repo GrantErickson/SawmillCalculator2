@@ -26,7 +26,7 @@
 		<div data-role="page" id="pageVolumeMetric">
 			<!-- Header -->
 			<div data-role="header" data-add-back-btn="true">
-				<h1>Log Volume (Metric)</h1>
+				<h1>Volume (Metric)</h1>
 			</div>
 
 			<!-- Content    -->			
@@ -84,26 +84,21 @@
 							<span class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" 
                             	  style="float:right; background-color: red; margin-top: 3px; margin-right: 0px; margin-left:5px;" 
 								  data-bind="event: { vclick: deleteItem }">&nbsp;</span>
-							<div class="ui-grid-c" style="font-size: .9em;">
-								<div class="ui-block-a" style="text-align: left;">D:
-									<span data-bind="text: Number(doyle()).formatM3(3)"></span>
+							<div class="ui-grid-c" style="font-size: .7em;">
+								<div class="ui-block-a" style="text-align: left;">D:<span data-bind="text: Number(doyle()).formatM3(3)" style="font-weight: normal;"></span>
 								</div>
-								<div class="ui-block-b" style="text-align: center;">S: 
-									<span data-bind="text: Number(scribner()).formatM3(3)"></span>
+								<div class="ui-block-b" style="text-align: center;">S:<span data-bind="text: Number(scribner()).formatM3(3)" style="font-weight: normal;"></span>
 								</div>
-								<div class="ui-block-c" style="text-align: center;">I: 
-									<span data-bind="text: Number(international()).formatM3(3)"></span>
+								<div class="ui-block-c" style="text-align: center;">I:<span data-bind="text: Number(international()).formatM3(3)" style="font-weight: normal;"></span>
 								</div>
-								<div class="ui-block-d" style="text-align: right;">R: 
-									<span data-bind="text: Number(roy()).formatM3(3)"></span>
+								<div class="ui-block-d" style="text-align: right;">R:<span data-bind="text: Number(roy()).formatM3(3)" style="font-weight: normal;"></span>
 								</div>
 							</div>
 						</div>
 
-						<div class="ui-grid-b" style="font-size:.7em; margin-top: 5px;">
-							<div class="ui-block-a">Diameter: <span data-bind="text: diameter"></span> mm</div>
-							<div class="ui-block-b" style="text-align: center;">Length: <span data-bind="text: length"></span> m</div>
-							<div class="ui-block-c" style="text-align: right;">Qty: <span data-bind="text: quantity"></span></div>
+						<div class="ui-grid-a" style="font-size:.7em; margin-top: 5px;">
+							<div class="ui-block-a"><span data-bind="text: diameter"></span> mm x <span data-bind="text: length"></span> m</div>
+							<div class="ui-block-b" style="text-align: right;">Qty: <span data-bind="text: quantity"></span></div>
 						</div>
 					</li>	
 				</ul>

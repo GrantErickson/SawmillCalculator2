@@ -13,7 +13,7 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
         self.thickness = ko.observable(Number(window.localStorage.getItem("BfThicknessMetric")) || 50); // mm
         self.length = ko.observable(Number(window.localStorage.getItem("BfLengthMetric")) || 3000); // mm
         self.quantity = ko.observable(Number(window.localStorage.getItem("BfQuantityMetric")) || 1); // Count
-        self.pricePerMeter3 = ko.observable(Number(window.localStorage.getItem("BfPricePerMetric")) || 1); // Count
+        self.pricePerMeter3 = ko.observable(Number(window.localStorage.getItem("BfPricePerMetric")) || 1); // Count    
 
         var oldItems = window.localStorage.getItem("LumberItemsMetric") || "[]";
 
@@ -123,8 +123,8 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
                 '<th>Length</th>' +
                 '<th>m&#179;/piece</th>' +
                 '<th>Total m&#179;</th>' +
-                '<th>$/m&#179;</th>' +
-                '<th>$/piece</th>' +
+                '<th>' + settingsModel.moneySymbol() + '/m&#179;</th>' +
+                '<th>' + settingsModel.moneySymbol() + '/piece</th>' +
                 '<th>Total</th>\n' +
                 '</tr>' +
                 '</thead>\n';
@@ -147,9 +147,9 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
                     '<td>' + this.length() + " mm</td>" +
                     '<td>' + pieceBft.formatM3() + '</td>' +
                     '<td>' + totalBft.formatM3() + '</td>' +
-                    '<td>$' + pricePerMeter3.formatMoney() + '</td>' +
-                    '<td>$' + piecePrice.formatMoney() + '</td>' +
-                    '<td>$' + totalPrice.formatMoney() + '</td>' +
+                    '<td>' + pricePerMeter3.formatMoney() + '</td>' +
+                    '<td>' + piecePrice.formatMoney() + '</td>' +
+                    '<td>' + totalPrice.formatMoney() + '</td>' +
                     '</tr>\n';
                 totalPriceSum += totalPrice;
                 totalBftSum += totalBft;
@@ -168,7 +168,7 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
                 '<th>' + totalBftSum.formatM3() + ' m&#179;</th>' +
                 '<th></th>' +
                 '<th></th>' +
-                '<th>$' + totalPriceSum.formatMoney() + '</th>' +
+                '<th>' + totalPriceSum.formatMoney() + '</th>' +
                 '</tr>' +
                 '</tfoot>\n';
             text += '</table>\n';
