@@ -35,6 +35,8 @@
 
                 $("#bottomOfBlade").checkboxradio("refresh");
                 $("#topOfBlade").checkboxradio("refresh");
+                $("#beforeNumber").checkboxradio("refresh");
+                $("#afterNumber").checkboxradio("refresh");
             });
         </script>
         <!-- Header -->
@@ -63,9 +65,9 @@
             <fieldset data-role="controlgroup">
                 <legend>Money Symbol</legend>
                 <input id="moneySymbol" data-bind="value: moneySymbol">
-                <input type="radio" name="radio-choice-1" id="beforeNumber" value="before" data-bind="checked: moneySymbolLocation">
+                <input type="radio" name="radio-choice-2" id="beforeNumber" value="before" data-bind="checked: moneySymbolLocation">
                 <label for="beforeNumber">Before Number: <span data-bind="text: moneySymbol"></span>100</label>
-                <input type="radio" name="radio-choice-1" id="afterNumber" value="after" data-bind="checked: moneySymbolLocation">
+                <input type="radio" name="radio-choice-2" id="afterNumber" value="after" data-bind="checked: moneySymbolLocation">
                 <label for="afterNumber">After Number: 100<span data-bind="text: moneySymbol"></span></label>
             </fieldset>
 
