@@ -41,47 +41,18 @@ Capacitor is backed by the [Ionic](https://ionicframework.com/) team and has str
 - **Cordova plugin compatibility:** Most Cordova plugins continue to work with Capacitor
 - **Enterprise support:** Available from Ionic for teams that need SLAs and dedicated assistance
 
-### Cloud Build Services (No Local Xcode/Android Studio Required)
+### Cloud Builds with Capawesome Cloud
 
-Several cloud build services support Capacitor projects, so you don't need to install Xcode or Android Studio locally. Here are the best options under $100/year:
-
-| Service | Starting Cost | iOS Builds | Android Builds | Best For |
-|---------|--------------|------------|----------------|----------|
-| [VoltBuilder](https://volt.build/) | Free (debug Android); $15/mo for release builds | ✅ | ✅ | Closest PhoneGap Build replacement; simplest workflow |
-| [Capawesome Cloud](https://cloud.capawesome.io/) | $9/mo (Starter) | ✅ | ✅ | Official Capacitor recommendation; includes live updates |
-| [GitHub Actions](https://github.com/features/actions) | Free for public repos | ✅ (with macOS runner) | ✅ | Free, but requires CI/CD setup |
-
-#### VoltBuilder — Closest to PhoneGap Build (~$15/month)
-
-[VoltBuilder](https://volt.build/) is the most direct replacement for Adobe PhoneGap Build:
-
-- **Free tier:** Debug Android builds, 4 builds/day, 10 MB limit
-- **Indy plan ($15/month):** Release builds for both iOS and Android, 20 builds/day, 50 MB limit
-- **Includes [VoltSigner](https://volt.build/):** Free certificate signing — no Mac required for iOS certificates
-- **Simple workflow:** Zip your project → upload → get store-ready binaries
-- **Supports Capacitor and Cordova** projects and plugins
-
-#### Capawesome Cloud — Official Capacitor Recommendation ($9/month)
-
-[Capawesome Cloud](https://cloud.capawesome.io/) is the officially recommended cloud build service for Capacitor (recommended after Ionic Appflow's planned discontinuation in 2027):
+This project uses [Capawesome Cloud](https://cloud.capawesome.io/) for native iOS and Android builds — no local Xcode or Android Studio required.
 
 - **Starter plan ($9/month):** 200 build minutes (~40 builds), live updates, App Store publishing
 - **Professional plan ($29/month):** 600 build minutes (~120 builds), 2 concurrent builds
 - **Free for open-source projects** (apply on their site)
-- **Live updates:** Push updates directly to user devices without app store review
-- **CI/CD integration:** Works with GitHub, GitLab, Bitbucket, and Azure DevOps
 - **Price lock guarantee:** Your subscription price never increases
 
-#### GitHub Actions — Free for Public Repos
+The project includes a [`capawesome.config.json`](capawesome.config.json) file that configures Capawesome Cloud builds. See [`docs.md`](docs.md) for detailed setup instructions.
 
-[GitHub Actions](https://github.com/features/actions) can build Capacitor apps for free:
-
-- **Free for public repositories** (2,000 minutes/month for private repos on free plan)
-- **macOS runners available** for iOS builds
-- **Requires setup:** You need to write workflow YAML files and manage signing certificates
-- **Full control:** Customize your build pipeline however you need
-
-> **Note:** Ionic's [Appflow](https://ionic.io/appflow) is being discontinued (end of service December 2027). It is not recommended for new projects.
+> **Note:** Ionic's [Appflow](https://ionic.io/appflow) is being discontinued (end of service December 2027). Capawesome Cloud is the officially recommended replacement.
 
 ## Getting Started
 
@@ -136,27 +107,23 @@ npm run cap:sync
 npm run cap:open:android
 ```
 
-### Using a Cloud Build Service
+### Using Capawesome Cloud (Recommended)
 
-If you don't have local build tools (Xcode/Android Studio), use a cloud build service.
-
-**Option A: VoltBuilder** (simplest, closest to PhoneGap Build)
-
-1. Sign up at [volt.build](https://volt.build/) (free tier available for debug Android builds)
-2. Zip your project files and upload, or connect your Git repository
-3. VoltBuilder builds your app and returns store-ready iOS/Android binaries
-4. Use [VoltSigner](https://volt.build/) to generate signing certificates for free (no Mac needed)
-
-**Option B: Capawesome Cloud** (official Capacitor recommendation)
+If you don't have local build tools (Xcode/Android Studio), use [Capawesome Cloud](https://cloud.capawesome.io/) for native builds:
 
 1. Sign up at [cloud.capawesome.io](https://cloud.capawesome.io/)
-2. Connect your GitHub/GitLab/Bitbucket repository
-3. Configure your build settings and signing certificates
-4. Build and deploy directly to the App Store and Google Play
+2. Create a new app in the Capawesome Cloud Console
+3. Copy your Capawesome App ID and update `capawesome.config.json` (replace `YOUR_CAPAWESOME_APP_ID`)
+4. Connect your GitHub repository
+5. Upload your iOS certificates and/or Android keystore in the Capawesome Cloud Console
+6. Trigger a build from the console or push to your connected branch
+
+For full setup instructions including pipeline configuration, see [`docs.md`](docs.md).
 
 ## Project Structure
 
 ```
+├── capawesome.config.json  # Capawesome Cloud build configuration
 ├── capacitor.config.json   # Capacitor configuration (app ID, plugins, platform settings)
 ├── config.xml              # Legacy Cordova config (retained for reference)
 ├── package.json            # npm dependencies and scripts
