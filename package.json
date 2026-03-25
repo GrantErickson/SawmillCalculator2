@@ -1,0 +1,20 @@
+{
+  "name": "sawmill-calculator-pro",
+  "version": "2.1.7",
+  "description": "Sawmill Calculator Pro assists you with lumber and timber calculations.",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build step required for vanilla JS app'"
+  },
+  "author": "MicaPeak Solutions",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/ios": "^8.3.0",
+    "@capacitor/status-bar": "^8.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.3.0"
+  }
+}

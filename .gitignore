@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Capacitor native platform build artifacts
+android/app/build/
+ios/App/Pods/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

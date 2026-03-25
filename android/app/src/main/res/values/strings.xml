@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sawmill Calculator Pro</string>
+    <string name="title_activity_main">Sawmill Calculator Pro</string>
+    <string name="package_name">net.micapeak.SawmillCalculatorPro</string>
+    <string name="custom_url_scheme">net.micapeak.SawmillCalculatorPro</string>
+</resources>

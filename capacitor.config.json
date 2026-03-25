@@ -1,0 +1,12 @@
+{
+  "appId": "net.micapeak.SawmillCalculatorPro",
+  "appName": "Sawmill Calculator Pro",
+  "webDir": "www",
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": false,
+      "backgroundColor": "#000000",
+      "style": "LIGHT"
+    }
+  }
+}
