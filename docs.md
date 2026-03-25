@@ -34,10 +34,10 @@ If you don't have Xcode or Android Studio, use a cloud build service:
 
 ## Generating Icons and Splash Screens
 
-Use [capacitor-assets](https://github.com/nicepay/capacitor-assets) or generate manually:
+Use [@capacitor/assets](https://github.com/nicepay/capacitor-assets) or generate manually:
 
 ```bash
-npx @nicepay/capacitor-assets generate
+npx @capacitor/assets generate
 ```
 
 Or use online tools like https://icon.kitchen/ for generating app icons.

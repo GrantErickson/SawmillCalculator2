@@ -68,7 +68,7 @@ function commonSendEmail(subject, body, filename) {
 
     try {
         // Use the Web Share API if available (works in Capacitor and modern mobile browsers)
-        if (navigator.share && navigator.canShare) {
+        if (navigator.share && typeof navigator.canShare === 'function') {
             var pdfBlob = doc.output('blob');
             var file = new File([pdfBlob], filename, { type: 'application/pdf' });
             var shareData = { title: subject, text: body, files: [file] };
