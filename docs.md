@@ -116,7 +116,6 @@ If you have Xcode (Mac) or Android Studio, you can build native apps locally.
 ### iOS (requires Mac with Xcode)
 
 ```bash
-npm run cap:add:ios      # First time only: adds the iOS platform
 npm run cap:sync         # Syncs www/ assets to native project
 npm run cap:open:ios     # Opens project in Xcode for building/running
 ```
@@ -124,7 +123,6 @@ npm run cap:open:ios     # Opens project in Xcode for building/running
 ### Android (requires Android Studio)
 
 ```bash
-npm run cap:add:android  # First time only: adds the Android platform
 npm run cap:sync         # Syncs www/ assets to native project
 npm run cap:open:android # Opens project in Android Studio for building/running
 ```
