@@ -28,9 +28,48 @@ npm run cap:open:android # Opens project in Android Studio for building/running
 
 If you don't have Xcode or Android Studio, use a cloud build service:
 
-- **[VoltBuilder](https://volt.build/)** — ~$36/year, direct replacement for PhoneGap Build
-- **[Appflow](https://ionic.io/appflow)** — Ionic's cloud build platform
-- **[GitHub Actions](https://github.com/features/actions)** — Free CI/CD for public repos
+#### VoltBuilder (~$15/month, free debug Android builds)
+
+The simplest option — closest experience to the old PhoneGap Build:
+
+1. Sign up at [volt.build](https://volt.build/) (15-day free trial for paid plans)
+2. Zip your project or connect your Git repo
+3. Upload and build — get store-ready iOS and Android binaries
+4. Use [VoltSigner](https://volt.build/) for free certificate generation (no Mac required)
+
+**Pricing:**
+- **Free:** Debug Android builds, 4 builds/day, 10 MB limit
+- **Indy ($15/mo):** Release iOS + Android, 20 builds/day, 50 MB limit
+- **Pro:** 100 builds/day, AdHoc iOS, 200 MB limit
+
+More info: [volt.build/docs/capacitor-overview](https://volt.build/docs/capacitor-overview/)
+
+#### Capawesome Cloud ($9/month, free for open source)
+
+The officially recommended cloud service for Capacitor:
+
+1. Sign up at [cloud.capawesome.io](https://cloud.capawesome.io/)
+2. Connect your GitHub/GitLab/Bitbucket repository
+3. Configure build settings and signing certificates
+4. Build, test, and publish to App Store and Google Play
+
+**Pricing:**
+- **Starter ($9/mo):** ~40 builds/mo, live updates, App Store publishing
+- **Professional ($29/mo):** ~120 builds/mo, 2 concurrent builds
+- **Free for open-source projects** (apply on their site)
+- **Price lock guarantee:** Your subscription price never increases
+
+More info: [cloud.capawesome.io](https://cloud.capawesome.io/)
+
+#### GitHub Actions (Free for public repos)
+
+Full CI/CD with complete control but requires setup:
+
+- Free for public repos (2,000 min/mo free for private repos)
+- macOS runners available for iOS builds
+- Requires writing workflow YAML files and managing signing certificates
+
+> **Note:** Ionic Appflow is being discontinued (EOL December 2027) and should not be used for new projects.
 
 ## Generating Icons and Splash Screens
 
