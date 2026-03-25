@@ -1,0 +1,40 @@
+{
+  "name": "sawmill-calculator-pro",
+  "version": "2.1.7",
+  "description": "Sawmill Calculator Pro assists you with lumber and timber calculations including cut lists, board feet, and log volume.",
+  "scripts": {
+    "start": "npx http-server www -o",
+    "cap:add:ios": "npx cap add ios",
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrantErickson/SawmillCalculator2.git"
+  },
+  "keywords": [
+    "sawmill",
+    "calculator",
+    "lumber",
+    "board-feet",
+    "log-volume",
+    "cut-list"
+  ],
+  "author": "MicaPeak Solutions <grant@micapeak.net>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GrantErickson/SawmillCalculator2/issues"
+  },
+  "homepage": "https://github.com/GrantErickson/SawmillCalculator2#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.2.0",
+    "@capacitor/cli": "^8.2.0",
+    "@capacitor/core": "^8.2.0",
+    "@capacitor/ios": "^8.2.0",
+    "@capacitor/share": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.1",
+    "http-server": "^14.1.1"
+  }
+}

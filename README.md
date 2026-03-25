@@ -1,69 +1,149 @@
-# Hello World PhoneGap Template [![bitHound Score][bithound-img]][bithound-url]
+# Sawmill Calculator Pro
 
-A PhoneGap Hello World template
+A cross-platform mobile app that assists with lumber and timber calculations. It supports both US (imperial) and metric measurements.
 
-## Usage
+## Features
 
-#### PhoneGap CLI
+- **Cut List Calculator** — Generate exact cut positions for sawing boards from a log, accounting for blade kerf
+- **Board Feet Calculator** — Calculate lumber volume and pricing for softwoods and hardwoods
+- **Log Volume Calculator** — Calculate timber volume using Doyle, Scribner, International 1/4", and ROY scales
+- **PDF Export** — Email or share calculation results as PDF reports
+- **Offline Support** — Fully functional without internet via localStorage persistence
 
-The hello-world template is the default when you create a new application using the [phonegap-cli][phonegap-cli-url].
+## Technology Stack
 
-    phonegap create my-app
+- **[Capacitor](https://capacitorjs.com/)** — Cross-platform native runtime (replaces the previous PhoneGap/Cordova setup)
+- **jQuery Mobile** — Touch-optimized UI framework
+- **KnockoutJS** — MVVM data binding
+- **jsPDF** — Client-side PDF generation
 
-Create an app using this template specifically:
+## Migration from PhoneGap
 
-    phonegap create my-app --template hello-world
+This project was previously built with Apache Cordova / PhoneGap and used Adobe PhoneGap Build for cloud compilation. Since PhoneGap Build was [discontinued in October 2020](https://blog.phonegap.com/update-for-customers-using-phonegap-and-phonegap-build-cc701c77502c), the project has been migrated to **[Capacitor](https://capacitorjs.com/)**.
 
-To see a list of other available PhoneGap templates:
+### Why Capacitor?
 
-    phonegap template list
+- **Free and open source** — MIT license, no subscription or build fees for the framework itself
+- **Modern successor to Cordova** — Built by the [Ionic](https://ionicframework.com/) team specifically as a Cordova replacement
+- **Drop-in compatible** — Works with existing web apps; uses the same `www` directory structure
+- **Browser testing** — Develop and test in any browser, just like PhoneGap
+- **iOS and Android** — Full support for both platforms
+- **Actively maintained** — Capacitor 8 was released December 2025 with regular updates (8.2.0 in March 2026). The Ionic team follows a clear [support policy](https://capacitorjs.com/docs/main/reference/support-policy) with active development, maintenance, and extended support phases for each major version
 
-## [config.xml][config-xml]
+### Capacitor Support & Maintenance
 
-#### android-minSdkVersion (Android only)
+Capacitor is backed by the [Ionic](https://ionicframework.com/) team and has strong, ongoing support:
 
-Minimum SDK version supported on the target device. Maximum version is blank by default.
+- **Current version:** Capacitor 8 (released December 2025) — actively maintained with new features, bug fixes, and security updates
+- **Release cadence:** Regular point releases (v8.0.0 → v8.0.2 → v8.1.0 → v8.2.0 within 3 months)
+- **Support policy:** Each major version gets active support → maintenance (critical fixes only) → end of support. See the [official support policy](https://capacitorjs.com/docs/main/reference/support-policy)
+- **Open source:** [MIT licensed on GitHub](https://github.com/ionic-team/capacitor) with active community contributions
+- **Cordova plugin compatibility:** Most Cordova plugins continue to work with Capacitor
+- **Enterprise support:** Available from Ionic for teams that need SLAs and dedicated assistance
 
-This template sets the minimum to `14`.
+### Cloud Builds with Capawesome Cloud
 
-    <preference name="android-minSdkVersion" value="14" />
+This project uses [Capawesome Cloud](https://cloud.capawesome.io/) for native iOS and Android builds — no local Xcode or Android Studio required.
 
-#### &lt;access ...&gt; (All)
+- **Starter plan ($9/month):** 200 build minutes (~40 builds), live updates, App Store publishing
+- **Professional plan ($29/month):** 600 build minutes (~120 builds), 2 concurrent builds
+- **Free for open-source projects** (apply on their site)
+- **Price lock guarantee:** Your subscription price never increases
 
-This template defaults to wide open access.
+The project includes a [`capawesome.config.json`](capawesome.config.json) file that configures Capawesome Cloud builds. See [`docs.md`](docs.md) for detailed setup instructions.
 
-    <access origin="*" />
+> **Note:** Ionic's [Appflow](https://ionic.io/appflow) is being discontinued (end of service December 2027). Capawesome Cloud is the officially recommended replacement.
 
-It is strongly encouraged that you restrict access to external resources in your application before releasing to production.
+## Getting Started
 
-For more information on whitelist configuration, see the [Cordova Whitelist Guide][cordova-whitelist-guide] and the [Cordova Whitelist Plugin documentation][cordova-plugin-whitelist]
+### Prerequisites
 
-## [www/index.html][index-html]
+- [Node.js](https://nodejs.org/) (v18 or later)
+- npm (included with Node.js)
 
-#### Content Security Policy (CSP)
+### Development (Browser Testing)
 
-The default CSP is similarly open:
+```bash
+# 1. Clone the repository
+git clone https://github.com/GrantErickson/SawmillCalculator2.git
+cd SawmillCalculator2
 
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+# 2. Install dependencies
+npm install
 
-Much like the access tag above, you are strongly encouraged to use a more restrictive CSP in production.
+# 3. Start the local development server
+npm start
+```
 
-A good starting point declaration might be:
+This opens the app at `http://localhost:8080` for browser-based testing and development.
 
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" />
+### Building for iOS
 
-For more information on the Content Security Policy, see the [section on CSP in the Cordova Whitelist Plugin documentation][cordova-plugin-whitelist-csp].
+Requires a Mac with [Xcode](https://developer.apple.com/xcode/) installed.
 
-Another good resource for generating a good CSP declaration is [CSP is Awesome][csp-is-awesome]
+```bash
+# Add the iOS platform (first time only)
+npm run cap:add:ios
 
+# Sync web assets to the native project
+npm run cap:sync
 
-[phonegap-cli-url]: http://github.com/phonegap/phonegap-cli
-[cordova-app]: http://github.com/apache/cordova-app-hello-world
-[bithound-img]: https://www.bithound.io/github/phonegap/phonegap-app-hello-world/badges/score.svg
-[bithound-url]: https://www.bithound.io/github/phonegap/phonegap-app-hello-world
-[config-xml]: https://github.com/phonegap/phonegap-template-hello-world/blob/master/config.xml
-[index-html]: https://github.com/phonegap/phonegap-template-hello-world/blob/master/www/index.html
-[cordova-whitelist-guide]: https://cordova.apache.org/docs/en/dev/guide/appdev/whitelist/index.html
-[cordova-plugin-whitelist]: http://cordova.apache.org/docs/en/latest/reference/cordova-plugin-whitelist
-[cordova-plugin-whitelist-csp]: http://cordova.apache.org/docs/en/latest/reference/cordova-plugin-whitelist#content-security-policy
-[csp-is-awesome]: http://cspisawesome.com
+# Open in Xcode to build and run
+npm run cap:open:ios
+```
+
+### Building for Android
+
+Requires [Android Studio](https://developer.android.com/studio) installed.
+
+```bash
+# Add the Android platform (first time only)
+npm run cap:add:android
+
+# Sync web assets to the native project
+npm run cap:sync
+
+# Open in Android Studio to build and run
+npm run cap:open:android
+```
+
+### Using Capawesome Cloud (Recommended)
+
+If you don't have local build tools (Xcode/Android Studio), use [Capawesome Cloud](https://cloud.capawesome.io/) for native builds:
+
+1. Sign up at [cloud.capawesome.io](https://cloud.capawesome.io/)
+2. Create a new app in the Capawesome Cloud Console
+3. Copy your Capawesome App ID and update `capawesome.config.json` (replace `YOUR_CAPAWESOME_APP_ID`)
+4. Connect your GitHub repository
+5. Upload your iOS certificates and/or Android keystore in the Capawesome Cloud Console
+6. Trigger a build from the console or push to your connected branch
+
+For full setup instructions including pipeline configuration, see [`docs.md`](docs.md).
+
+## Project Structure
+
+```
+├── capawesome.config.json  # Capawesome Cloud build configuration
+├── capacitor.config.json   # Capacitor configuration (app ID, plugins, platform settings)
+├── config.xml              # Legacy Cordova config (retained for reference)
+├── package.json            # npm dependencies and scripts
+├── res/                    # App icons and splash screens
+│   ├── icon/               # Platform-specific app icons
+│   └── screen/             # Platform-specific splash screens
+└── www/                    # Web application source (served by Capacitor)
+    ├── index.html          # Main entry point / home screen
+    ├── cutlist.html         # Cut List calculator (US)
+    ├── cutlistMetric.html   # Cut List calculator (Metric)
+    ├── boardfeet.html       # Board Feet calculator (US)
+    ├── boardfeetMetric.html # Board Feet calculator (Metric)
+    ├── volume.html          # Log Volume calculator (US)
+    ├── volumeMetric.html    # Log Volume calculator (Metric)
+    ├── settings.html        # App settings
+    ├── css/                 # Stylesheets
+    ├── lib/                 # Third-party libraries (jQuery, KnockoutJS, jsPDF)
+    └── scripts/             # Application logic
+```
+
+## License
+
+ISC
