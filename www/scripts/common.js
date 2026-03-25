@@ -1,11 +1,8 @@
-document.addEventListener("deviceready", onDeviceReady, false);
-function onDeviceReady() {
-    setTimeout(() => {
-        StatusBar.backgroundColorByHexString("#ffffff");        
-        StatusBar.overlaysWebView(false);
-        StatusBar.styleDefault();
-        }, 2500);
-}
+// Capacitor: StatusBar is configured declaratively in capacitor.config.json.
+// No programmatic initialization is needed. The config handles:
+//   - backgroundColor: "#ffffff"
+//   - overlaysWebView: false
+//   - style: "DARK"
 
 
 // Formats Money
@@ -59,34 +56,37 @@ function round(num, places) {
 
 // Sends emails
 function commonSendEmail(subject, body, filename) {
-    //alert("Starting email");
     var doc = new jsPDF("p", "pt", "letter");
     doc.fromHTML(body, 15, 15);
+
+    // When running in a regular browser (development), just save the PDF
     if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
         console.log(body);
         doc.save("test.pdf");
         return;
     }
-    //alert("PDF built");
 
     try {
-        let pdfString = doc.output('datauri');
-        let uristringparts = pdfString.split(',');
-        uristringparts[0] = "base64:" + filename + "//";
-        let pdfUri = uristringparts.join("");
-        //alert("Got PDF Bytes");
-        cordova.plugins.email.open({
-            subject: subject,
-            attachments: [pdfUri],
-            isHtml: true,
-            body: body
-        });
-        //alert("Email API called");
+        // Use the Web Share API if available (works in Capacitor and modern mobile browsers)
+        if (navigator.share && navigator.canShare) {
+            var pdfBlob = doc.output('blob');
+            var file = new File([pdfBlob], filename, { type: 'application/pdf' });
+            var shareData = { title: subject, text: body, files: [file] };
+            if (navigator.canShare(shareData)) {
+                navigator.share(shareData).catch(function(err) {
+                    // User cancelled or share failed, fall back to saving
+                    console.log('Share cancelled or failed:', err);
+                    doc.save(filename);
+                });
+                return;
+            }
+        }
+        // Fallback: save the PDF directly
+        doc.save(filename);
     }
     catch (error) {
         alert(error);
     }
-
 }
 
 var pdfStyles = '<style>\n' +

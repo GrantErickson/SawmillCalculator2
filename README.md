@@ -1,69 +1,130 @@
-# Hello World PhoneGap Template [![bitHound Score][bithound-img]][bithound-url]
+# Sawmill Calculator Pro
 
-A PhoneGap Hello World template
+A cross-platform mobile app that assists with lumber and timber calculations. It supports both US (imperial) and metric measurements.
 
-## Usage
+## Features
 
-#### PhoneGap CLI
+- **Cut List Calculator** — Generate exact cut positions for sawing boards from a log, accounting for blade kerf
+- **Board Feet Calculator** — Calculate lumber volume and pricing for softwoods and hardwoods
+- **Log Volume Calculator** — Calculate timber volume using Doyle, Scribner, International 1/4", and ROY scales
+- **PDF Export** — Email or share calculation results as PDF reports
+- **Offline Support** — Fully functional without internet via localStorage persistence
 
-The hello-world template is the default when you create a new application using the [phonegap-cli][phonegap-cli-url].
+## Technology Stack
 
-    phonegap create my-app
+- **[Capacitor](https://capacitorjs.com/)** — Cross-platform native runtime (replaces the previous PhoneGap/Cordova setup)
+- **jQuery Mobile** — Touch-optimized UI framework
+- **KnockoutJS** — MVVM data binding
+- **jsPDF** — Client-side PDF generation
 
-Create an app using this template specifically:
+## Migration from PhoneGap
 
-    phonegap create my-app --template hello-world
+This project was previously built with Apache Cordova / PhoneGap and used Adobe PhoneGap Build for cloud compilation. Since PhoneGap Build was [discontinued in October 2020](https://blog.phonegap.com/update-for-customers-using-phonegap-and-phonegap-build-cc701c77502c), the project has been migrated to **[Capacitor](https://capacitorjs.com/)**.
 
-To see a list of other available PhoneGap templates:
+### Why Capacitor?
 
-    phonegap template list
+- **Free and open source** — No subscription or build fees
+- **Modern successor to Cordova** — Built by the [Ionic](https://ionicframework.com/) team specifically as a Cordova replacement
+- **Drop-in compatible** — Works with existing web apps; uses the same `www` directory structure
+- **Browser testing** — Develop and test in any browser, just like PhoneGap
+- **iOS and Android** — Full support for both platforms
+- **Active maintenance** — Regular updates with modern native platform support
 
-## [config.xml][config-xml]
+### Alternative Build Services (under $100/year)
 
-#### android-minSdkVersion (Android only)
+If you need a cloud build service (no local Xcode/Android Studio):
 
-Minimum SDK version supported on the target device. Maximum version is blank by default.
+| Service | Cost | Notes |
+|---------|------|-------|
+| [VoltBuilder](https://volt.build/) | ~$36/year (Starter) | Direct replacement for PhoneGap Build; supports Cordova & Capacitor projects |
+| [Appflow](https://ionic.io/appflow) | Free tier available | Ionic's cloud build service; native builds require paid plan |
+| [GitHub Actions](https://github.com/features/actions) | Free for public repos | Self-managed CI/CD; requires setup but fully free |
 
-This template sets the minimum to `14`.
+## Getting Started
 
-    <preference name="android-minSdkVersion" value="14" />
+### Prerequisites
 
-#### &lt;access ...&gt; (All)
+- [Node.js](https://nodejs.org/) (v18 or later)
+- npm (included with Node.js)
 
-This template defaults to wide open access.
+### Development (Browser Testing)
 
-    <access origin="*" />
+```bash
+# 1. Clone the repository
+git clone https://github.com/GrantErickson/SawmillCalculator2.git
+cd SawmillCalculator2
 
-It is strongly encouraged that you restrict access to external resources in your application before releasing to production.
+# 2. Install dependencies
+npm install
 
-For more information on whitelist configuration, see the [Cordova Whitelist Guide][cordova-whitelist-guide] and the [Cordova Whitelist Plugin documentation][cordova-plugin-whitelist]
+# 3. Start the local development server
+npm start
+```
 
-## [www/index.html][index-html]
+This opens the app at `http://localhost:8080` for browser-based testing and development.
 
-#### Content Security Policy (CSP)
+### Building for iOS
 
-The default CSP is similarly open:
+Requires a Mac with [Xcode](https://developer.apple.com/xcode/) installed.
 
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+```bash
+# Add the iOS platform (first time only)
+npm run cap:add:ios
 
-Much like the access tag above, you are strongly encouraged to use a more restrictive CSP in production.
+# Sync web assets to the native project
+npm run cap:sync
 
-A good starting point declaration might be:
+# Open in Xcode to build and run
+npm run cap:open:ios
+```
 
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" />
+### Building for Android
 
-For more information on the Content Security Policy, see the [section on CSP in the Cordova Whitelist Plugin documentation][cordova-plugin-whitelist-csp].
+Requires [Android Studio](https://developer.android.com/studio) installed.
 
-Another good resource for generating a good CSP declaration is [CSP is Awesome][csp-is-awesome]
+```bash
+# Add the Android platform (first time only)
+npm run cap:add:android
 
+# Sync web assets to the native project
+npm run cap:sync
 
-[phonegap-cli-url]: http://github.com/phonegap/phonegap-cli
-[cordova-app]: http://github.com/apache/cordova-app-hello-world
-[bithound-img]: https://www.bithound.io/github/phonegap/phonegap-app-hello-world/badges/score.svg
-[bithound-url]: https://www.bithound.io/github/phonegap/phonegap-app-hello-world
-[config-xml]: https://github.com/phonegap/phonegap-template-hello-world/blob/master/config.xml
-[index-html]: https://github.com/phonegap/phonegap-template-hello-world/blob/master/www/index.html
-[cordova-whitelist-guide]: https://cordova.apache.org/docs/en/dev/guide/appdev/whitelist/index.html
-[cordova-plugin-whitelist]: http://cordova.apache.org/docs/en/latest/reference/cordova-plugin-whitelist
-[cordova-plugin-whitelist-csp]: http://cordova.apache.org/docs/en/latest/reference/cordova-plugin-whitelist#content-security-policy
-[csp-is-awesome]: http://cspisawesome.com
+# Open in Android Studio to build and run
+npm run cap:open:android
+```
+
+### Using a Cloud Build Service
+
+If you don't have local build tools (Xcode/Android Studio), you can use a cloud build service like [VoltBuilder](https://volt.build/):
+
+1. Push your code to a Git repository
+2. Sign up at [volt.build](https://volt.build/)
+3. Connect your repository and configure signing certificates
+4. Build iOS and Android packages in the cloud
+
+## Project Structure
+
+```
+├── capacitor.config.json   # Capacitor configuration (app ID, plugins, platform settings)
+├── config.xml              # Legacy Cordova config (retained for reference)
+├── package.json            # npm dependencies and scripts
+├── res/                    # App icons and splash screens
+│   ├── icon/               # Platform-specific app icons
+│   └── screen/             # Platform-specific splash screens
+└── www/                    # Web application source (served by Capacitor)
+    ├── index.html          # Main entry point / home screen
+    ├── cutlist.html         # Cut List calculator (US)
+    ├── cutlistMetric.html   # Cut List calculator (Metric)
+    ├── boardfeet.html       # Board Feet calculator (US)
+    ├── boardfeetMetric.html # Board Feet calculator (Metric)
+    ├── volume.html          # Log Volume calculator (US)
+    ├── volumeMetric.html    # Log Volume calculator (Metric)
+    ├── settings.html        # App settings
+    ├── css/                 # Stylesheets
+    ├── lib/                 # Third-party libraries (jQuery, KnockoutJS, jsPDF)
+    └── scripts/             # Application logic
+```
+
+## License
+
+ISC
