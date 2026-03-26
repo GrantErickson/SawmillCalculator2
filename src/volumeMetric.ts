@@ -99,29 +99,29 @@ $(document).delegate("#pageVolumeMetric", "pageinit", function () {
 
 		self.grandTotalDoyle = ko.computed(function () {
 			var result = 0;
-			for (var item in self.items()) {
-				result += self.items()[item].doyle();
+			for (var item of self.items()) {
+				result += item.doyle();
 			}
 			return result;
 		});
 		self.grandTotalScribner = ko.computed(function () {
 			var result = 0;
-			for (var item in self.items()) {
-				result += self.items()[item].scribner();
+			for (var item of self.items()) {
+				result += item.scribner();
 			}
 			return result;
 		});
 		self.grandTotalInternational = ko.computed(function () {
 			var result = 0;
-			for (var item in self.items()) {
-				result += self.items()[item].international();
+			for (var item of self.items()) {
+				result += item.international();
 			}
 			return result;
 		});
 		self.grandTotalRoy = ko.computed(function () {
 			var result = 0;
-			for (var item in self.items()) {
-				result += self.items()[item].roy();
+			for (var item of self.items()) {
+				result += item.roy();
 			}
 			return result;
 		});

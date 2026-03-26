@@ -17,7 +17,7 @@ $(document).delegate("#pageCutListMetric", "pageinit", function () {
 
 			var index = 1;
 
-			// Calculate everything in milimeters.
+			// Calculate everything in millimeters.
 			// Add the starting spot.
 			var currentCut = Number(self.flitch());
 			// Add the flitch cut if necessary

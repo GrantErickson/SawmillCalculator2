@@ -50,15 +50,15 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function () {
 
         self.grandTotalPrice = ko.computed(function () {
             var result = 0;
-            for (var item in self.lumberItems()) {
-                result += self.lumberItems()[item].totalPrice();
+            for (var item of self.lumberItems()) {
+                result += item.totalPrice();
             }
             return result;
         });
         self.grandTotalBft = ko.computed(function () {
             var result = 0;
-            for (var item in self.lumberItems()) {
-                result += self.lumberItems()[item].totalBft();
+            for (var item of self.lumberItems()) {
+                result += item.totalBft();
             }
             return result;
         });
