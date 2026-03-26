@@ -1,9 +1,9 @@
-// Handles the board feet logic.
+// Handles the board feet metric logic.
 // Must call this so that we don't get more than one pageinit called.
-var boardFeetMetricModel;
-$(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
+var boardFeetMetricModel: any;
+$(document).delegate("#pageBoardFeetMetric", "pageinit", function () {
     // Model for calculations and storing data.
-    var BoardFeetMetricModel = function() {
+    var BoardFeetMetricModel = function () {
         var self = this;
 
         self.maxQuantity = ko.observable(window.localStorage.getItem("maxQuantity") || "100");
@@ -13,14 +13,14 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
         self.thickness = ko.observable(Number(window.localStorage.getItem("BfThicknessMetric")) || 50); // mm
         self.length = ko.observable(Number(window.localStorage.getItem("BfLengthMetric")) || 3000); // mm
         self.quantity = ko.observable(Number(window.localStorage.getItem("BfQuantityMetric")) || 1); // Count
-        self.pricePerMeter3 = ko.observable(Number(window.localStorage.getItem("BfPricePerMetric")) || 1); // Count    
+        self.pricePerMeter3 = ko.observable(Number(window.localStorage.getItem("BfPricePerMetric")) || 1); // Count
 
         var oldItems = window.localStorage.getItem("LumberItemsMetric") || "[]";
 
         var items = $.parseJSON(oldItems);
-        self.lumberItems = ko.observableArray([]); // List of items. 
+        self.lumberItems = ko.observableArray([]); // List of items.
 
-        for (i in items) {
+        for (var i in items) {
             var item = new LumberItemMetric();
             item.load(items[i]);
             self.lumberItems.push(item);
@@ -28,34 +28,34 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
 
 
         // Calculate the Total BFT
-        self.totalBft = ko.computed(function() {
+        self.totalBft = ko.computed(function () {
             var value = Number(self.width()) *
                 Number(self.thickness()) *
                 Number(self.length()) *
                 Number(self.quantity());
-            return Math.round(value /100) / 10000000;
+            return Math.round(value / 100) / 10000000;
         });
         // Calculate the Total Price
-        self.totalPrice = ko.computed(function() {
+        self.totalPrice = ko.computed(function () {
             var value = Number(self.totalBft()) *
                 Number(self.pricePerMeter3());
             return Math.round(value * 100) / 100;
         });
-        self.pieceBft = ko.computed(function() {
+        self.pieceBft = ko.computed(function () {
             return round(self.totalBft() / self.quantity(), 5);
         }); // bft
-        self.piecePrice = ko.computed(function() {
+        self.piecePrice = ko.computed(function () {
             return round(self.totalPrice() / self.quantity(), 2); // $
         });
 
-        self.grandTotalPrice = ko.computed(function() {
+        self.grandTotalPrice = ko.computed(function () {
             var result = 0;
             for (var item in self.lumberItems()) {
                 result += self.lumberItems()[item].totalPrice();
             }
             return result;
         });
-        self.grandTotalBft = ko.computed(function() {
+        self.grandTotalBft = ko.computed(function () {
             var result = 0;
             for (var item in self.lumberItems()) {
                 result += self.lumberItems()[item].totalBft();
@@ -64,33 +64,33 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
         });
 
 
-        // Save the values. 
-        self.width.subscribe(function(value) {
+        // Save the values.
+        self.width.subscribe(function (value: string) {
             window.localStorage.setItem("BfWidthMetric", value);
         });
-        self.thickness.subscribe(function(value) {
+        self.thickness.subscribe(function (value: string) {
             window.localStorage.setItem("BfThicknessMetric", value);
         });
-        self.length.subscribe(function(value) {
+        self.length.subscribe(function (value: string) {
             window.localStorage.setItem("BfLengthMetric", value);
         });
-        self.quantity.subscribe(function(value) {
+        self.quantity.subscribe(function (value: string) {
             window.localStorage.setItem("BfQuantityMetric", value);
         });
-        self.pricePerMeter3.subscribe(function(value) {
+        self.pricePerMeter3.subscribe(function (value: string) {
             window.localStorage.setItem("BfPricePerMetric", value);
         });
 
 
-        // Calculated values. 
-        self.addLumberItem = function() {
+        // Calculated values.
+        self.addLumberItem = function () {
             var item = new LumberItemMetric();
             item.loadKO(self);
             self.lumberItems.push(item);
             self.saveLumberItems();
         };
 
-        self.clearLumberItems = function() {
+        self.clearLumberItems = function () {
             var r = confirm("Do you really want to clear the list?");
             if (r == true) {
                 self.lumberItems.removeAll();
@@ -98,12 +98,11 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
             }
         };
 
-        self.saveLumberItems = function() {
-            //alert(ko.toJSON(self.lumberItems));
+        self.saveLumberItems = function () {
             window.localStorage.setItem("LumberItemsMetric", ko.toJSON(self.lumberItems));
         };
 
-        self.sendEmail = function() {
+        self.sendEmail = function () {
             var subject = 'Lumber List';
             var text = '';
             var totalBftSum = 0;
@@ -132,7 +131,7 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
             // Body
             text += '<tbody>\n';
             var index = 0;
-            $(self.lumberItems()).each(function() {
+            $(self.lumberItems()).each(function () {
                 index++;
                 var pricePerMeter3 = Number(this.pricePerMeter3()).round(5);
                 var piecePrice = Number(this.piecePrice()).round(2);
@@ -173,7 +172,6 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
                 '</tfoot>\n';
             text += '</table>\n';
 
-            //window.location.href = 'mailto:?subject=' + subject + '&body=' + encodeURIComponent(text);
             commonSendEmail(subject, text, "Lumber.pdf");
 
             return;
@@ -193,42 +191,25 @@ $(document).delegate("#pageBoardFeetMetric", "pageinit", function() {
     $("#bfQuantity").slider("refresh");
 
     // Allows for changing the actual numbers for certain parameters by 1 and then setting it back to 5 when using the slider.
-    $(".ui-slider input.change-step").focus(function() {
-        $(this).attr("step","1");
+    $(".ui-slider input.change-step").focus(function () {
+        $(this).attr("step", "1");
         console.log("Step: 1");
-    })
-    $(".ui-slider .ui-slider-handle").focus(function() {
-        $(this).parent().parent().children("input.change-step").attr("step","5");
+    });
+    $(".ui-slider .ui-slider-handle").focus(function () {
+        $(this).parent().parent().children("input.change-step").attr("step", "5");
         console.log("Step: 5");
-    })
-
-    // Work with the slider.
-    ko.bindingHandlers.slider = {
-        init: function(element, valueAccessor) {
-            var val = valueAccessor()();
-            $(element).slider({
-                value: val,
-                step: 1,
-                slide: function(event, ui) {
-                    valueAccessor()(ui.value);
-                }
-            });
-        },
-        update: function(element, valueAccessor) {
-            $(element).slider("option", "value", valueAccessor()());
-        }
-    };
+    });
 
 });
 
 
-var LumberItemMetric = function(bfm) {
+LumberItemMetric = function () {
     var self = this;
 
     // Values for the calculation.
-    self.width = ko.observable(); // Inches
-    self.thickness = ko.observable(); // Inches
-    self.length = ko.observable(); // Feet
+    self.width = ko.observable(); // mm
+    self.thickness = ko.observable(); // mm
+    self.length = ko.observable(); // mm
     self.quantity = ko.observable(); // Count
     self.pricePerMeter3 = ko.observable(); // Count
     self.totalBft = ko.observable(); // m3
@@ -236,12 +217,12 @@ var LumberItemMetric = function(bfm) {
     self.pieceBft = ko.observable(); // m3
     self.piecePrice = ko.observable(); // $
 
-    self.deleteItem = function() {
+    self.deleteItem = function () {
         boardFeetMetricModel.lumberItems.remove(self);
         boardFeetMetricModel.saveLumberItems();
     };
 
-    self.load = function(item) {
+    self.load = function (item: any) {
         self.width(item.width);
         self.thickness(item.thickness);
         self.length(item.length);
@@ -252,7 +233,7 @@ var LumberItemMetric = function(bfm) {
         self.pieceBft(item.pieceBft);
         self.piecePrice(item.piecePrice);
     };
-    self.loadKO = function(item) {
+    self.loadKO = function (item: any) {
         self.width(item.width());
         self.thickness(item.thickness());
         self.length(item.length());

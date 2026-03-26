@@ -6,64 +6,64 @@
 
 
 // Formats Money
-Number.prototype.formatMoney = function (c, d, t) {
-    if (settingsModel.moneySymbolLocation() == 'before'){
-        return settingsModel.moneySymbol() + this.formatNumber(c, d,t);
-    }else{
-        return  this.formatNumber(c, d,t) + settingsModel.moneySymbol();
+Number.prototype.formatMoney = function (c?: number, d?: string, t?: string): string {
+    if (settingsModel.moneySymbolLocation() == 'before') {
+        return settingsModel.moneySymbol() + this.formatNumber(c, d, t);
+    } else {
+        return this.formatNumber(c, d, t) + settingsModel.moneySymbol();
     }
 };
 
 // Formats numbers with . and ,.
-Number.prototype.formatNumber = function (c, d, t) {
-    var n = this, 
-        c = isNaN(c = Math.abs(c)) ? 2 : c,
-        d = d == undefined ? "." : d,
-        t = t == undefined ? "," : t,
+Number.prototype.formatNumber = function (c?: number, d?: string, t?: string): string {
+    var n = this as number,
+        prec = isNaN(c = Math.abs(c)) ? 2 : c,
+        dec = d == undefined ? "." : d,
+        thou = t == undefined ? "," : t,
         s = n < 0 ? "-" : "",
-        i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
-        j = (j = i.length) > 3 ? j % 3 : 0;
-    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+        i = parseInt(String(Math.abs(+n || 0).toFixed(prec))) + "",
+        j = i.length > 3 ? i.length % 3 : 0;
+    return s + (j ? i.substr(0, j) + thou : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thou) + (prec ? dec + Math.abs(n - Number(i)).toFixed(prec).slice(2) : "");
 };
 
 
-// Format a number for Bft. 
-Number.prototype.formatBft = function () {
+// Format a number for Bft.
+Number.prototype.formatBft = function (): string {
     return this.formatNumber(0, ".", ",");
 };
 
-// Format a number for Bft. 
-Number.prototype.formatBft2 = function () {
+// Format a number for Bft with 2 decimal places.
+Number.prototype.formatBft2 = function (): string {
     return this.formatNumber(2, ".", ",");
 };
 
-// Format a number for Cubic Meters. 
-Number.prototype.formatM3 = function (places) {
+// Format a number for Cubic Meters.
+Number.prototype.formatM3 = function (places?: number): string {
     return this.formatNumber(places || 4, ".", ",");
 };
 
 
-// Format a number for Bft. 
-Number.prototype.round = function (places) {
-    return round(this, places);
+// Round a number to a given number of decimal places.
+Number.prototype.round = function (places: number): number {
+    return round(this as number, places);
 };
 
 
 // Rounds the number to places.
-function round(num, places) {
+function round(num: number, places: number): number {
     return Math.round(num * Math.pow(10, places)) / Math.pow(10, places);
 }
 
 // Converts an HTML table string to readable plain text
-function htmlToPlainText(html) {
+function htmlToPlainText(html: string): string {
     var parsed = new DOMParser().parseFromString(html, 'text/html');
     var rows = parsed.querySelectorAll('tr');
     if (rows.length > 0) {
-        var lines = [];
-        rows.forEach(function(row) {
+        var lines: string[] = [];
+        rows.forEach(function (row) {
             var cells = row.querySelectorAll('th, td');
-            var cellTexts = [];
-            cells.forEach(function(cell) { cellTexts.push(cell.textContent); });
+            var cellTexts: string[] = [];
+            cells.forEach(function (cell) { cellTexts.push(cell.textContent); });
             lines.push(cellTexts.join('\t'));
         });
         return lines.join('\n');
@@ -72,7 +72,7 @@ function htmlToPlainText(html) {
 }
 
 // Sends emails
-function commonSendEmail(subject, body, filename) {
+function commonSendEmail(subject: string, body: string, filename: string): void {
     var doc = new jsPDF("p", "pt", "letter");
     doc.fromHTML(body, 15, 15);
 
@@ -91,7 +91,7 @@ function commonSendEmail(subject, body, filename) {
                     path: base64Pdf,
                     name: filename
                 }]
-            }).catch(function(err) {
+            }).catch(function (err: any) {
                 console.log('Email composer failed:', err);
                 doc.save(filename);
             });
@@ -104,7 +104,7 @@ function commonSendEmail(subject, body, filename) {
             var plainText = htmlToPlainText(body);
             var shareData = { title: subject, text: plainText, files: [file] };
             if (navigator.canShare(shareData)) {
-                navigator.share(shareData).catch(function(err) {
+                navigator.share(shareData).catch(function (err: any) {
                     // User cancelled or share failed, fall back to saving
                     console.log('Share cancelled or failed:', err);
                     doc.save(filename);
@@ -145,30 +145,52 @@ var pdfStyles = '<style>\n' +
 
 // Radio button bindings
 ko.bindingHandlers.jqCheckboxRadio = {
-    init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    init: function (element: any, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: any) {
         var currentValue = valueAccessor();
         $(element).controlgroup(currentValue);
         $(element).attr("data-role", "controlgroup");
-        //$( "input[type='radio']",element).on( "checkboxradiocreate", function( event, ui ) {$(element).data( "init", true )} );
     },
-    update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    update: function (element: any, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: any) {
         var currValue = allBindingsAccessor().value();
-        var initialized = $(element).data("init");
-        //if(initialized){
         $("input[type='radio']", element).prop("checked", false)
             .checkboxradio("refresh");
         $("input[type='radio'][value='" + currValue + "']", element)
             .prop("checked", true).checkboxradio("refresh");
-        //}
     }
 };
 
 // Select Refresh
 ko.bindingHandlers.selectRefresh = {
-    init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    init: function (element: any, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: any) {
     },
-    update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    update: function (element: any, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: any) {
         $(element).selectmenu("refresh");
-        //}
+    }
+};
+
+// Checkbox binding (previously duplicated in cutlist.js and cutlistMetric.js)
+ko.bindingHandlers.checkbox = {
+    init: function (element: any) {
+        $(element).checkboxradio();
+    },
+    update: function (element: any, valueAccessor: any) {
+        $(element).checkboxradio("refresh");
+    }
+};
+
+// Slider binding (previously duplicated in volume.js, volumeMetric.js, boardfeet.js, boardfeetMetric.js)
+ko.bindingHandlers.slider = {
+    init: function (element: any, valueAccessor: any) {
+        var val = valueAccessor()();
+        $(element).slider({
+            value: val,
+            step: 1,
+            slide: function (event: any, ui: any) {
+                valueAccessor()(ui.value);
+            }
+        });
+    },
+    update: function (element: any, valueAccessor: any) {
+        $(element).slider("option", "value", valueAccessor()());
     }
 };
