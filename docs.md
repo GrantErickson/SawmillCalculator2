@@ -68,12 +68,12 @@ cd SawmillCalculator2
 npm install
 
 # 3. Start the local development server
-npm start
+npm run dev
 ```
 
-This starts a local HTTP server and automatically opens the app in your default browser at:
+This starts a Vite development server with hot module replacement at:
 
-> **http://localhost:8080**
+> **http://localhost:5173**
 
 ### What to Expect
 
@@ -81,18 +81,19 @@ This starts a local HTTP server and automatically opens the app in your default 
 - All calculator features work in the browser — enter values, generate cut lists, calculate board feet and log volumes
 - PDF export works: when you click "Email" or share buttons, the app generates a PDF and downloads it to your computer
 - Settings are saved in your browser's `localStorage` and persist between sessions
+- Changes to source files are reflected instantly via Vite's hot module replacement
 
 ### Testing Each Feature
 
-| Feature | Page | What to Test |
-|---------|------|-------------|
-| **Cut List (US)** | `cutlist.html` | Enter log diameter, board thickness, blade kerf → verify cut positions |
-| **Cut List (Metric)** | `cutlistMetric.html` | Same as above with metric units |
-| **Board Feet (US)** | `boardfeet.html` | Enter dimensions and quantities → verify board foot totals and pricing |
-| **Board Feet (Metric)** | `boardfeetMetric.html` | Same as above with cubic meter calculations |
-| **Log Volume (US)** | `volume.html` | Enter log dimensions → verify Doyle/Scribner/International/ROY volumes |
-| **Log Volume (Metric)** | `volumeMetric.html` | Same as above with metric units |
-| **Settings** | `settings.html` | Change blade side, money symbol, max quantity → verify they persist |
+| Feature | Route | What to Test |
+|---------|-------|-------------|
+| **Cut List (US)** | `/cutlist` | Enter log diameter, board thickness, blade kerf → verify cut positions |
+| **Cut List (Metric)** | `/cutlist-metric` | Same as above with metric units |
+| **Board Feet (US)** | `/boardfeet` | Enter dimensions and quantities → verify board foot totals and pricing |
+| **Board Feet (Metric)** | `/boardfeet-metric` | Same as above with cubic meter calculations |
+| **Log Volume (US)** | `/volume` | Enter log dimensions → verify Doyle/Scribner/International/ROY volumes |
+| **Log Volume (Metric)** | `/volume-metric` | Same as above with metric units |
+| **Settings** | `/settings` | Change blade side, money symbol, max quantity → verify they persist |
 | **PDF Export** | Any calculator page | Generate a PDF → verify it downloads correctly |
 
 ### Stopping the Server
@@ -105,9 +106,8 @@ Press `Ctrl+C` in the terminal to stop the development server.
 |---------|----------|
 | `npm: command not found` | Install Node.js from [nodejs.org](https://nodejs.org/) |
 | `EACCES` permission errors | On macOS/Linux, don't use `sudo`. Fix npm permissions: [guide](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally) |
-| Port 8080 already in use | Stop the other process using port 8080, or start with a custom port: `npx http-server www -o -p 3000` |
+| Port 5173 already in use | Vite will automatically try the next available port |
 | Page shows blank or errors | Open browser DevTools (`F12`) → Console tab to check for JavaScript errors |
-| CSS/UI looks broken | Clear browser cache (`Ctrl+Shift+Delete`) and reload |
 
 ---
 
