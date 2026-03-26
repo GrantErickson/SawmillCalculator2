@@ -59,19 +59,12 @@ function commonSendEmail(subject, body, filename) {
     var doc = new jsPDF("p", "pt", "letter");
     doc.fromHTML(body, 15, 15);
 
-    // When running in a regular browser (development), just save the PDF
-    if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-        console.log(body);
-        doc.save("test.pdf");
-        return;
-    }
-
     try {
         // Use the Web Share API if available (works in Capacitor and modern mobile browsers)
         if (navigator.share && typeof navigator.canShare === 'function') {
             var pdfBlob = doc.output('blob');
             var file = new File([pdfBlob], filename, { type: 'application/pdf' });
-            var shareData = { title: subject, text: body, files: [file] };
+            var shareData = { title: subject, files: [file] };
             if (navigator.canShare(shareData)) {
                 navigator.share(shareData).catch(function(err) {
                     // User cancelled or share failed, fall back to saving
@@ -82,6 +75,7 @@ function commonSendEmail(subject, body, filename) {
             }
         }
         // Fallback: save the PDF directly
+        console.log(body);
         doc.save(filename);
     }
     catch (error) {
