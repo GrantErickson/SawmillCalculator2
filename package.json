@@ -8,7 +8,13 @@
     "cap:add:android": "npx cap add android",
     "cap:sync": "npx cap sync",
     "cap:open:ios": "npx cap open ios",
-    "cap:open:android": "npx cap open android"
+    "cap:open:android": "npx cap open android",
+    "version:get": "npx capver get",
+    "version:set": "npx capver set",
+    "version:sync": "npx capver sync",
+    "version:patch": "npx capver patch",
+    "version:minor": "npx capver minor",
+    "version:major": "npx capver major"
   },
   "repository": {
     "type": "git",
@@ -36,5 +42,8 @@
     "@capacitor/share": "^8.0.1",
     "@capacitor/status-bar": "^8.0.1",
     "http-server": "^14.1.1"
+  },
+  "devDependencies": {
+    "@capawesome/capver": "^0.1.1"
   }
 }
