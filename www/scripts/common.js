@@ -54,17 +54,55 @@ function round(num, places) {
     return Math.round(num * Math.pow(10, places)) / Math.pow(10, places);
 }
 
+// Converts an HTML table string to readable plain text
+function htmlToPlainText(html) {
+    var parsed = new DOMParser().parseFromString(html, 'text/html');
+    var rows = parsed.querySelectorAll('tr');
+    if (rows.length > 0) {
+        var lines = [];
+        rows.forEach(function(row) {
+            var cells = row.querySelectorAll('th, td');
+            var cellTexts = [];
+            cells.forEach(function(cell) { cellTexts.push(cell.textContent); });
+            lines.push(cellTexts.join('\t'));
+        });
+        return lines.join('\n');
+    }
+    return parsed.body.textContent || '';
+}
+
 // Sends emails
 function commonSendEmail(subject, body, filename) {
     var doc = new jsPDF("p", "pt", "letter");
     doc.fromHTML(body, 15, 15);
 
     try {
-        // Use the Web Share API if available (works in Capacitor and modern mobile browsers)
+        // Use email composer plugin for HTML body with PDF attachment (native platforms)
+        if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.EmailComposer) {
+            var dataUri = doc.output('datauristring');
+            var base64Idx = dataUri.indexOf('base64,');
+            var base64Pdf = base64Idx !== -1 ? dataUri.substring(base64Idx + 7) : '';
+            Capacitor.Plugins.EmailComposer.open({
+                subject: subject,
+                body: body,
+                isHtml: true,
+                attachments: [{
+                    type: 'base64',
+                    path: base64Pdf,
+                    name: filename
+                }]
+            }).catch(function(err) {
+                console.log('Email composer failed:', err);
+                doc.save(filename);
+            });
+            return;
+        }
+        // Fallback: Use the Web Share API if available
         if (navigator.share && typeof navigator.canShare === 'function') {
             var pdfBlob = doc.output('blob');
             var file = new File([pdfBlob], filename, { type: 'application/pdf' });
-            var shareData = { title: subject, text: body, files: [file] };
+            var plainText = htmlToPlainText(body);
+            var shareData = { title: subject, text: plainText, files: [file] };
             if (navigator.canShare(shareData)) {
                 navigator.share(shareData).catch(function(err) {
                     // User cancelled or share failed, fall back to saving
