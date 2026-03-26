@@ -54,6 +54,23 @@ function round(num, places) {
     return Math.round(num * Math.pow(10, places)) / Math.pow(10, places);
 }
 
+// Converts an HTML table string to readable plain text
+function htmlToPlainText(html) {
+    var parsed = new DOMParser().parseFromString(html, 'text/html');
+    var rows = parsed.querySelectorAll('tr');
+    if (rows.length > 0) {
+        var lines = [];
+        rows.forEach(function(row) {
+            var cells = row.querySelectorAll('th, td');
+            var cellTexts = [];
+            cells.forEach(function(cell) { cellTexts.push(cell.textContent); });
+            lines.push(cellTexts.join('\t'));
+        });
+        return lines.join('\n');
+    }
+    return parsed.body.textContent || '';
+}
+
 // Sends emails
 function commonSendEmail(subject, body, filename) {
     var doc = new jsPDF("p", "pt", "letter");
@@ -64,7 +81,8 @@ function commonSendEmail(subject, body, filename) {
         if (navigator.share && typeof navigator.canShare === 'function') {
             var pdfBlob = doc.output('blob');
             var file = new File([pdfBlob], filename, { type: 'application/pdf' });
-            var shareData = { title: subject, text: body, files: [file] };
+            var plainText = htmlToPlainText(body);
+            var shareData = { title: subject, text: plainText, files: [file] };
             if (navigator.canShare(shareData)) {
                 navigator.share(shareData).catch(function(err) {
                     // User cancelled or share failed, fall back to saving
