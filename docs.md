@@ -4,9 +4,10 @@
 
 1. [Local Web Testing (Full Instructions)](#local-web-testing)
 2. [Building Native Apps Locally](#building-native-apps-locally)
-3. [Capawesome Cloud Build Setup](#capawesome-cloud-build-setup)
-4. [Icons and Splash Screens](#icons-and-splash-screens)
-5. [iOS Signing for App Store Distribution](#ios-signing-for-app-store-distribution)
+3. [Version Management with Capver](#version-management-with-capver)
+4. [Capawesome Cloud Build Setup](#capawesome-cloud-build-setup)
+5. [Icons and Splash Screens](#icons-and-splash-screens)
+6. [iOS Signing for App Store Distribution](#ios-signing-for-app-store-distribution)
 
 ---
 
@@ -126,6 +127,64 @@ npm run cap:open:ios     # Opens project in Xcode for building/running
 npm run cap:sync         # Syncs www/ assets to native project
 npm run cap:open:android # Opens project in Android Studio for building/running
 ```
+
+---
+
+## Version Management with Capver
+
+This project uses [@capawesome/capver](https://github.com/capawesome-team/capver) to keep version numbers in sync across all platforms (web, iOS, and Android) from a single command.
+
+### How It Works
+
+Capver manages version numbers in these files:
+
+| Platform | File | Fields |
+|----------|------|--------|
+| **Web** | `package.json` | `version` |
+| **Android** | `android/app/build.gradle` | `versionCode`, `versionName` |
+| **iOS** | `ios/App/App.xcodeproj/project.pbxproj` | `CURRENT_PROJECT_VERSION`, `MARKETING_VERSION` |
+
+The Android `versionCode` and iOS `CURRENT_PROJECT_VERSION` (build numbers) are automatically calculated from the semantic version using the default pattern `MMmmmpphh`:
+
+| Letter | Meaning | Digits |
+|--------|---------|--------|
+| `MM` | Major version | 2 |
+| `mmm` | Minor version | 3 |
+| `pp` | Patch version | 2 |
+| `hh` | Hotfix version | 2 |
+
+For example, version `3.0.0` produces build number `30000000`, and version `3.1.2` would produce `30010200`.
+
+### Available Commands
+
+```bash
+# Check the current version across all platforms
+npm run version:get
+
+# Set a specific version (updates all platforms)
+npm run version:set -- 3.1.0
+
+# Bump the patch version (e.g., 3.0.0 → 3.0.1)
+npm run version:patch
+
+# Bump the minor version (e.g., 3.0.1 → 3.1.0)
+npm run version:minor
+
+# Bump the major version (e.g., 3.1.0 → 4.0.0)
+npm run version:major
+
+# Sync all platforms to the highest detected version
+npm run version:sync
+```
+
+### Version Workflow
+
+When preparing a release:
+
+1. Bump the version: `npm run version:patch` (or `version:minor` / `version:major`)
+2. Verify: `npm run version:get`
+3. Commit the changed files
+4. Push to trigger a Capawesome Cloud build
 
 ---
 

@@ -54,6 +54,19 @@ The project includes a [`capawesome.config.json`](capawesome.config.json) file t
 
 > **Note:** Ionic's [Appflow](https://ionic.io/appflow) is being discontinued (end of service December 2027). Capawesome Cloud is the officially recommended replacement.
 
+### Version Management with Capver
+
+This project uses [@capawesome/capver](https://github.com/capawesome-team/capver) to manage version numbers across all platforms (web, iOS, Android) from a single command:
+
+```bash
+npm run version:get      # Check current version across all platforms
+npm run version:patch    # Bump patch version (e.g., 3.0.0 → 3.0.1)
+npm run version:minor    # Bump minor version (e.g., 3.0.1 → 3.1.0)
+npm run version:major    # Bump major version (e.g., 3.1.0 → 4.0.0)
+```
+
+See [`docs.md`](docs.md) for the full version management guide.
+
 ## Getting Started
 
 ### Prerequisites
