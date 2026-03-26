@@ -8,6 +8,7 @@
 4. [Capawesome Cloud Build Setup](#capawesome-cloud-build-setup)
 5. [Icons and Splash Screens](#icons-and-splash-screens)
 6. [iOS Signing for App Store Distribution](#ios-signing-for-app-store-distribution)
+7. [Framework Recommendations](framework-recommendations.md) — Evaluating replacements for KnockoutJS & jQuery Mobile
 
 ---
 

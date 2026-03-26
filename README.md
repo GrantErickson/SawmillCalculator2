@@ -17,6 +17,8 @@ A cross-platform mobile app that assists with lumber and timber calculations. It
 - **KnockoutJS** — MVVM data binding
 - **jsPDF** — Client-side PDF generation
 
+> **Note:** KnockoutJS and jQuery Mobile are no longer actively maintained. See [`framework-recommendations.md`](framework-recommendations.md) for a detailed evaluation of modern replacements (Vue + Ionic recommended).
+
 ## Migration from PhoneGap
 
 This project was previously built with Apache Cordova / PhoneGap and used Adobe PhoneGap Build for cloud compilation. Since PhoneGap Build was [discontinued in October 2020](https://blog.phonegap.com/update-for-customers-using-phonegap-and-phonegap-build-cc701c77502c), the project has been migrated to **[Capacitor](https://capacitorjs.com/)**.
