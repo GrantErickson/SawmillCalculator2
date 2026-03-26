@@ -64,7 +64,7 @@ function commonSendEmail(subject, body, filename) {
         if (navigator.share && typeof navigator.canShare === 'function') {
             var pdfBlob = doc.output('blob');
             var file = new File([pdfBlob], filename, { type: 'application/pdf' });
-            var shareData = { title: subject, files: [file] };
+            var shareData = { title: subject, text: body, files: [file] };
             if (navigator.canShare(shareData)) {
                 navigator.share(shareData).catch(function(err) {
                     // User cancelled or share failed, fall back to saving
