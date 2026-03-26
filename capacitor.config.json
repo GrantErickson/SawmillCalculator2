@@ -1,7 +1,7 @@
 {
   "appId": "net.micapeak.SawmillCalculatorPro",
   "appName": "Sawmill Calculator Pro",
-  "webDir": "www",
+  "webDir": "dist",
   "plugins": {
     "StatusBar": {
       "overlaysWebView": false,
