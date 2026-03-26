@@ -4,7 +4,7 @@
       {
         "appId": "YOUR_CAPAWESOME_APP_ID",
         "dependencyInstallCommand": "npm install",
-        "webBuildCommand": "echo 'No build step needed — www/ contains pre-built assets'"
+        "webBuildCommand": "npm run build"
       }
     ]
   }

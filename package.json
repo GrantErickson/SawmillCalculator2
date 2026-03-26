@@ -3,7 +3,8 @@
   "version": "3.0.3",
   "description": "Sawmill Calculator Pro assists you with lumber and timber calculations including cut lists, board feet, and log volume.",
   "scripts": {
-    "start": "npx http-server www -o",
+    "build": "tsc",
+    "start": "npm run build && npx http-server www -o",
     "cap:add:ios": "npx cap add ios",
     "cap:add:android": "npx cap add android",
     "cap:sync": "npx cap sync",
@@ -45,6 +46,7 @@
     "http-server": "^14.1.1"
   },
   "devDependencies": {
-    "@capawesome/capver": "^0.1.1"
+    "@capawesome/capver": "^0.1.1",
+    "typescript": "^6.0.2"
   }
 }
