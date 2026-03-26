@@ -63,4 +63,46 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  /* Responsive base font — scales up on larger screens */
+  --ion-font-size: clamp(16px, 1vw + 14px, 20px);
+}
+
+/* Responsive typography: scale text on larger screens */
+ion-content {
+  font-size: var(--ion-font-size);
+}
+
+ion-item {
+  --ion-font-size: clamp(16px, 1vw + 14px, 20px);
+  font-size: var(--ion-font-size);
+}
+
+ion-label {
+  font-size: inherit !important;
+}
+
+ion-note {
+  font-size: clamp(14px, 0.9vw + 12px, 18px) !important;
+}
+
+ion-list-header ion-label {
+  font-size: clamp(16px, 1vw + 14px, 20px) !important;
+}
+
+ion-select {
+  font-size: inherit;
+}
+
+ion-range {
+  --ion-font-size: clamp(14px, 0.9vw + 12px, 18px);
+}
+
+ion-input {
+  font-size: inherit !important;
+}
+
+ion-checkbox {
+  --ion-font-size: clamp(16px, 1vw + 14px, 20px);
+  font-size: var(--ion-font-size);
 }

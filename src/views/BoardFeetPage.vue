@@ -72,10 +72,10 @@
 
       <!-- Totals -->
       <ion-list inset>
-        <ion-item color="primary">
+        <ion-item color="primary" class="totals-bar">
           <ion-label>{{ formatBft2(totalBft) }} Bft</ion-label>
           <ion-label class="ion-text-center">Totals</ion-label>
-          <ion-note slot="end">{{ formatMoney(totalPrice) }}</ion-note>
+          <ion-label slot="end" class="totals-end">{{ formatMoney(totalPrice) }}</ion-label>
         </ion-item>
       </ion-list>
 
@@ -111,10 +111,10 @@
 
       <!-- Grand Totals -->
       <ion-list inset>
-        <ion-item color="primary">
+        <ion-item color="primary" class="totals-bar">
           <ion-label>{{ formatBft2(grandTotalBft) }} Bft</ion-label>
           <ion-label class="ion-text-center">Lumber Totals</ion-label>
-          <ion-note slot="end">{{ formatMoney(grandTotalPrice) }}</ion-note>
+          <ion-label slot="end" class="totals-end">{{ formatMoney(grandTotalPrice) }}</ion-label>
         </ion-item>
       </ion-list>
 
@@ -144,7 +144,7 @@ import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonBackButton, IonList, IonItem, IonLabel,
   IonRange, IonInput, IonSegment, IonSegmentButton,
-  IonButton, IonIcon, IonNote, IonText
+  IonButton, IonIcon, IonText
 } from '@ionic/vue'
 import { addOutline, trashOutline, mailOutline } from 'ionicons/icons'
 import { maxQuantity as settingsMaxQuantity, moneySymbol } from '../stores/settings'
@@ -286,3 +286,13 @@ function onSendEmail() {
   sendEmail(subject, text, 'BoardFeet.pdf')
 }
 </script>
+
+<style scoped>
+.totals-bar ion-label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.totals-end {
+  text-align: right;
+}
+</style>
