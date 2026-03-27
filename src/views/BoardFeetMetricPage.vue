@@ -318,4 +318,10 @@ function onSendEmail() {
   max-width: 70px;
   text-align: right;
 }
+ion-range {
+  --label-font-size: 1.1rem;
+}
+ion-range::part(label) {
+  margin-bottom: 2px;
+}
 </style>
