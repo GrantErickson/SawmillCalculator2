@@ -10,51 +10,76 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Thickness in mm:"
+            label-placement="stacked"
             :min="5" :max="400" :step="5"
             :value="thickness"
             :pin="true"
             :pin-formatter="(v: number) => v + 'mm'"
             @ionInput="updateThickness($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(thickness)"
+              @ionInput="updateThickness($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Width in mm:"
+            label-placement="stacked"
             :min="5" :max="400" :step="5"
             :value="width"
             :pin="true"
             :pin-formatter="(v: number) => v + 'mm'"
             @ionInput="updateWidth($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(width)"
+              @ionInput="updateWidth($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Length in mm:"
+            label-placement="stacked"
             :min="100" :max="10000" :step="100"
             :value="length"
             :pin="true"
             :pin-formatter="(v: number) => v + 'mm'"
             @ionInput="updateLength($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(length)"
+              @ionInput="updateLength($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Quantity:"
+            label-placement="stacked"
             :min="1" :max="Number(settingsMaxQuantity)" :step="1"
             :value="quantity"
             :pin="true"
             @ionInput="updateQuantity($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(quantity)"
+              @ionInput="updateQuantity($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
         <ion-item>
           <ion-input
             label="Price per cubic meter:"
-            type="number"
-            :value="String(pricePerMeter3)"
-            @ionInput="updatePrice($event.detail.value)"
+            :value="priceEditing ? priceEditValue : formatMoney(pricePerMeter3)"
+            @ionFocus="onPriceFocus"
+            @ionBlur="onPriceBlur"
+            @ionInput="updatePriceRaw($event.detail.value)"
           ></ion-input>
         </ion-item>
       </ion-list>
@@ -144,11 +169,34 @@ const length = ref(Number(localStorage.getItem('BfLengthMetric')) || 3000)
 const quantity = ref(Number(localStorage.getItem('BfQuantityMetric')) || 1)
 const pricePerMeter3 = ref(Number(localStorage.getItem('BfPricePerMetric')) || 1)
 
-function updateWidth(v: any) { width.value = Number(v) }
-function updateThickness(v: any) { thickness.value = Number(v) }
-function updateLength(v: any) { length.value = Number(v) }
-function updateQuantity(v: any) { quantity.value = Number(v) }
+function updateWidth(v: any) { width.value = clamp(Number(v), 5, 400) }
+function updateThickness(v: any) { thickness.value = clamp(Number(v), 5, 400) }
+function updateLength(v: any) { length.value = clamp(Number(v), 100, 10000) }
+function updateQuantity(v: any) { quantity.value = clamp(Number(v), 1, Number(settingsMaxQuantity.value)) }
 function updatePrice(v: any) { pricePerMeter3.value = Number(v) || 0 }
+
+function clamp(value: number, min: number, max: number): number {
+  if (isNaN(value)) return min
+  return Math.min(Math.max(value, min), max)
+}
+
+const priceEditing = ref(false)
+const priceEditValue = ref('')
+
+function onPriceFocus() {
+  priceEditing.value = true
+  priceEditValue.value = String(pricePerMeter3.value)
+}
+
+function onPriceBlur() {
+  priceEditing.value = false
+  pricePerMeter3.value = Number(priceEditValue.value) || 0
+}
+
+function updatePriceRaw(v: any) {
+  priceEditValue.value = String(v)
+  pricePerMeter3.value = Number(v) || 0
+}
 
 watch(width, (v) => localStorage.setItem('BfWidthMetric', String(v)))
 watch(thickness, (v) => localStorage.setItem('BfThicknessMetric', String(v)))
@@ -264,6 +312,10 @@ function onSendEmail() {
   font-weight: 600;
 }
 .totals-end {
+  text-align: right;
+}
+.range-value-input {
+  max-width: 70px;
   text-align: right;
 }
 </style>
