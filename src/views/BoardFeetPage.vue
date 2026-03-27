@@ -172,7 +172,7 @@ import {
   IonButton, IonIcon, IonText
 } from '@ionic/vue'
 import { addOutline, trashOutline, mailOutline } from 'ionicons/icons'
-import { maxQuantity as settingsMaxQuantity, moneySymbol, moneySymbolLocation } from '../stores/settings'
+import { maxQuantity as settingsMaxQuantity, moneySymbol } from '../stores/settings'
 import { formatBft2, formatMoney, round } from '../utils/formatting'
 import { sendEmail, pdfStyles } from '../utils/email'
 
