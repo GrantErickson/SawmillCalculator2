@@ -348,9 +348,9 @@ function onSendEmail() {
   text-align: right;
 }
 ion-range {
-  --label-font-size: 1.1rem;
+  --label-font-size: 1.3rem;
 }
 ion-range::part(label) {
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 </style>
