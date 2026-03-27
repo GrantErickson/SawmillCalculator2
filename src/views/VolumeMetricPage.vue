@@ -10,34 +10,52 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Diameter in mm:"
+            label-placement="stacked"
             :min="100" :max="1000" :step="10"
             :value="diameter"
             :pin="true"
             :pin-formatter="(v: number) => v + 'mm'"
             @ionInput="updateDiameter($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(diameter)"
+              @ionInput="updateDiameter($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Length in meters:"
+            label-placement="stacked"
             :min="1" :max="15" :step="0.1"
             :value="length"
             :pin="true"
             :pin-formatter="(v: number) => v + 'm'"
             @ionInput="updateLength($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(length)"
+              @ionInput="updateLength($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Quantity:"
+            label-placement="stacked"
             :min="1" :max="100" :step="1"
             :value="quantity"
             :pin="true"
             @ionInput="updateQuantity($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(quantity)"
+              @ionInput="updateQuantity($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
       </ion-list>
 
@@ -142,7 +160,7 @@ import { ref, computed, watch } from 'vue'
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel,
-  IonRange, IonButton, IonIcon, IonNote, IonText
+  IonRange, IonInput, IonButton, IonIcon, IonNote, IonText
 } from '@ionic/vue'
 import { addOutline, trashOutline, mailOutline } from 'ionicons/icons'
 import { formatM3 } from '../utils/formatting'
@@ -157,9 +175,14 @@ const length = ref(Number(localStorage.getItem('VolumeMetricLength')) || 4)
 const diameter = ref(Number(localStorage.getItem('VolumeMetricDiameter')) || 300)
 const quantity = ref(Number(localStorage.getItem('VolumeMetricQuantity')) || 1)
 
-function updateLength(v: any) { length.value = Number(v) }
-function updateDiameter(v: any) { diameter.value = Number(v) }
-function updateQuantity(v: any) { quantity.value = Number(v) }
+function updateLength(v: any) { length.value = clamp(Number(v), 1, 15) }
+function updateDiameter(v: any) { diameter.value = clamp(Number(v), 100, 1000) }
+function updateQuantity(v: any) { quantity.value = clamp(Number(v), 1, 100) }
+
+function clamp(value: number, min: number, max: number): number {
+  if (isNaN(value)) return min
+  return Math.min(Math.max(value, min), max)
+}
 
 watch(length, (v) => localStorage.setItem('VolumeMetricLength', String(v)))
 watch(diameter, (v) => localStorage.setItem('VolumeMetricDiameter', String(v)))
@@ -284,3 +307,10 @@ function onSendEmail() {
   sendEmail(subject, text, 'LogVolume.pdf')
 }
 </script>
+
+<style scoped>
+.range-value-input {
+  max-width: 70px;
+  text-align: right;
+}
+</style>

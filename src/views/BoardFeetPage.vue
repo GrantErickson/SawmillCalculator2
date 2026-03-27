@@ -21,51 +21,76 @@
       </div>
 
       <ion-list>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             :label="thicknessText"
+            label-placement="stacked"
             :min="1" :max="48" :step="1"
             :value="thickness"
             :pin="true"
             :pin-formatter="(v: number) => woodType === 'hard' ? v + '/4' : v + '&quot;'"
             @ionInput="updateThickness($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(thickness)"
+              @ionInput="updateThickness($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Nominal Width in inches:"
+            label-placement="stacked"
             :min="1" :max="24" :step="1"
             :value="width"
             :pin="true"
             :pin-formatter="(v: number) => v + '&quot;'"
             @ionInput="updateWidth($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(width)"
+              @ionInput="updateWidth($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Length in feet:"
+            label-placement="stacked"
             :min="1" :max="24" :step="1"
             :value="length"
             :pin="true"
             :pin-formatter="(v: number) => v + '\''"
             @ionInput="updateLength($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(length)"
+              @ionInput="updateLength($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             label="Quantity:"
+            label-placement="stacked"
             :min="1" :max="Number(settingsMaxQuantity)" :step="1"
             :value="quantity"
             :pin="true"
             @ionInput="updateQuantity($event.detail.value)"
-          ></ion-range>
+          >
+            <ion-input slot="end" type="number" class="range-value-input"
+              :value="String(quantity)"
+              @ionInput="updateQuantity($event.detail.value)"
+            ></ion-input>
+          </ion-range>
         </ion-item>
         <ion-item>
           <ion-input
             label="Price per 1000bft:"
-            type="number"
-            :value="String(pricePer1000)"
-            @ionInput="updatePricePer1000($event.detail.value)"
+            :value="priceEditing ? priceEditValue : formatMoney(pricePer1000)"
+            @ionFocus="onPriceFocus"
+            @ionBlur="onPriceBlur"
+            @ionInput="updatePricePer1000Raw($event.detail.value)"
           ></ion-input>
         </ion-item>
       </ion-list>
@@ -147,7 +172,7 @@ import {
   IonButton, IonIcon, IonText
 } from '@ionic/vue'
 import { addOutline, trashOutline, mailOutline } from 'ionicons/icons'
-import { maxQuantity as settingsMaxQuantity, moneySymbol } from '../stores/settings'
+import { maxQuantity as settingsMaxQuantity, moneySymbol, moneySymbolLocation } from '../stores/settings'
 import { formatBft2, formatMoney, round } from '../utils/formatting'
 import { sendEmail, pdfStyles } from '../utils/email'
 
@@ -160,12 +185,35 @@ const quantity = ref(Number(localStorage.getItem('BfQuantity')) || 1)
 const pricePer1000 = ref(Number(localStorage.getItem('BfPricePer1000')) || 1)
 const woodType = ref(localStorage.getItem('BfWoodType') || WoodTypes.Softwood)
 
-function updateWidth(v: any) { width.value = Number(v) }
-function updateThickness(v: any) { thickness.value = Number(v) }
-function updateLength(v: any) { length.value = Number(v) }
-function updateQuantity(v: any) { quantity.value = Number(v) }
+function updateWidth(v: any) { width.value = clamp(Number(v), 1, 24) }
+function updateThickness(v: any) { thickness.value = clamp(Number(v), 1, 48) }
+function updateLength(v: any) { length.value = clamp(Number(v), 1, 24) }
+function updateQuantity(v: any) { quantity.value = clamp(Number(v), 1, Number(settingsMaxQuantity.value)) }
 function updatePricePer1000(v: any) { pricePer1000.value = Number(v) || 0 }
 function updateWoodType(v: any) { woodType.value = v }
+
+function clamp(value: number, min: number, max: number): number {
+  if (isNaN(value)) return min
+  return Math.min(Math.max(value, min), max)
+}
+
+const priceEditing = ref(false)
+const priceEditValue = ref('')
+
+function onPriceFocus() {
+  priceEditing.value = true
+  priceEditValue.value = String(pricePer1000.value)
+}
+
+function onPriceBlur() {
+  priceEditing.value = false
+  pricePer1000.value = Number(priceEditValue.value) || 0
+}
+
+function updatePricePer1000Raw(v: any) {
+  priceEditValue.value = String(v)
+  pricePer1000.value = Number(v) || 0
+}
 
 watch(width, (v) => localStorage.setItem('BfWidth', String(v)))
 watch(thickness, (v) => localStorage.setItem('BfThickness', String(v)))
@@ -293,6 +341,10 @@ function onSendEmail() {
   font-weight: 600;
 }
 .totals-end {
+  text-align: right;
+}
+.range-value-input {
+  max-width: 70px;
   text-align: right;
 }
 </style>
