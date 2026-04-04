@@ -1,6 +1,6 @@
 {
   "name": "sawmill-calculator-pro",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "Sawmill Calculator Pro assists you with lumber and timber calculations including cut lists, board feet, and log volume.",
   "scripts": {
     "dev": "vite",
