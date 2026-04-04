@@ -12,6 +12,12 @@
       <ion-list>
         <ion-item>
           <ion-label class="ion-text-wrap">
+            Version 3.0 is a complete rewrite using Vue 3, Ionic, Capacitor, and TypeScript for a modern,
+            faster experience on both iOS and Android. All existing calculator features have been preserved.
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
             Version 2.0 reworked for latest iOS. Sorry for the delay. A few new tweaks for the UI.
           </ion-label>
         </ion-item>
@@ -65,7 +71,7 @@
 
       <div class="ion-text-center ion-padding">
         <ion-text color="medium">
-          <small>&copy; 2019 MicaPeak Solutions</small>
+          <small>&copy; 2019-2026 MicaPeak Solutions</small>
         </ion-text>
       </div>
     </ion-content>
