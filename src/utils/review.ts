@@ -15,21 +15,29 @@ function markPrompted(): void {
 }
 
 export async function requestReview(): Promise<void> {
-  try {
-    await InAppReview.requestReview();
-  } catch {
-    // Fallback: open the App Store / Play Store review page directly
-    if (Capacitor.getPlatform() === "ios") {
-      window.open(
-        `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`,
-        "_system",
-      );
-    } else if (Capacitor.getPlatform() === "android") {
+  const platform = Capacitor.getPlatform();
+  if (platform === "ios") {
+    // Open the App Store review page directly - the in-app review API
+    // silently no-ops in many conditions (TestFlight, rate limits, etc.)
+    window.open(
+      `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`,
+      "_system",
+    );
+  } else if (platform === "android") {
+    try {
+      await InAppReview.requestReview();
+    } catch {
       window.open(
         `market://details?id=net.micapeak.SawmillCalculatorPro`,
         "_system",
       );
     }
+  } else {
+    // Web fallback
+    window.open(
+      `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`,
+      "_blank",
+    );
   }
 }
 
