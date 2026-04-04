@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/GrantErickson/SawmillCalculator2#readme",
   "dependencies": {
+    "@capacitor-community/in-app-review": "^8.0.0",
     "@capacitor/android": "^8.3.0",
     "@capacitor/cli": "^8.3.0",
     "@capacitor/core": "^8.3.0",

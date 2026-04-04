@@ -56,6 +56,20 @@
         </ion-radio-group>
       </ion-list>
 
+      <ion-list inset>
+        <ion-list-header>
+          <ion-label>Support</ion-label>
+        </ion-list-header>
+        <ion-item button @click="openSupportEmail()">
+          <ion-icon :icon="mailOutline" slot="start"></ion-icon>
+          <ion-label>Email Support</ion-label>
+        </ion-item>
+        <ion-item button @click="requestReview()">
+          <ion-icon :icon="starOutline" slot="start"></ion-icon>
+          <ion-label>Write a Review</ion-label>
+        </ion-item>
+      </ion-list>
+
       <div class="ion-text-center ion-padding">
         <ion-text color="medium">
           <small>&copy; 2019 MicaPeak Solutions</small>
@@ -69,7 +83,9 @@
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel,
-  IonRadioGroup, IonRadio, IonInput, IonText
+  IonRadioGroup, IonRadio, IonInput, IonText, IonIcon
 } from '@ionic/vue'
+import { mailOutline, starOutline } from 'ionicons/icons'
 import { sideOfBlade, maxQuantity, moneySymbol, moneySymbolLocation } from '../stores/settings'
+import { openSupportEmail, requestReview } from '../utils/review'
 </script>
