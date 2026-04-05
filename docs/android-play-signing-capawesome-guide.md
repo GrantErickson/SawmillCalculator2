@@ -213,6 +213,13 @@ The AAB will be signed with your upload key. If you have set up a destination (S
 - Google requires the very first artifact to be uploaded through the Google Play Console UI.
 - Download the AAB from Capawesome Cloud and upload it manually. Subsequent uploads can be automated.
 
+### "You must declare the use of advertising ID in Play Console"
+
+- Apps targeting Android 13 (API 33) or above must declare advertising ID usage in the Google Play Console.
+- This is a **Play Console setting**, not a code change. The `AndroidManifest.xml` already includes `tools:node="remove"` for the AD_ID permission.
+- Go to **Google Play Console** → select your app → **Policy and programs** → **App content** → **Advertising ID** → select **"No"** → **Save**.
+- This is a one-time declaration. Once set, subsequent uploads will succeed.
+
 ### Service account permission errors
 
 - Ensure the service account has been granted **Release** permissions for your specific app in Google Play Console under **Users and Permissions > App permissions**.

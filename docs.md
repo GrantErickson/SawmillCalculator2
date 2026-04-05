@@ -262,7 +262,21 @@ Open `capawesome.config.json` in the project root and replace `YOUR_CAPAWESOME_A
 3. In the Capawesome Cloud Console, go to **Certificates**
 4. Upload your `.p12` certificate and provisioning profile
 
-### Step 6: Trigger a Build
+### Step 6: Declare Advertising ID Usage in Google Play Console
+
+Apps targeting Android 13 (API 33) or above must declare advertising ID usage in the Google Play Console. Without this declaration, uploads to Google Play will fail with: *"You must declare the use of advertising ID in Play Console."*
+
+This app does **not** use the advertising ID. The `AndroidManifest.xml` already includes `tools:node="remove"` for the `AD_ID` permission to strip it from the merged manifest. However, Google Play requires a **separate declaration** in the Console:
+
+1. Go to [Google Play Console](https://play.google.com/console)
+2. Select your app (**Sawmill Calculator Pro**)
+3. Navigate to **Policy and programs** → **App content** → **Advertising ID**
+4. Select **"No"** — this app does not use the advertising ID
+5. Click **Save**
+
+> **Note:** This is a one-time setup. Once declared, subsequent uploads will succeed without this error.
+
+### Step 7: Trigger a Build
 
 There are three ways to trigger builds:
 
@@ -289,7 +303,7 @@ npx capawesome apps:builds:create --appId YOUR_APP_ID --platform android
 npx capawesome apps:builds:create --appId YOUR_APP_ID --platform ios
 ```
 
-### Step 7: Download and Distribute
+### Step 8: Download and Distribute
 
 After a build completes (~3–5 minutes per build):
 1. Download the signed `.apk`/`.aab` (Android) or `.ipa` (iOS) from the Console
