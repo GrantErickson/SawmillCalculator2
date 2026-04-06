@@ -24,7 +24,9 @@
       "spm": {
         "swiftToolsVersion": "6.1",
         "packageTraits": {
-          "@capacitor-firebase/analytics": ["AnalyticsWithoutAdIdSupport"]
+          "@capacitor-firebase/analytics": [
+            "AnalyticsWithoutAdIdSupport"
+          ]
         }
       }
     }
