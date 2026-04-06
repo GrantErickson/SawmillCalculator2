@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "974786598841",
+    "project_id": "sawmillcalculatorpro",
+    "storage_bucket": "sawmillcalculatorpro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974786598841:android:5152ea2c1e40d3b5f08868",
+        "android_client_info": {
+          "package_name": "net.micapeak.SawmillCalculatorPro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjjfGYgSlCRLk4IRNqMMcoFYSX36sF8Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
