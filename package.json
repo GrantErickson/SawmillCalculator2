@@ -36,6 +36,8 @@
   "homepage": "https://github.com/GrantErickson/SawmillCalculator2#readme",
   "dependencies": {
     "@capacitor-community/in-app-review": "^8.0.0",
+    "@capacitor-firebase/analytics": "^8.2.0",
+    "@capacitor-firebase/crashlytics": "^8.2.0",
     "@capacitor/android": "^8.3.0",
     "@capacitor/cli": "^8.3.0",
     "@capacitor/core": "^8.3.0",
@@ -45,6 +47,7 @@
     "@ionic/vue": "^8.8.2",
     "@ionic/vue-router": "^8.8.2",
     "capacitor-email-composer": "^8.0.0",
+    "firebase": "^12.11.0",
     "ionicons": "^8.0.13",
     "vue": "^3.5.31",
     "vue-router": "^4.6.4"
