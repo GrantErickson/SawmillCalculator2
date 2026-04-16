@@ -8,7 +8,7 @@
 import { onMounted, onUnmounted } from 'vue'
 import { IonApp, IonRouterOutlet } from '@ionic/vue'
 import { Capacitor } from '@capacitor/core'
-import { StatusBar, Style } from '@capacitor/status-bar'
+import { StatusBar, Style, BackgroundColorOptions } from '@capacitor/status-bar'
 import { showReviewPrompt } from './utils/review'
 
 const REVIEW_DELAY_MS = 5 * 60 * 1000 // 5 minutes
@@ -19,9 +19,12 @@ let darkMediaQuery: MediaQueryList | null = null
 async function applyStatusBarStyle(prefersDark: boolean) {
   if (!Capacitor.isNativePlatform()) return
   try {
-    await StatusBar.setOverlaysWebView({ overlay: true })
     await StatusBar.show()
     await StatusBar.setStyle({ style: prefersDark ? Style.Light : Style.Dark })
+    if (Capacitor.getPlatform() === 'android') {
+      const color = prefersDark ? '#1c1c1c' : '#ffffff'
+      await StatusBar.setBackgroundColor({ color } as BackgroundColorOptions)
+    }
   } catch {
     // StatusBar plugin may not be available on all devices
   }

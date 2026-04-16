@@ -4,7 +4,7 @@
   "webDir": "dist",
   "plugins": {
     "StatusBar": {
-      "overlaysWebView": true,
+      "overlaysWebView": false,
       "style": "DARK"
     },
     "SplashScreen": {
@@ -13,7 +13,7 @@
     }
   },
   "ios": {
-    "contentInset": "always"
+    "contentInset": "never"
   },
   "android": {
     "allowMixedContent": false
