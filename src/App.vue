@@ -17,8 +17,12 @@ let reviewTimer: ReturnType<typeof setTimeout> | null = null
 
 onMounted(() => {
   if (Capacitor.isNativePlatform()) {
-    StatusBar.show()
-    StatusBar.setStyle({ style: Style.Dark })
+    try {
+      StatusBar.show()
+      StatusBar.setStyle({ style: Style.Dark })
+    } catch {
+      // StatusBar plugin may not be available on all devices
+    }
   }
 
   reviewTimer = setTimeout(() => {
