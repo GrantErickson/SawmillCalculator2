@@ -4,7 +4,7 @@
   "webDir": "dist",
   "plugins": {
     "StatusBar": {
-      "overlaysWebView": false,
+      "overlaysWebView": true,
       "style": "DEFAULT"
     },
     "SplashScreen": {
