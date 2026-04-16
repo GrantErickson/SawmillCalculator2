@@ -16,12 +16,12 @@ const REVIEW_DELAY_MS = 5 * 60 * 1000 // 5 minutes
 let reviewTimer: ReturnType<typeof setTimeout> | null = null
 let darkMediaQuery: MediaQueryList | null = null
 
-function applyStatusBarStyle(prefersDark: boolean) {
+async function applyStatusBarStyle(prefersDark: boolean) {
   if (!Capacitor.isNativePlatform()) return
   try {
-    StatusBar.show()
-    StatusBar.setStyle({ style: prefersDark ? Style.Light : Style.Dark })
-    StatusBar.setBackgroundColor({ color: prefersDark ? '#000000' : '#ffffff' })
+    await StatusBar.setOverlaysWebView({ overlay: true })
+    await StatusBar.show()
+    await StatusBar.setStyle({ style: prefersDark ? Style.Light : Style.Dark })
   } catch {
     // StatusBar plugin may not be available on all devices
   }

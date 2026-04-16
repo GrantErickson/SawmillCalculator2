@@ -219,6 +219,18 @@ Use `Capacitor.isNativePlatform()` or `Capacitor.getPlatform()` to detect the ru
 - Test manually in the browser with `npm run dev`.
 - Test on native platforms via Capawesome Cloud builds or local Xcode/Android Studio.
 
+## ⚠️ REQUIRED: Version Patch on Every PR
+
+**Every PR must include a version patch bump.** Before finalizing any PR, run the full version bump workflow:
+
+1. `npm run version:patch` — bump the patch version
+2. Update `package-lock.json` — manually change the `"version"` field at the top to match `package.json`
+3. Restore leading zeros in `ios/App/App.xcodeproj/project.pbxproj` if capver strips them (`LastSwiftUpdateCheck = 0920`, `LastUpgradeCheck = 0920`)
+4. `npm run version:get` — verify all platforms show the same version
+5. Commit all version-related changed files
+
+This is required because the App Store (iOS) and Google Play (Android) reject duplicate version numbers. Every push that triggers a Capawesome Cloud build must have a unique version.
+
 ## Documentation
 
 - `README.md` — Project overview, getting started, and project structure
