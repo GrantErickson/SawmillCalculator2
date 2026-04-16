@@ -20,6 +20,8 @@ function applyStatusBarStyle(prefersDark: boolean) {
   if (!Capacitor.isNativePlatform()) return
   try {
     StatusBar.show()
+    // Style.Light = light-colored icons (for dark backgrounds)
+    // Style.Dark = dark-colored icons (for light backgrounds)
     StatusBar.setStyle({ style: prefersDark ? Style.Light : Style.Dark })
     StatusBar.setBackgroundColor({ color: prefersDark ? '#000000' : '#ffffff' })
   } catch {
