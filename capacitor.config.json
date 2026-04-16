@@ -5,7 +5,7 @@
   "plugins": {
     "StatusBar": {
       "overlaysWebView": false,
-      "style": "DARK"
+      "style": "DEFAULT"
     },
     "SplashScreen": {
       "launchAutoHide": true,
@@ -13,7 +13,7 @@
     }
   },
   "ios": {
-    "contentInset": "never"
+    "contentInset": "always"
   },
   "android": {
     "allowMixedContent": false

@@ -20,7 +20,7 @@ async function applyStatusBarStyle(prefersDark: boolean) {
   if (!Capacitor.isNativePlatform()) return
   try {
     await StatusBar.show()
-    await StatusBar.setStyle({ style: prefersDark ? Style.Light : Style.Dark })
+    await StatusBar.setStyle({ style: prefersDark ? Style.Dark : Style.Light })
     if (Capacitor.getPlatform() === 'android') {
       const color = prefersDark ? '#1c1c1c' : '#ffffff'
       await StatusBar.setBackgroundColor({ color } as BackgroundColorOptions)
