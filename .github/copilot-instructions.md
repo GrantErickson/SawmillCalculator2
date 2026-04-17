@@ -219,6 +219,159 @@ Use `Capacitor.isNativePlatform()` or `Capacitor.getPlatform()` to detect the ru
 - Test manually in the browser with `npm run dev`.
 - Test on native platforms via Capawesome Cloud builds or local Xcode/Android Studio.
 
+## Domain Knowledge — Sawmill & Lumber Calculations
+
+Understanding the domain is essential for writing correct calculator logic.
+
+### Lumber Terminology
+
+| Term | Definition |
+|------|-----------|
+| **Board foot (bft)** | Volume unit: thickness(in) × width(in) × length(ft) ÷ 12. One board foot = 144 cubic inches. |
+| **Kerf** | The width of material removed by the saw blade during a cut. Expressed in 32nds of an inch (e.g., kerf=2 means 1/16"). |
+| **Flitch** | The outermost slab cut from a log. Often used as a starting offset before the first usable board. |
+| **Slab** | The first and last pieces cut from a log; usually contains bark and is discarded or used as flitch. |
+| **Nominal thickness** | The stated dimension of lumber before surfacing (e.g., a 2×4 is nominally 2" thick but actually 1.5"). |
+| **Quarter-sawn (quarters)** | Hardwood thickness measured in quarters of an inch (e.g., 8/4 = 2" thick). |
+| **Log scale** | Estimate of board-foot volume in a log before milling. Several methods exist (see below). |
+
+### Board Feet Formulas
+
+**Softwood** (thickness in whole inches):
+```
+bft = thickness × width × length / 12
+```
+
+**Hardwood** (thickness in quarters of an inch):
+```
+bft = (thickness/4) × width × length / 12
+```
+
+### Log Volume Scales
+
+Four standard methods are supported. All inputs: `d` = diameter (inches, inside bark), `l` = log length (feet).
+
+| Scale | Formula |
+|-------|---------|
+| **Doyle** | `(d - 4)² × (l / 16)` |
+| **Scribner** | `(0.79d² - 2d - 4) × l / 16` |
+| **International** | Polynomial: `0.04976191·l·d² + 0.006220239·l²·d - 0.1854762·l·d + 0.0002591767·l³ - 0.01159226·l² + 0.04222222·l` |
+| **ROY** | `(d - 1)² × 0.5 × l / 10` |
+
+### Cut List Measurement System
+
+Measurements are stored internally in **32nds of an inch** for precision:
+- `kerf` values correspond directly to 32nds (kerf=2 → 1/16")
+- `thickness` values are stored in **8ths of an inch** (×4 converts to 32nds: thickness=8 → 1", so `thickness * 4` = 32 thirty-seconds = 32nds)
+- `flitch` values are stored in **half-inches** (×16 converts to 32nds)
+- `total` is in whole inches (×32 converts to 32nds)
+
+### Blade Side of Cut (`sideOfBlade` setting)
+
+Controls whether the kerf is added before (`top`) or after (`bottom`) each board measurement. This determines whether cut marks fall on the top or bottom face of the board in the log.
+
+## US/Metric Page Pairs
+
+Every calculator has a US (imperial) version and a metric version:
+
+| US | Metric |
+|----|--------|
+| `CutListPage.vue` | `CutListMetricPage.vue` |
+| `BoardFeetPage.vue` | `BoardFeetMetricPage.vue` |
+| `VolumePage.vue` | `VolumeMetricPage.vue` |
+
+**When adding a feature or fixing a bug in one page, apply the same change to its pair.** The metric pages use mm/cm/m³ instead of inches/feet/board-feet, but follow the same component structure and state patterns.
+
+## Calculator Page Architecture
+
+All calculator pages follow the same pattern:
+
+1. **State** — `ref()` values for each input, restored from `localStorage`
+2. **Watchers** — `watch()` calls to persist state back to `localStorage`
+3. **Update functions** — validate and clamp raw input before assigning to a `ref`
+4. **Computed results** — one `computed()` per output value
+5. **Item list** — `ref<ItemData[]>` for the accumulator list, deep-watched to localStorage
+6. **Grand totals** — `computed()` values using `Array.reduce()` over the item list
+7. **`addItem()`** — pushes current computed values to the list, fires an analytics event
+8. **`deleteItem(index)`** — splices the list at the given index
+9. **`clearItems()`** — confirms with the user, then resets the list to `[]`
+10. **`onSendEmail()`** — builds an HTML table string, calls `sendEmail()`, fires an analytics event
+
+### `clamp()` Helper
+
+Every calculator page defines a local `clamp()` that guards range inputs from invalid values:
+
+```typescript
+function clamp(value: number, min: number, max: number): number {
+  if (isNaN(value)) return min
+  return Math.min(Math.max(value, min), max)
+}
+```
+
+Update handler pattern for `<ion-range>` / `<ion-input>` pairs:
+```typescript
+function updateDiameter(v: any) {
+  diameter.value = clamp(Number(v), 1, 40)
+}
+```
+
+### Price Input Pattern (edit/display toggle)
+
+When a field displays a formatted value but must accept raw numeric entry, use a focus/blur toggle:
+
+```typescript
+const priceEditing = ref(false)
+const priceEditValue = ref('')
+
+function onPriceFocus() {
+  priceEditing.value = true
+  priceEditValue.value = String(pricePer1000.value)
+}
+function onPriceBlur() {
+  priceEditing.value = false
+  pricePer1000.value = Number(priceEditValue.value) || 0
+}
+function updatePricePer1000Raw(v: any) {
+  priceEditValue.value = String(v)
+  pricePer1000.value = Number(v) || 0
+}
+```
+
+Template binding:
+```html
+<ion-input
+  :value="priceEditing ? priceEditValue : formatMoney(pricePer1000)"
+  @ionFocus="onPriceFocus"
+  @ionBlur="onPriceBlur"
+  @ionInput="updatePricePer1000Raw($event.detail.value)"
+/>
+```
+
+## localStorage Key Naming Conventions
+
+Keys are strings — use these conventions to stay consistent with existing data:
+
+- **Global settings** (`src/stores/settings.ts`): camelCase — `sideOfBlade`, `maxQuantity`, `moneySymbol`, `moneySymbolLocation`
+- **CutList page** (no prefix): `Kerf`, `Thickness`, `Total`, `Flitch`
+- **Board Feet page** (`Bf` prefix for scalars, no prefix for the items array): `BfWidth`, `BfThickness`, `BfLength`, `BfQuantity`, `BfPricePer1000`, `BfWoodType`, `LumberItems`
+- **Volume page** (`Volume` prefix): `VolumeLength`, `VolumeLength`, `VolumeDiameter`, `VolumeQuantity`, `VolumeItems`
+- **Metric variants** add a `Metric` suffix or prefix to distinguish their keys from US keys (e.g., `BfMetricWidth`).
+
+When adding new state to an existing page, follow its existing prefix scheme. Object/array state is stored as JSON: `JSON.stringify` / `JSON.parse`.
+
+## jsPDF Usage
+
+jsPDF is loaded as a global `<script>` tag — do **not** import it with `import jsPDF from 'jspdf'`. Access it as:
+
+```typescript
+var doc = new jsPDF('p', 'pt', 'letter')  // portrait, points, letter-size
+doc.fromHTML(htmlString, 15, 15)           // render HTML table at x=15, y=15
+var base64 = doc.output('datauristring')   // for email attachment
+doc.save('filename.pdf')                   // triggers browser download
+```
+
+The `doc.fromHTML()` method accepts the HTML table strings built with `pdfStyles`. Always prepend `pdfStyles` to the HTML before calling `sendEmail()`.
+
 ## ⚠️ REQUIRED: Version Patch on Every PR
 
 **Every PR must include a version patch bump.** Before finalizing any PR, run the full version bump workflow:
