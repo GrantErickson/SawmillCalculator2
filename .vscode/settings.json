@@ -1,0 +1,41 @@
+{
+  // Use the project-local TypeScript version so Volar and VS Code share the same compiler
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Volar hybrid mode: TypeScript handles .ts, Volar handles .vue — best performance
+  "vue.server.hybridMode": true,
+
+  // Default formatter for Vue SFCs and TypeScript files
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+
+  // Prefer the shortest import path (e.g., "@/utils/formatting" instead of relative paths)
+  "typescript.preferences.importModuleSpecifier": "shortest",
+
+  // Don't auto-organize imports on save — the project uses explicit named imports for
+  // Ionic tree-shaking and import order matters for readability
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
+
+  // Copilot: include .vue files in completion context
+  "github.copilot.enable": {
+    "*": true,
+    "vue": true,
+    "typescript": true
+  },
+
+  // Show inlay hints for parameter names and types — useful in Vue template expressions
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.variableTypes.enabled": false,
+
+  // File nesting — keep .vue files visually grouped with their route siblings
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.vue": "${capture}Metric.vue"
+  }
+}
