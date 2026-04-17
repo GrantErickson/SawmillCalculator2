@@ -354,8 +354,8 @@ Keys are strings — use these conventions to stay consistent with existing data
 - **Global settings** (`src/stores/settings.ts`): camelCase — `sideOfBlade`, `maxQuantity`, `moneySymbol`, `moneySymbolLocation`
 - **CutList page** (no prefix): `Kerf`, `Thickness`, `Total`, `Flitch`
 - **Board Feet page** (`Bf` prefix for scalars, no prefix for the items array): `BfWidth`, `BfThickness`, `BfLength`, `BfQuantity`, `BfPricePer1000`, `BfWoodType`, `LumberItems`
-- **Volume page** (`Volume` prefix): `VolumeLength`, `VolumeLength`, `VolumeDiameter`, `VolumeQuantity`, `VolumeItems`
-- **Metric variants** add a `Metric` suffix or prefix to distinguish their keys from US keys (e.g., `BfMetricWidth`).
+- **Volume page** (`Volume` prefix): `VolumeLength`, `VolumeDiameter`, `VolumeQuantity`, `VolumeItems`
+- **Metric variants** add a `Metric` prefix to the page-specific prefix to distinguish their keys from US keys (e.g., `BfMetricWidth`, `VolumeMetricDiameter`).
 
 When adding new state to an existing page, follow its existing prefix scheme. Object/array state is stored as JSON: `JSON.stringify` / `JSON.parse`.
 
