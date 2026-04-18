@@ -58,10 +58,5 @@
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonList, IonListHeader, IonItem, IonLabel, IonText,
-  onIonViewWillEnter
 } from '@ionic/vue'
-
-onIonViewWillEnter(() => {
-  window.dispatchEvent(new Event('resize'))
-})
 </script>
