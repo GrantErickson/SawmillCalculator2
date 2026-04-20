@@ -3,12 +3,13 @@ apply plugin: 'com.android.application'
 android {
     namespace = "net.micapeak.SawmillCalculatorPro"
     compileSdk = rootProject.ext.compileSdkVersion
+    ndkVersion rootProject.ext.ndkVersion
     defaultConfig {
         applicationId "net.micapeak.SawmillCalculatorPro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 30002800
-        versionName "3.0.28"
+        versionCode 30002900
+        versionName "3.0.29"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
