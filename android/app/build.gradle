@@ -8,8 +8,8 @@ android {
         applicationId "net.micapeak.SawmillCalculatorPro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 30002900
-        versionName "3.0.29"
+        versionCode 30003000
+        versionName "3.0.30"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -21,6 +21,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // Ensure native libraries are stored uncompressed and page-aligned in the APK/AAB.
+    // With AGP 8.5.1+ this enables 16KB page alignment for arm64-v8a, required by
+    // Android 16 devices like Pixel 8 Pro that use 16KB memory pages.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
 }
