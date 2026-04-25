@@ -215,6 +215,7 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
+  alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
 import { formatBft } from "../utils/formatting";
@@ -229,13 +230,26 @@ const species = ref(localStorage.getItem("VolumeSpecies") || "");
 
 const ADD_NEW_VALUE = "__add_new__";
 
-function updateSpecies(v: any) {
+async function updateSpecies(v: any) {
   if (v === ADD_NEW_VALUE) {
-    const name = prompt("Enter new species name:");
-    if (name && name.trim()) {
-      addSpecies(name);
-      species.value = name.trim();
-    }
+    const alert = await alertController.create({
+      header: "Add New Species",
+      inputs: [{ name: "speciesName", type: "text", placeholder: "Species name" }],
+      buttons: [
+        { text: "Cancel", role: "cancel" },
+        {
+          text: "Add",
+          handler: (data) => {
+            const name = data.speciesName?.trim();
+            if (name) {
+              addSpecies(name);
+              species.value = name;
+            }
+          },
+        },
+      ],
+    });
+    await alert.present();
     return;
   }
   species.value = v || "";
