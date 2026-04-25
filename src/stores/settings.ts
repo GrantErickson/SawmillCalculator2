@@ -11,7 +11,7 @@ function loadSpeciesList(): string[] {
   if (stored) {
     try {
       const parsed = JSON.parse(stored)
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed.sort((a: string, b: string) => a.localeCompare(b))
     } catch { /* fall through to default */ }
   }
   return [...defaultWoodSpeciesList]
@@ -24,6 +24,7 @@ export function addSpecies(name: string): boolean {
   if (!trimmed) return false
   if (woodSpeciesList.value.some(s => s.toLowerCase() === trimmed.toLowerCase())) return false
   woodSpeciesList.value.push(trimmed)
+  woodSpeciesList.value.sort((a, b) => a.localeCompare(b))
   return true
 }
 
