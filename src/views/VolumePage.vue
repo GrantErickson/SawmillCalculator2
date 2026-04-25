@@ -227,31 +227,7 @@ import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
 import { formatBft } from "../utils/formatting";
 import { sendEmail, pdfStyles } from "../utils/email";
 import { logEvent } from "../utils/analytics";
-
-const woodSpeciesList = [
-  "Douglas Fir",
-  "Pine",
-  "Spruce",
-  "Cedar",
-  "Hemlock",
-  "Redwood",
-  "Larch",
-  "Fir",
-  "Oak",
-  "Maple",
-  "Cherry",
-  "Walnut",
-  "Ash",
-  "Birch",
-  "Hickory",
-  "Poplar",
-  "Beech",
-  "Elm",
-  "Alder",
-  "Mahogany",
-  "Teak",
-  "Other",
-];
+import { woodSpeciesList } from "../utils/species";
 
 const length = ref(Number(localStorage.getItem("VolumeLength")) || 16);
 const diameter = ref(Number(localStorage.getItem("VolumeDiameter")) || 12);

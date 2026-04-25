@@ -230,31 +230,7 @@ import { formatM3 } from "../utils/formatting";
 import { sendEmail, pdfStyles } from "../utils/email";
 import { round } from "../utils/formatting";
 import { logEvent } from "../utils/analytics";
-
-const woodSpeciesList = [
-  "Douglas Fir",
-  "Pine",
-  "Spruce",
-  "Cedar",
-  "Hemlock",
-  "Redwood",
-  "Larch",
-  "Fir",
-  "Oak",
-  "Maple",
-  "Cherry",
-  "Walnut",
-  "Ash",
-  "Birch",
-  "Hickory",
-  "Poplar",
-  "Beech",
-  "Elm",
-  "Alder",
-  "Mahogany",
-  "Teak",
-  "Other",
-];
+import { woodSpeciesList } from "../utils/species";
 
 const mmPerIn = 25.4;
 const mPerFt = 0.3048;
