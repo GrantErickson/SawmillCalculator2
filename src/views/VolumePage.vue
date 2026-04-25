@@ -79,6 +79,7 @@
             placeholder="Select species"
             @ionChange="updateSpecies($event.detail.value)"
           >
+            <ion-select-option value="">None</ion-select-option>
             <ion-select-option v-for="s in woodSpeciesList" :key="s" :value="s">{{ s }}</ion-select-option>
             <ion-select-option :value="ADD_NEW_VALUE">Add New...</ion-select-option>
           </ion-select>
