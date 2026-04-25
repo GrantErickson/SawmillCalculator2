@@ -58,6 +58,33 @@
 
       <ion-list inset>
         <ion-list-header>
+          <ion-label>Wood Species</ion-label>
+        </ion-list-header>
+        <ion-item v-for="(species, idx) in woodSpeciesList" :key="idx">
+          <ion-label>{{ species }}</ion-label>
+          <ion-button slot="end" fill="clear" color="danger" @click="onRemoveSpecies(idx)">
+            <ion-icon :icon="trashOutline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            placeholder="Add new species..."
+            :value="newSpeciesName"
+            @ionInput="newSpeciesName = $event.detail.value || ''"
+            @keyup.enter="onAddSpecies"
+          ></ion-input>
+          <ion-button slot="end" fill="clear" @click="onAddSpecies" :disabled="!newSpeciesName.trim()">
+            <ion-icon :icon="addOutline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item button @click="onResetSpecies">
+          <ion-icon :icon="refreshOutline" slot="start"></ion-icon>
+          <ion-label>Reset to Default Species</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ion-list inset>
+        <ion-list-header>
           <ion-label>Support</ion-label>
         </ion-list-header>
         <ion-item button @click="openSupportEmail()">
@@ -80,12 +107,31 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel,
-  IonRadioGroup, IonRadio, IonInput, IonText, IonIcon
+  IonRadioGroup, IonRadio, IonInput, IonText, IonIcon, IonButton
 } from '@ionic/vue'
-import { mailOutline, starOutline } from 'ionicons/icons'
-import { sideOfBlade, maxQuantity, moneySymbol, moneySymbolLocation } from '../stores/settings'
+import { mailOutline, starOutline, trashOutline, addOutline, refreshOutline } from 'ionicons/icons'
+import { sideOfBlade, maxQuantity, moneySymbol, moneySymbolLocation, woodSpeciesList, addSpecies, removeSpecies, resetSpeciesToDefault } from '../stores/settings'
 import { openSupportEmail, requestReview } from '../utils/review'
+
+const newSpeciesName = ref('')
+
+function onAddSpecies() {
+  if (addSpecies(newSpeciesName.value)) {
+    newSpeciesName.value = ''
+  }
+}
+
+function onRemoveSpecies(index: number) {
+  removeSpecies(index)
+}
+
+function onResetSpecies() {
+  if (confirm('Reset species list to defaults? Any custom species will be removed.')) {
+    resetSpeciesToDefault()
+  }
+}
 </script>

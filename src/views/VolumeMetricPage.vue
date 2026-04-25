@@ -80,15 +80,8 @@
             @ionChange="updateSpecies($event.detail.value)"
           >
             <ion-select-option v-for="s in woodSpeciesList" :key="s" :value="s">{{ s }}</ion-select-option>
+            <ion-select-option :value="ADD_NEW_VALUE">Add New...</ion-select-option>
           </ion-select>
-        </ion-item>
-        <ion-item v-if="species === 'Other'">
-          <ion-input
-            label="Custom species:"
-            :value="customSpecies"
-            placeholder="Enter species name"
-            @ionInput="updateCustomSpecies($event.detail.value)"
-          ></ion-input>
         </ion-item>
       </ion-list>
 
@@ -230,7 +223,7 @@ import { formatM3 } from "../utils/formatting";
 import { sendEmail, pdfStyles } from "../utils/email";
 import { round } from "../utils/formatting";
 import { logEvent } from "../utils/analytics";
-import { woodSpeciesList } from "../utils/species";
+import { woodSpeciesList, addSpecies } from "../stores/settings";
 
 const mmPerIn = 25.4;
 const mPerFt = 0.3048;
@@ -242,19 +235,20 @@ const diameter = ref(
 );
 const quantity = ref(Number(localStorage.getItem("VolumeMetricQuantity")) || 1);
 const species = ref(localStorage.getItem("VolumeMetricSpecies") || "");
-const customSpecies = ref(localStorage.getItem("VolumeMetricCustomSpecies") || "");
+
+const ADD_NEW_VALUE = "__add_new__";
 
 function updateSpecies(v: any) {
+  if (v === ADD_NEW_VALUE) {
+    const name = prompt("Enter new species name:");
+    if (name && name.trim()) {
+      addSpecies(name);
+      species.value = name.trim();
+    }
+    return;
+  }
   species.value = v || "";
 }
-function updateCustomSpecies(v: any) {
-  customSpecies.value = String(v || "");
-}
-
-const speciesDisplay = computed(() => {
-  if (species.value === "Other") return customSpecies.value || "Other";
-  return species.value;
-});
 
 function updateLength(v: any) {
   length.value = clamp(Number(v), 1, 15);
@@ -275,7 +269,6 @@ watch(length, (v) => localStorage.setItem("VolumeMetricLength", String(v)));
 watch(diameter, (v) => localStorage.setItem("VolumeMetricDiameter", String(v)));
 watch(quantity, (v) => localStorage.setItem("VolumeMetricQuantity", String(v)));
 watch(species, (v) => localStorage.setItem("VolumeMetricSpecies", v));
-watch(customSpecies, (v) => localStorage.setItem("VolumeMetricCustomSpecies", v));
 
 const doyle = computed(() => {
   var l = Number(length.value) / mPerFt;
@@ -360,7 +353,7 @@ function addItem() {
     scribner: scribner.value,
     international: international.value,
     roy: roy.value,
-    species: speciesDisplay.value,
+    species: species.value,
   });
   logEvent("add_volume_item", { unit: "metric" });
 }

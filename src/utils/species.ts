@@ -1,4 +1,4 @@
-export const woodSpeciesList = [
+export const defaultWoodSpeciesList = [
   "Douglas Fir",
   "Pine",
   "Spruce",
@@ -20,5 +20,4 @@ export const woodSpeciesList = [
   "Alder",
   "Mahogany",
   "Teak",
-  "Other",
 ];
