@@ -72,6 +72,24 @@
             ></ion-input>
           </ion-range>
         </ion-item>
+        <ion-item>
+          <ion-select
+            label="Species:"
+            :value="species"
+            placeholder="Select species"
+            @ionChange="updateSpecies($event.detail.value)"
+          >
+            <ion-select-option v-for="s in woodSpeciesList" :key="s" :value="s">{{ s }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item v-if="species === 'Other'">
+          <ion-input
+            label="Custom species:"
+            :value="customSpecies"
+            placeholder="Enter species name"
+            @ionInput="updateCustomSpecies($event.detail.value)"
+          ></ion-input>
+        </ion-item>
       </ion-list>
 
       <!-- Calculations -->
@@ -121,6 +139,7 @@
             <p>
               Diameter: {{ item.diameter }}" &nbsp; Length: {{ item.length }}'
               &nbsp; Qty: {{ item.quantity }}
+              <span v-if="item.species"> &nbsp; {{ item.species }}</span>
             </p>
           </ion-label>
           <ion-button
@@ -201,15 +220,56 @@ import {
   IonIcon,
   IonNote,
   IonText,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
 import { formatBft } from "../utils/formatting";
 import { sendEmail, pdfStyles } from "../utils/email";
 import { logEvent } from "../utils/analytics";
 
+const woodSpeciesList = [
+  "Douglas Fir",
+  "Pine",
+  "Spruce",
+  "Cedar",
+  "Hemlock",
+  "Redwood",
+  "Larch",
+  "Fir",
+  "Oak",
+  "Maple",
+  "Cherry",
+  "Walnut",
+  "Ash",
+  "Birch",
+  "Hickory",
+  "Poplar",
+  "Beech",
+  "Elm",
+  "Alder",
+  "Mahogany",
+  "Teak",
+  "Other",
+];
+
 const length = ref(Number(localStorage.getItem("VolumeLength")) || 16);
 const diameter = ref(Number(localStorage.getItem("VolumeDiameter")) || 12);
 const quantity = ref(Number(localStorage.getItem("VolumeQuantity")) || 1);
+const species = ref(localStorage.getItem("VolumeSpecies") || "");
+const customSpecies = ref(localStorage.getItem("VolumeCustomSpecies") || "");
+
+function updateSpecies(v: any) {
+  species.value = v || "";
+}
+function updateCustomSpecies(v: any) {
+  customSpecies.value = String(v || "");
+}
+
+const speciesDisplay = computed(() => {
+  if (species.value === "Other") return customSpecies.value || "Other";
+  return species.value;
+});
 
 function updateLength(v: any) {
   length.value = clamp(Number(v), 1, 40);
@@ -229,6 +289,8 @@ function clamp(value: number, min: number, max: number): number {
 watch(length, (v) => localStorage.setItem("VolumeLength", String(v)));
 watch(diameter, (v) => localStorage.setItem("VolumeDiameter", String(v)));
 watch(quantity, (v) => localStorage.setItem("VolumeQuantity", String(v)));
+watch(species, (v) => localStorage.setItem("VolumeSpecies", v));
+watch(customSpecies, (v) => localStorage.setItem("VolumeCustomSpecies", v));
 
 const doyle = computed(() => {
   var l = Number(length.value),
@@ -273,6 +335,7 @@ interface VolumeItemData {
   scribner: number;
   international: number;
   roy: number;
+  species: string;
 }
 
 const items = ref<VolumeItemData[]>(
@@ -309,6 +372,7 @@ function addItem() {
     scribner: scribner.value,
     international: international.value,
     roy: roy.value,
+    species: speciesDisplay.value,
   });
   logEvent("add_volume_item", { unit: "us" });
 }
@@ -331,6 +395,7 @@ function onSendEmail() {
     "<thead>\n<tr>" +
     '<th class="left">#</th>' +
     "<th>Quantity</th>" +
+    "<th>Species</th>" +
     "<th>Diameter</th>" +
     "<th>Length</th>" +
     "<th>Doyle</th>" +
@@ -352,6 +417,9 @@ function onSendEmail() {
       "</td>" +
       "<td>" +
       item.quantity +
+      "</td>" +
+      "<td>" +
+      (item.species || "") +
       "</td>" +
       "<td>" +
       item.diameter +
@@ -381,7 +449,7 @@ function onSendEmail() {
 
   text +=
     "<tfoot>\n<tr>" +
-    "<th></th><th></th><th></th><th></th>" +
+    "<th></th><th></th><th></th><th></th><th></th>" +
     "<th>" +
     formatBft(totalDoyle) +
     "</th>" +

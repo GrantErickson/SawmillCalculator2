@@ -29,7 +29,7 @@
             :label="thicknessText"
             label-placement="stacked"
             :min="1"
-            :max="48"
+            :max="20"
             :step="1"
             :value="thickness"
             :pin="true"
@@ -245,7 +245,7 @@ function updateWidth(v: any) {
   width.value = clamp(Number(v), 1, 24);
 }
 function updateThickness(v: any) {
-  thickness.value = clamp(Number(v), 1, 48);
+  thickness.value = clamp(Number(v), 1, 20);
 }
 function updateLength(v: any) {
   length.value = clamp(Number(v), 1, 24);
