@@ -102,6 +102,18 @@
             @ionInput="updatePriceRaw($event.detail.value)"
           ></ion-input>
         </ion-item>
+        <ion-item>
+          <ion-select
+            label="Species:"
+            :value="species"
+            placeholder="Select species"
+            @ionChange="updateSpecies($event.detail.value)"
+          >
+            <ion-select-option value="">None</ion-select-option>
+            <ion-select-option v-for="s in woodSpeciesList" :key="s" :value="s">{{ s }}</ion-select-option>
+            <ion-select-option :value="ADD_NEW_VALUE">Add New...</ion-select-option>
+          </ion-select>
+        </ion-item>
       </ion-list>
 
       <!-- Totals -->
@@ -140,6 +152,7 @@
               {{ item.thickness }}x{{ item.width }}x{{ item.length }} &nbsp; x{{
                 item.quantity
               }}
+              <span v-if="item.species"> &nbsp; {{ item.species }}</span>
               <span style="float: right"
                 >{{ formatMoney(item.pricePerMeter3) }}/m³</span
               >
@@ -205,11 +218,16 @@ import {
   IonButton,
   IonIcon,
   IonText,
+  IonSelect,
+  IonSelectOption,
+  alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
 import {
   maxQuantity as settingsMaxQuantity,
   moneySymbol,
+  woodSpeciesList,
+  addSpecies,
 } from "../stores/settings";
 import { formatM3, formatMoney, round } from "../utils/formatting";
 import { sendEmail, pdfStyles } from "../utils/email";
@@ -222,6 +240,34 @@ const quantity = ref(Number(localStorage.getItem("BfQuantityMetric")) || 1);
 const pricePerMeter3 = ref(
   Number(localStorage.getItem("BfPricePerMetric")) || 1,
 );
+const species = ref(localStorage.getItem("BfMetricSpecies") || "");
+
+const ADD_NEW_VALUE = "__add_new__";
+
+async function updateSpecies(v: any) {
+  if (v === ADD_NEW_VALUE) {
+    const alert = await alertController.create({
+      header: "Add New Species",
+      inputs: [{ name: "speciesName", type: "text", placeholder: "Species name" }],
+      buttons: [
+        { text: "Cancel", role: "cancel" },
+        {
+          text: "Add",
+          handler: (data) => {
+            const name = data.speciesName?.trim();
+            if (name) {
+              addSpecies(name);
+              species.value = name;
+            }
+          },
+        },
+      ],
+    });
+    await alert.present();
+    return;
+  }
+  species.value = v || "";
+}
 
 function updateWidth(v: any) {
   width.value = clamp(Number(v), 5, 400);
@@ -269,6 +315,7 @@ watch(quantity, (v) => localStorage.setItem("BfQuantityMetric", String(v)));
 watch(pricePerMeter3, (v) =>
   localStorage.setItem("BfPricePerMetric", String(v)),
 );
+watch(species, (v) => localStorage.setItem("BfMetricSpecies", v));
 
 const totalM3 = computed(() => {
   var value =
@@ -298,6 +345,7 @@ interface LumberItemMetricData {
   totalPrice: number;
   pieceBft: number;
   piecePrice: number;
+  species: string;
 }
 
 const lumberItems = ref<LumberItemMetricData[]>(
@@ -330,6 +378,7 @@ function addLumberItem() {
     totalPrice: totalPrice.value,
     pieceBft: pieceM3.value,
     piecePrice: piecePrice.value,
+    species: species.value,
   });
   logEvent("add_lumber_item", { unit: "metric" });
 }
@@ -352,6 +401,7 @@ function onSendEmail() {
     "<thead><tr>" +
     '<th class="left">#</th>' +
     "<th>Quantity</th>" +
+    "<th>Species</th>" +
     "<th>Thickness</th>" +
     "<th>Width</th>" +
     "<th>Length</th>" +
@@ -378,6 +428,9 @@ function onSendEmail() {
       "</td>" +
       "<td>" +
       item.quantity +
+      "</td>" +
+      "<td>" +
+      (item.species || "") +
       "</td>" +
       "<td>" +
       item.thickness +
@@ -410,7 +463,7 @@ function onSendEmail() {
 
   text +=
     "<tfoot><tr>" +
-    "<th></th><th></th><th></th><th></th><th></th><th></th>" +
+    "<th></th><th></th><th></th><th></th><th></th><th></th><th></th>" +
     "<th>" +
     formatM3(totalBftSum) +
     " m&#179;</th>" +

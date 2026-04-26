@@ -1,6 +1,6 @@
 {
   "name": "sawmill-calculator-pro",
-  "version": "3.0.20",
+  "version": "3.0.36",
   "description": "Sawmill Calculator Pro assists you with lumber and timber calculations including cut lists, board feet, and log volume.",
   "scripts": {
     "dev": "vite",
@@ -38,10 +38,10 @@
     "@capacitor-community/in-app-review": "^8.0.0",
     "@capacitor-firebase/analytics": "^8.2.0",
     "@capacitor-firebase/crashlytics": "^8.2.0",
-    "@capacitor/android": "^8.3.0",
-    "@capacitor/cli": "^8.3.0",
-    "@capacitor/core": "^8.3.0",
-    "@capacitor/ios": "^8.3.0",
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/cli": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
+    "@capacitor/ios": "^8.3.1",
     "@capacitor/share": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2",
     "@ionic/vue": "^8.8.2",

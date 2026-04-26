@@ -13,7 +13,37 @@
         <ion-item>
           <ion-label class="ion-text-wrap">
             Version 3.0 is a complete rewrite using Vue 3, Ionic, Capacitor, and TypeScript for a modern,
-            faster experience on both iOS and Android. All existing calculator features have been preserved.
+            faster experience on both iOS and Android. All existing calculator features have been preserved
+            with many new improvements.
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Version 3.0 adds wood species selection to the Board Feet and Volume calculators with custom
+            species management in Settings.
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Version 3.0 introduces OS light and dark mode support, an improved slider interface with
+            direct numeric input, and enhanced board feet totals visibility.
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Version 3.0 improves email reports with formatted HTML content and PDF attachments for
+            easy sharing.
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Version 3.0 increases maximum board feet thickness to 20 inches and adds currency-formatted
+            pricing.
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Version 3.0 includes in-app review prompts and a support email option in Settings.
           </ion-label>
         </ion-item>
         <ion-item>

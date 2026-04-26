@@ -29,7 +29,7 @@
             :label="thicknessText"
             label-placement="stacked"
             :min="1"
-            :max="48"
+            :max="20"
             :step="1"
             :value="thickness"
             :pin="true"
@@ -116,6 +116,18 @@
             @ionInput="updatePricePer1000Raw($event.detail.value)"
           ></ion-input>
         </ion-item>
+        <ion-item>
+          <ion-select
+            label="Species:"
+            :value="species"
+            placeholder="Select species"
+            @ionChange="updateSpecies($event.detail.value)"
+          >
+            <ion-select-option value="">None</ion-select-option>
+            <ion-select-option v-for="s in woodSpeciesList" :key="s" :value="s">{{ s }}</ion-select-option>
+            <ion-select-option :value="ADD_NEW_VALUE">Add New...</ion-select-option>
+          </ion-select>
+        </ion-item>
       </ion-list>
 
       <!-- Totals -->
@@ -155,6 +167,7 @@
               }}<span v-if="item.woodType === 'hard'">/4</span>" x
               {{ item.width }}" &nbsp; Length: {{ item.length }}' &nbsp; Qty:
               {{ item.quantity }}
+              <span v-if="item.species"> &nbsp; {{ item.species }}</span>
               <span style="float: right"
                 >{{ formatMoney(item.pricePer1000) }}/k</span
               >
@@ -222,11 +235,16 @@ import {
   IonButton,
   IonIcon,
   IonText,
+  IonSelect,
+  IonSelectOption,
+  alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
 import {
   maxQuantity as settingsMaxQuantity,
   moneySymbol,
+  woodSpeciesList,
+  addSpecies,
 } from "../stores/settings";
 import { formatBft2, formatMoney, round } from "../utils/formatting";
 import { sendEmail, pdfStyles } from "../utils/email";
@@ -240,12 +258,40 @@ const length = ref(Number(localStorage.getItem("BfLength")) || 16);
 const quantity = ref(Number(localStorage.getItem("BfQuantity")) || 1);
 const pricePer1000 = ref(Number(localStorage.getItem("BfPricePer1000")) || 1);
 const woodType = ref(localStorage.getItem("BfWoodType") || WoodTypes.Softwood);
+const species = ref(localStorage.getItem("BfSpecies") || "");
+
+const ADD_NEW_VALUE = "__add_new__";
+
+async function updateSpecies(v: any) {
+  if (v === ADD_NEW_VALUE) {
+    const alert = await alertController.create({
+      header: "Add New Species",
+      inputs: [{ name: "speciesName", type: "text", placeholder: "Species name" }],
+      buttons: [
+        { text: "Cancel", role: "cancel" },
+        {
+          text: "Add",
+          handler: (data) => {
+            const name = data.speciesName?.trim();
+            if (name) {
+              addSpecies(name);
+              species.value = name;
+            }
+          },
+        },
+      ],
+    });
+    await alert.present();
+    return;
+  }
+  species.value = v || "";
+}
 
 function updateWidth(v: any) {
   width.value = clamp(Number(v), 1, 24);
 }
 function updateThickness(v: any) {
-  thickness.value = clamp(Number(v), 1, 48);
+  thickness.value = clamp(Number(v), 1, 20);
 }
 function updateLength(v: any) {
   length.value = clamp(Number(v), 1, 24);
@@ -289,6 +335,7 @@ watch(length, (v) => localStorage.setItem("BfLength", String(v)));
 watch(quantity, (v) => localStorage.setItem("BfQuantity", String(v)));
 watch(pricePer1000, (v) => localStorage.setItem("BfPricePer1000", String(v)));
 watch(woodType, (v) => localStorage.setItem("BfWoodType", v));
+watch(species, (v) => localStorage.setItem("BfSpecies", v));
 
 const thicknessText = computed(() => {
   if (woodType.value == WoodTypes.Hardwood) {
@@ -332,6 +379,7 @@ interface LumberItemData {
   pieceBft: number;
   piecePrice: number;
   woodType: string;
+  species: string;
 }
 
 const lumberItems = ref<LumberItemData[]>(
@@ -365,6 +413,7 @@ function addLumberItem() {
     pieceBft: pieceBft.value,
     piecePrice: piecePrice.value,
     woodType: woodType.value,
+    species: species.value,
   });
   logEvent("add_lumber_item", { unit: "us", wood_type: woodType.value });
 }
@@ -387,6 +436,7 @@ function onSendEmail() {
     "<thead><tr>" +
     '<th class="left">#</th>' +
     "<th>Quantity</th>" +
+    "<th>Species</th>" +
     "<th>Thickness</th>" +
     "<th>Width</th>" +
     "<th>Length</th>" +
@@ -413,6 +463,9 @@ function onSendEmail() {
       "</td>" +
       "<td>" +
       item.quantity +
+      "</td>" +
+      "<td>" +
+      (item.species || "") +
       "</td>" +
       "<td>" +
       item.thickness +
@@ -446,7 +499,7 @@ function onSendEmail() {
 
   text +=
     "<tfoot><tr>" +
-    "<th></th><th></th><th></th><th></th><th></th><th></th>" +
+    "<th></th><th></th><th></th><th></th><th></th><th></th><th></th>" +
     "<th>" +
     formatBft2(totalBftSum) +
     "</th>" +

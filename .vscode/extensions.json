@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    // Vue 3 language support (Volar) — required for <script setup lang="ts"> and template type-checking
+    "Vue.volar",
+    // GitHub Copilot AI code completions
+    "github.copilot",
+    // GitHub Copilot Chat for inline Q&A, explain, fix, and test generation
+    "github.copilot-chat",
+    // Ionic Framework extension — component snippets, project management, and device preview
+    "ionic.ionic",
+    // ESLint — catches common JS/TS issues
+    "dbaeumer.vscode-eslint",
+    // Prettier — consistent code formatting
+    "esbenp.prettier-vscode"
+  ]
+}
