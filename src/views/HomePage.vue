@@ -47,7 +47,7 @@
 
       <div class="ion-text-center ion-padding">
         <ion-text color="medium">
-          <small>&copy; 2019 MicaPeak Solutions</small>
+          <small>&copy; 2026 MicaPeak Solutions</small>
         </ion-text>
       </div>
     </ion-content>
