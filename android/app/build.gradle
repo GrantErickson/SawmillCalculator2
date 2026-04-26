@@ -8,8 +8,8 @@ android {
         applicationId "net.micapeak.SawmillCalculatorPro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 30003500
-        versionName "3.0.35"
+        versionCode 30003600
+        versionName "3.0.36"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
