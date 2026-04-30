@@ -7,7 +7,10 @@ import { Capacitor } from "@capacitor/core";
 export async function logScreenView(screenName: string): Promise<void> {
   if (Capacitor.isNativePlatform()) {
     try {
-      await FirebaseAnalytics.setCurrentScreen({ screenName });
+      await FirebaseAnalytics.setCurrentScreen({
+        screenName,
+        screenClassOverride: screenName,
+      });
     } catch {
       // Ignore analytics errors — should never block the app
     }
