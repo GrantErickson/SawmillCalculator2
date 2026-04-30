@@ -15,21 +15,21 @@
             :value="diameter" :pin="true" :pin-formatter="(v: number) => v + '&quot;'"
             @ionInput="updateDiameter($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(diameter)"
-              @ionInput="updateDiameter($event.detail.value)"></ion-input>
+              @ionFocus="selectOnFocus" @ionInput="updateDiameter($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item lines="none">
           <ion-range label="Length in feet:" label-placement="stacked" :min="1" :max="40" :step="1" :value="length"
             :pin="true" :pin-formatter="(v: number) => v + '\''" @ionInput="updateLength($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(length)"
-              @ionInput="updateLength($event.detail.value)"></ion-input>
+              @ionFocus="selectOnFocus" @ionInput="updateLength($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item lines="none">
           <ion-range label="Quantity:" label-placement="stacked" :min="1" :max="100" :step="1" :value="quantity"
             :pin="true" @ionInput="updateQuantity($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(quantity)"
-              @ionInput="updateQuantity($event.detail.value)"></ion-input>
+              @ionFocus="selectOnFocus" @ionInput="updateQuantity($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item>
@@ -218,6 +218,11 @@ function updateQuantity(v: any) {
 function clamp(value: number, min: number, max: number): number {
   if (isNaN(value)) return min;
   return Math.min(Math.max(value, min), max);
+}
+
+function selectOnFocus(event: any) {
+  const input = event.target?.querySelector("input");
+  if (input) input.select();
 }
 
 watch(length, (v) => localStorage.setItem("VolumeLength", String(v)));

@@ -26,7 +26,7 @@
             :pin="true" :pin-formatter="(v: number) => woodType === 'hard' ? v + '/4' : v + '&quot;'"
             @ionInput="updateThickness($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(thickness)"
-              @ionInput="updateThickness($event.detail.value)"></ion-input>
+              @ionFocus="selectOnFocus" @ionInput="updateThickness($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item lines="none">
@@ -34,21 +34,21 @@
             :value="width" :pin="true" :pin-formatter="(v: number) => v + '&quot;'"
             @ionInput="updateWidth($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(width)"
-              @ionInput="updateWidth($event.detail.value)"></ion-input>
+              @ionFocus="selectOnFocus" @ionInput="updateWidth($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item lines="none">
           <ion-range label="Length in feet:" label-placement="stacked" :min="1" :max="24" :step="1" :value="length"
             :pin="true" :pin-formatter="(v: number) => v + '\''" @ionInput="updateLength($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(length)"
-              @ionInput="updateLength($event.detail.value)"></ion-input>
+              @ionFocus="selectOnFocus" @ionInput="updateLength($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item lines="none">
           <ion-range label="Quantity:" label-placement="stacked" :min="1" :max="Number(settingsMaxQuantity)" :step="1"
             :value="quantity" :pin="true" @ionInput="updateQuantity($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(quantity)"
-              @ionInput="updateQuantity($event.detail.value)"></ion-input>
+              @ionFocus="selectOnFocus" @ionInput="updateQuantity($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item>
@@ -243,12 +243,20 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
+function selectOnFocus(event: any) {
+  const input = event.target?.querySelector("input");
+  if (input) input.select();
+}
+
 const priceEditing = ref(false);
 const priceEditValue = ref("");
 
-function onPriceFocus() {
+function onPriceFocus(event: any) {
   priceEditing.value = true;
   priceEditValue.value = String(pricePer1000.value);
+  setTimeout(() => {
+    selectOnFocus(event);
+  }, 1);
 }
 
 function onPriceBlur() {
