@@ -469,6 +469,11 @@ function onSendEmail() {
 .range-value-input {
   max-width: 70px;
   text-align: right;
+  border: 1px solid var(--ion-color-medium);
+  border-radius: 6px;
+  padding: 4px 8px;
+  --padding-start: 8px;
+  --padding-end: 8px;
 }
 ion-range {
   --label-font-size: 1.3rem;
