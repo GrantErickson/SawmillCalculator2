@@ -39,9 +39,15 @@
           </ion-range>
         </ion-item>
         <ion-item>
-          <ion-input class="price-input" label="Price per cubic meter:" label-placement="start" fill="outline"
-            :value="priceEditing ? priceEditValue : formatMoney(pricePerMeter3)" @ionFocus="onPriceFocus"
-            @ionBlur="onPriceBlur" @ionInput="updatePriceRaw($event.detail.value)"></ion-input>
+          <ion-label>Price per cubic meter:</ion-label>
+          <ion-input
+            slot="end"
+            class="range-value-input"
+            :value="priceEditing ? priceEditValue : formatMoney(pricePerMeter3)"
+            @ionFocus="onPriceFocus"
+            @ionBlur="onPriceBlur"
+            @ionInput="updatePriceRaw($event.detail.value)"
+          ></ion-input>
         </ion-item>
         <ion-item>
           <ion-select label="Species:" :value="species" placeholder="Select species"
@@ -439,10 +445,5 @@ ion-range::part(label) {
   margin-bottom: -8px;
   margin-inline-start: -18px;
   font-size: 1.5rem;
-}
-
-.price-input {
-  --padding-start: 8px;
-  --padding-end: 8px;
 }
 </style>
