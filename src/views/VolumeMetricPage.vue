@@ -11,74 +11,30 @@
     <ion-content>
       <ion-list>
         <ion-item lines="none">
-          <ion-range
-            label="Diameter in mm:"
-            label-placement="stacked"
-            :min="100"
-            :max="1000"
-            :step="10"
-            :value="diameter"
-            :pin="true"
-            :pin-formatter="(v: number) => v + 'mm'"
-            @ionInput="updateDiameter($event.detail.value)"
-          >
-            <ion-input
-              slot="end"
-              type="number"
-              class="range-value-input"
-              :value="String(diameter)"
-              @ionInput="updateDiameter($event.detail.value)"
-            ></ion-input>
+          <ion-range label="Diameter in mm:" label-placement="stacked" :min="100" :max="1000" :step="10"
+            :value="diameter" :pin="true" :pin-formatter="(v: number) => v + 'mm'"
+            @ionInput="updateDiameter($event.detail.value)">
+            <ion-input slot="end" type="number" class="range-value-input" :value="String(diameter)"
+              @ionInput="updateDiameter($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item lines="none">
-          <ion-range
-            label="Length in meters:"
-            label-placement="stacked"
-            :min="1"
-            :max="15"
-            :step="0.1"
-            :value="length"
-            :pin="true"
-            :pin-formatter="(v: number) => v + 'm'"
-            @ionInput="updateLength($event.detail.value)"
-          >
-            <ion-input
-              slot="end"
-              type="number"
-              class="range-value-input"
-              :value="String(length)"
-              @ionInput="updateLength($event.detail.value)"
-            ></ion-input>
+          <ion-range label="Length in meters:" label-placement="stacked" :min="1" :max="15" :step="0.1" :value="length"
+            :pin="true" :pin-formatter="(v: number) => v + 'm'" @ionInput="updateLength($event.detail.value)">
+            <ion-input slot="end" type="number" class="range-value-input" :value="String(length)"
+              @ionInput="updateLength($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item lines="none">
-          <ion-range
-            label="Quantity:"
-            label-placement="stacked"
-            :min="1"
-            :max="100"
-            :step="1"
-            :value="quantity"
-            :pin="true"
-            @ionInput="updateQuantity($event.detail.value)"
-          >
-            <ion-input
-              slot="end"
-              type="number"
-              class="range-value-input"
-              :value="String(quantity)"
-              @ionInput="updateQuantity($event.detail.value)"
-            ></ion-input>
+          <ion-range label="Quantity:" label-placement="stacked" :min="1" :max="100" :step="1" :value="quantity"
+            :pin="true" @ionInput="updateQuantity($event.detail.value)">
+            <ion-input slot="end" type="number" class="range-value-input" :value="String(quantity)"
+              @ionInput="updateQuantity($event.detail.value)"></ion-input>
           </ion-range>
         </ion-item>
         <ion-item>
-          <ion-select
-            label="Species:"
-            :value="species"
-            placeholder="Select species"
-            @ionChange="updateSpecies($event.detail.value)"
-          >
+          <ion-select label="Species:" :value="species" placeholder="Select species"
+            @ionChange="updateSpecies($event.detail.value)">
             <ion-select-option value="">None</ion-select-option>
             <ion-select-option v-for="s in woodSpeciesList" :key="s" :value="s">{{ s }}</ion-select-option>
             <ion-select-option :value="ADD_NEW_VALUE">Add New...</ion-select-option>
@@ -138,12 +94,7 @@
               <span v-if="item.species"> &nbsp; {{ item.species }}</span>
             </p>
           </ion-label>
-          <ion-button
-            slot="end"
-            fill="clear"
-            color="danger"
-            @click="deleteItem(idx)"
-          >
+          <ion-button slot="end" fill="clear" color="danger" @click="deleteItem(idx)">
             <ion-icon :icon="trashOutline" slot="icon-only"></ion-icon>
           </ion-button>
         </ion-item>
@@ -160,15 +111,11 @@
         </ion-item>
         <ion-item>
           <ion-label>Scribner</ion-label>
-          <ion-note slot="end"
-            >{{ formatM3(grandTotalScribner, 3) }} m³</ion-note
-          >
+          <ion-note slot="end">{{ formatM3(grandTotalScribner, 3) }} m³</ion-note>
         </ion-item>
         <ion-item>
           <ion-label>International</ion-label>
-          <ion-note slot="end"
-            >{{ formatM3(grandTotalInternational, 3) }} m³</ion-note
-          >
+          <ion-note slot="end">{{ formatM3(grandTotalInternational, 3) }} m³</ion-note>
         </ion-item>
         <ion-item>
           <ion-label>ROY</ion-label>
@@ -244,7 +191,9 @@ async function updateSpecies(v: any) {
   if (v === ADD_NEW_VALUE) {
     const alert = await alertController.create({
       header: "Add New Species",
-      inputs: [{ name: "speciesName", type: "text", placeholder: "Species name" }],
+      inputs: [
+        { name: "speciesName", type: "text", placeholder: "Species name" },
+      ],
       buttons: [
         { text: "Cancel", role: "cancel" },
         {
@@ -475,10 +424,16 @@ function onSendEmail() {
   --padding-start: 8px;
   --padding-end: 8px;
 }
+
 ion-range {
   --label-font-size: 1.3rem;
+  padding-inline-start: 18px;
+  font-size: 1.3rem;
 }
+
 ion-range::part(label) {
-  margin-bottom: 0;
+  margin-bottom: -8px;
+  margin-inline-start: -18px;
+  font-size: 1.5rem;
 }
 </style>
