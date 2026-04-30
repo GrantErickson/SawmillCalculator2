@@ -53,14 +53,9 @@
         </ion-item>
         <ion-item>
           <ion-label>Price per 1000bft:</ion-label>
-          <ion-input
-            slot="end"
-            class="range-value-input"
-            :value="priceEditing ? priceEditValue : formatMoney(pricePer1000)"
-            @ionFocus="onPriceFocus"
-            @ionBlur="onPriceBlur"
-            @ionInput="updatePricePer1000Raw($event.detail.value)"
-          ></ion-input>
+          <ion-input slot="end" class="range-value-input price-value-input"
+            :value="priceEditing ? priceEditValue : formatMoney(pricePer1000)" @ionFocus="onPriceFocus"
+            @ionBlur="onPriceBlur" @ionInput="updatePricePer1000Raw($event.detail.value)"></ion-input>
         </ion-item>
         <ion-item>
           <ion-select label="Species:" :value="species" placeholder="Select species"
@@ -481,5 +476,10 @@ ion-range::part(label) {
   margin-bottom: -8px;
   margin-inline-start: -18px;
   font-size: 1.5rem;
+}
+
+.price-value-input {
+  max-width: 110px;
+  margin-top: 8px;
 }
 </style>
