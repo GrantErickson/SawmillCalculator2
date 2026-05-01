@@ -56,7 +56,25 @@
 
 <script setup lang="ts">
 import {
-  IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonList, IonListHeader, IonItem, IonLabel, IonText,
-} from '@ionic/vue'
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonList,
+  IonListHeader,
+  IonItem,
+  IonLabel,
+  IonText,
+} from "@ionic/vue";
 </script>
+
+<style scoped>
+ion-item ion-label {
+  font-size: 1.15rem;
+}
+
+ion-list-header ion-label {
+  font-size: 1.25rem;
+}
+</style>
