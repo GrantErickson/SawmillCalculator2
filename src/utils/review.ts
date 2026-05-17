@@ -1,4 +1,5 @@
 import { InAppReview } from "@capacitor-community/in-app-review";
+import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 import { alertController } from "@ionic/vue";
 
@@ -19,18 +20,16 @@ export async function requestReview(): Promise<void> {
   if (platform === "ios") {
     // Open the App Store review page directly - the in-app review API
     // silently no-ops in many conditions (TestFlight, rate limits, etc.)
-    window.open(
-      `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`,
-      "_system",
-    );
+    await Browser.open({
+      url: `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`,
+    });
   } else if (platform === "android") {
     try {
       await InAppReview.requestReview();
     } catch {
-      window.open(
-        `market://details?id=net.micapeak.SawmillCalculatorPro`,
-        "_system",
-      );
+      await Browser.open({
+        url: `market://details?id=net.micapeak.SawmillCalculatorPro`,
+      });
     }
   } else {
     // Web fallback
@@ -41,7 +40,7 @@ export async function requestReview(): Promise<void> {
   }
 }
 
-export function openSupportEmail(): void {
+export async function openSupportEmail(): Promise<void> {
   window.open(`mailto:${SUPPORT_EMAIL}`, "_system");
 }
 
