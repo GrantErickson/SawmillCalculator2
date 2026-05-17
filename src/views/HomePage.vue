@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Saw Calc Pro</ion-title>
+        <ion-title>Sawmill Calculator Pro</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
@@ -45,6 +45,13 @@
         </ion-item>
       </ion-list>
 
+      <ion-list inset>
+        <ion-item button @click="requestReview()">
+          <ion-icon :icon="starOutline" slot="end"></ion-icon>
+          <ion-label>Write a Review</ion-label>
+        </ion-item>
+      </ion-list>
+
       <div class="ion-text-center ion-padding">
         <ion-text color="medium">
           <small>&copy; 2026 MicaPeak Solutions</small>
@@ -66,15 +73,29 @@ import {
   IonItem,
   IonLabel,
   IonText,
+  IonIcon,
 } from "@ionic/vue";
+import { starOutline } from "ionicons/icons";
+import { requestReview } from "../utils/review";
 </script>
 
 <style scoped>
+ion-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--ion-color-primary);
+}
+
 ion-item ion-label {
   font-size: 1.15rem;
 }
 
 ion-list-header ion-label {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 </style>

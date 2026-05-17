@@ -28,11 +28,8 @@
           <ion-label>Board Feet Max Quantity</ion-label>
         </ion-list-header>
         <ion-item>
-          <ion-input
-            type="number"
-            :value="maxQuantity"
-            @ionInput="maxQuantity = $event.detail.value || '100'"
-          ></ion-input>
+          <ion-input type="number" :value="maxQuantity"
+            @ionInput="maxQuantity = $event.detail.value || '100'"></ion-input>
         </ion-item>
       </ion-list>
 
@@ -41,10 +38,7 @@
           <ion-label>Money Symbol</ion-label>
         </ion-list-header>
         <ion-item>
-          <ion-input
-            :value="moneySymbol"
-            @ionInput="moneySymbol = $event.detail.value || '$'"
-          ></ion-input>
+          <ion-input :value="moneySymbol" @ionInput="moneySymbol = $event.detail.value || '$'"></ion-input>
         </ion-item>
         <ion-radio-group :value="moneySymbolLocation" @ionChange="moneySymbolLocation = $event.detail.value">
           <ion-item>
@@ -67,12 +61,8 @@
           </ion-button>
         </ion-item>
         <ion-item>
-          <ion-input
-            placeholder="Add new species..."
-            :value="newSpeciesName"
-            @ionInput="newSpeciesName = $event.detail.value || ''"
-            @keyup.enter="onAddSpecies"
-          ></ion-input>
+          <ion-input placeholder="Add new species..." :value="newSpeciesName"
+            @ionInput="newSpeciesName = $event.detail.value || ''" @keyup.enter="onAddSpecies"></ion-input>
           <ion-button slot="end" fill="clear" @click="onAddSpecies" :disabled="!newSpeciesName.trim()">
             <ion-icon :icon="addOutline" slot="icon-only"></ion-icon>
           </ion-button>
@@ -91,10 +81,6 @@
           <ion-icon :icon="mailOutline" slot="start"></ion-icon>
           <ion-label>Email Support</ion-label>
         </ion-item>
-        <ion-item button @click="requestReview()">
-          <ion-icon :icon="starOutline" slot="start"></ion-icon>
-          <ion-label>Write a Review</ion-label>
-        </ion-item>
       </ion-list>
 
       <div class="ion-text-center ion-padding">
@@ -107,31 +93,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 import {
-  IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel,
-  IonRadioGroup, IonRadio, IonInput, IonText, IonIcon, IonButton
-} from '@ionic/vue'
-import { mailOutline, starOutline, trashOutline, addOutline, refreshOutline } from 'ionicons/icons'
-import { sideOfBlade, maxQuantity, moneySymbol, moneySymbolLocation, woodSpeciesList, addSpecies, removeSpecies, resetSpeciesToDefault } from '../stores/settings'
-import { openSupportEmail, requestReview } from '../utils/review'
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButtons,
+  IonBackButton,
+  IonList,
+  IonListHeader,
+  IonItem,
+  IonLabel,
+  IonRadioGroup,
+  IonRadio,
+  IonInput,
+  IonText,
+  IonIcon,
+  IonButton,
+} from "@ionic/vue";
+import {
+  mailOutline,
+  trashOutline,
+  addOutline,
+  refreshOutline,
+} from "ionicons/icons";
+import {
+  sideOfBlade,
+  maxQuantity,
+  moneySymbol,
+  moneySymbolLocation,
+  woodSpeciesList,
+  addSpecies,
+  removeSpecies,
+  resetSpeciesToDefault,
+} from "../stores/settings";
+import { openSupportEmail } from "../utils/review";
 
-const newSpeciesName = ref('')
+const newSpeciesName = ref("");
 
 function onAddSpecies() {
   if (addSpecies(newSpeciesName.value)) {
-    newSpeciesName.value = ''
+    newSpeciesName.value = "";
   }
 }
 
 function onRemoveSpecies(index: number) {
-  removeSpecies(index)
+  removeSpecies(index);
 }
 
 function onResetSpecies() {
-  if (confirm('Reset species list to defaults? Any custom species will be removed.')) {
-    resetSpeciesToDefault()
+  if (
+    confirm(
+      "Reset species list to defaults? Any custom species will be removed.",
+    )
+  ) {
+    resetSpeciesToDefault();
   }
 }
 </script>
