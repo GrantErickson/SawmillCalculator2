@@ -5,7 +5,7 @@ import { alertController } from "@ionic/vue";
 
 const REVIEW_PROMPTED_KEY = "reviewPrompted";
 const SUPPORT_EMAIL = "support@micapeak.net";
-const APP_STORE_ID = "1456498498";
+const APP_STORE_ID = "804495496";
 
 export function hasBeenPrompted(): boolean {
   return localStorage.getItem(REVIEW_PROMPTED_KEY) === "true";
