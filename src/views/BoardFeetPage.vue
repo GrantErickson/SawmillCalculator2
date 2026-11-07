@@ -125,10 +125,54 @@
         </ion-item>
       </ion-list>
 
+      <ion-list inset>
+        <ion-list-header>
+          <ion-label>Invoice or bid</ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-select label="Document:" :value="documentKind" @ionChange="documentKind = $event.detail.value">
+            <ion-select-option value="invoice">Invoice</ion-select-option>
+            <ion-select-option value="bid">Bid</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Company:" label-placement="stacked" :value="companyName"
+            @ionInput="companyName = String($event.detail.value ?? '')"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Customer:" label-placement="stacked" :value="customerName"
+            @ionInput="customerName = String($event.detail.value ?? '')"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Setup charge:" label-placement="stacked" type="number" inputmode="decimal" min="0"
+            :value="String(setupCharge)" @ionInput="setupCharge = moneyInput($event.detail.value)"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Blade charge:" label-placement="stacked" type="number" inputmode="decimal" min="0"
+            :value="String(bladeCharge)" @ionInput="bladeCharge = moneyInput($event.detail.value)"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Labor hours:" label-placement="stacked" type="number" inputmode="decimal" min="0"
+            :value="String(laborHours)" @ionInput="laborHours = moneyInput($event.detail.value)"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Hourly rate:" label-placement="stacked" type="number" inputmode="decimal" min="0"
+            :value="String(laborRate)" @ionInput="laborRate = moneyInput($event.detail.value)"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Labor</ion-label>
+          <ion-note slot="end">{{ formatMoney(laborTotal) }}</ion-note>
+        </ion-item>
+        <ion-item color="primary">
+          <ion-label>{{ documentTitle }} total</ion-label>
+          <ion-note slot="end">{{ formatMoney(documentTotal) }}</ion-note>
+        </ion-item>
+      </ion-list>
+
       <div class="ion-padding">
         <ion-button expand="block" @click="onSendEmail">
           <ion-icon :icon="mailOutline" slot="start"></ion-icon>
-          Send Email
+          Send {{ documentTitle }}
         </ion-button>
         <ion-button expand="block" color="danger" @click="clearLumberItems">
           <ion-icon :icon="trashOutline" slot="start"></ion-icon>
@@ -167,6 +211,8 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
+  IonListHeader,
+  IonNote,
   alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
@@ -189,6 +235,27 @@ const quantity = ref(Number(localStorage.getItem("BfQuantity")) || 1);
 const pricePer1000 = ref(Number(localStorage.getItem("BfPricePer1000")) || 1);
 const woodType = ref(localStorage.getItem("BfWoodType") || WoodTypes.Softwood);
 const species = ref(localStorage.getItem("BfSpecies") || "");
+const documentKind = ref(localStorage.getItem("DocKind") === "bid" ? "bid" : "invoice");
+const companyName = ref(localStorage.getItem("CompanyName") || "");
+const customerName = ref(localStorage.getItem("CustomerName") || "");
+const setupCharge = ref(Number(localStorage.getItem("SetupCharge")) || 0);
+const bladeCharge = ref(Number(localStorage.getItem("BladeCharge")) || 0);
+const laborHours = ref(Number(localStorage.getItem("LaborHours")) || 0);
+const laborRate = ref(Number(localStorage.getItem("LaborRate")) || 0);
+
+function moneyInput(value: unknown): number {
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount < 0) return 0;
+  return amount;
+}
+
+const documentTitle = computed(() =>
+  documentKind.value === "bid" ? "Bid" : "Invoice",
+);
+const laborTotal = computed(() => round(laborHours.value * laborRate.value, 2));
+const chargeTotal = computed(() =>
+  round(setupCharge.value + bladeCharge.value + laborTotal.value, 2),
+);
 
 const ADD_NEW_VALUE = "__add_new__";
 
@@ -276,6 +343,13 @@ watch(quantity, (v) => localStorage.setItem("BfQuantity", String(v)));
 watch(pricePer1000, (v) => localStorage.setItem("BfPricePer1000", String(v)));
 watch(woodType, (v) => localStorage.setItem("BfWoodType", v));
 watch(species, (v) => localStorage.setItem("BfSpecies", v));
+watch(documentKind, (v) => localStorage.setItem("DocKind", v));
+watch(companyName, (v) => localStorage.setItem("CompanyName", v));
+watch(customerName, (v) => localStorage.setItem("CustomerName", v));
+watch(setupCharge, (v) => localStorage.setItem("SetupCharge", String(v)));
+watch(bladeCharge, (v) => localStorage.setItem("BladeCharge", String(v)));
+watch(laborHours, (v) => localStorage.setItem("LaborHours", String(v)));
+watch(laborRate, (v) => localStorage.setItem("LaborRate", String(v)));
 
 const thicknessText = computed(() => {
   if (woodType.value == WoodTypes.Hardwood) {
@@ -340,6 +414,9 @@ const grandTotalBft = computed(() =>
 const grandTotalPrice = computed(() =>
   lumberItems.value.reduce((sum, item) => sum + item.totalPrice, 0),
 );
+const documentTotal = computed(() =>
+  round(grandTotalPrice.value + chargeTotal.value, 2),
+);
 
 function addLumberItem() {
   lumberItems.value.push({
@@ -370,8 +447,14 @@ function clearLumberItems() {
 
 function onSendEmail() {
   logEvent("send_email", { type: "lumber_list_us" });
-  var subject = "Lumber List";
-  var text = pdfStyles + "\n<table>";
+  var subject = customerName.value
+    ? `${documentTitle.value} for ${customerName.value}`
+    : documentTitle.value;
+  var text = pdfStyles;
+  text += `<p><strong>${escapeHtml(companyName.value || "Lumber list")}</strong><br>`;
+  text += `${documentTitle.value}`;
+  if (customerName.value) text += ` for ${escapeHtml(customerName.value)}`;
+  text += "</p>\n<table>";
   text +=
     "<thead><tr>" +
     '<th class="left">#</th>' +
@@ -449,8 +532,22 @@ function onSendEmail() {
     "</th>" +
     "</tr></tfoot>\n";
   text += "</table>\n";
+  text += "<p>";
+  text += `Lumber ${formatMoney(round(totalPriceSum, 2))}<br>`;
+  text += `Setup ${formatMoney(round(setupCharge.value, 2))}<br>`;
+  text += `Blade ${formatMoney(round(bladeCharge.value, 2))}<br>`;
+  text += `Labor ${laborHours.value} h at ${formatMoney(round(laborRate.value, 2))} = ${formatMoney(laborTotal.value)}<br>`;
+  text += `<strong>${documentTitle.value} total ${formatMoney(documentTotal.value)}</strong>`;
+  text += "</p>\n";
 
-  sendEmail(subject, text, "BoardFeet.pdf");
+  sendEmail(subject, text, documentKind.value === "bid" ? "Bid.pdf" : "Invoice.pdf");
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 </script>
 
