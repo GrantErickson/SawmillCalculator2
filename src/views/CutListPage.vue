@@ -17,21 +17,11 @@
           <div slot="content" class="ion-padding">
             <ion-list>
               <ion-item>
-                <ion-select label="Kerf:" :value="String(kerf)" @ionChange="kerf = Number($event.detail.value)">
-                  <ion-select-option value="0">None</ion-select-option>
-                  <ion-select-option value="1">1/32"</ion-select-option>
-                  <ion-select-option value="2">1/16"</ion-select-option>
-                  <ion-select-option value="3">3/32"</ion-select-option>
-                  <ion-select-option value="4">1/8"</ion-select-option>
-                  <ion-select-option value="5">5/32"</ion-select-option>
-                  <ion-select-option value="6">3/16"</ion-select-option>
-                  <ion-select-option value="7">7/32"</ion-select-option>
-                  <ion-select-option value="8">1/4"</ion-select-option>
-                  <ion-select-option value="9">9/32"</ion-select-option>
-                  <ion-select-option value="10">5/16"</ion-select-option>
-                  <ion-select-option value="11">11/32"</ion-select-option>
-                  <ion-select-option value="12">3/8"</ion-select-option>
-                </ion-select>
+                <ion-input label="Kerf, inches:" label-placement="stacked" type="number" inputmode="decimal" min="0"
+                  max="0.5" step="0.001" :value="kerfDraft" @ionFocus="selectOnFocus"
+                  @ionInput="kerfDraft = String($event.detail.value ?? '')" @ionBlur="commitKerf"
+                  @ionChange="commitKerf"></ion-input>
+                <ion-note slot="end">{{ kerfLabel }}</ion-note>
               </ion-item>
 
               <ion-item>
@@ -163,15 +153,53 @@ import {
   IonAccordion,
   IonCheckbox,
   IonText,
+  IonInput,
+  IonNote,
 } from "@ionic/vue";
 import { sideOfBlade } from "../stores/settings";
 
-const kerf = ref(Number(localStorage.getItem("Kerf")) || 2);
+function loadKerfInches(): number {
+  const stored = localStorage.getItem("KerfInches");
+  if (stored != null && stored !== "") return clampKerf(Number(stored));
+  const legacy = localStorage.getItem("Kerf");
+  if (legacy == null || legacy === "") return 1 / 16;
+  return clampKerf(Number(legacy) / 32);
+}
+
+function clampKerf(inches: number): number {
+  if (!Number.isFinite(inches)) return 0;
+  return Math.min(0.5, Math.max(0, inches));
+}
+
+function roundUpTo32nd(position: number): number {
+  return Math.ceil(position - 1e-6);
+}
+
+const kerfInches = ref(loadKerfInches());
+const kerfDraft = ref(String(kerfInches.value));
+const kerfLabel = computed(() => {
+  const thirty2 = kerfInches.value * 32;
+  const nearest = Math.round(thirty2);
+  if (Math.abs(thirty2 - nearest) < 1e-4) {
+    return nearest === 0 ? "None" : textFrom32nd(nearest, 0).measurement;
+  }
+  return `${kerfInches.value.toFixed(3)}"`;
+});
+
+function commitKerf() {
+  kerfInches.value = clampKerf(Number(kerfDraft.value));
+  kerfDraft.value = String(kerfInches.value);
+}
+
+function selectOnFocus(event: any) {
+  const input = event.target?.querySelector("input");
+  if (input) input.select();
+}
 const thickness = ref(Number(localStorage.getItem("Thickness")) || 13);
 const total = ref(Number(localStorage.getItem("Total")) || 6);
 const flitch = ref(Number(localStorage.getItem("Flitch")) || 0);
 
-watch(kerf, (v) => localStorage.setItem("Kerf", String(v)));
+watch(kerfInches, (v) => localStorage.setItem("KerfInches", String(v)));
 watch(thickness, (v) => localStorage.setItem("Thickness", String(v)));
 watch(total, (v) => localStorage.setItem("Total", String(v)));
 watch(flitch, (v) => localStorage.setItem("Flitch", String(v)));
@@ -295,32 +323,37 @@ const cutList = computed(() => {
   var list: Array<{ measurement: string; id: string; checked: boolean }> = [];
   var index = 1;
 
-  // Calculate everything in 32nds of an inch.
+  // Calculate everything in 32nds of an inch. Kerf may fall between those marks.
   var currentCut = Number(flitch.value) * 16;
+  var kerf32 = Number(kerfInches.value) * 32;
+  function pushCut(position: number) {
+    const rounded = roundUpTo32nd(position);
+    list.push(textFrom32nd(rounded, index));
+    index++;
+    return rounded;
+  }
   // Add the flitch cut if necessary
   if (currentCut > 0) {
     if (sideOfBlade.value == "top") {
-      currentCut += Number(kerf.value);
+      currentCut += kerf32;
     }
-    list.push(textFrom32nd(currentCut, index));
+    currentCut = pushCut(currentCut);
     if (sideOfBlade.value == "bottom") {
-      currentCut += Number(kerf.value);
+      currentCut += kerf32;
     }
-    index++;
   }
 
   // Loop and figure out all the cuts.
   while (currentCut <= Number(total.value * 32)) {
     currentCut += Number(thickness.value * 4);
     if (sideOfBlade.value == "top") {
-      currentCut += Number(kerf.value);
+      currentCut += kerf32;
     }
     if (currentCut > 0) {
-      list.push(textFrom32nd(currentCut, index));
-      index++;
+      currentCut = pushCut(currentCut);
     }
     if (sideOfBlade.value == "bottom") {
-      currentCut += Number(kerf.value);
+      currentCut += kerf32;
     }
   }
 
