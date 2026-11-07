@@ -34,57 +34,34 @@
                 </ion-select>
               </ion-item>
 
+              <template v-for="(zone, zoneIndex) in zones" :key="zoneIndex">
+                <ion-item>
+                  <ion-select :label="thicknessLabel(zoneIndex)" :value="String(zone.thickness)"
+                    @ionChange="setZoneThickness(zoneIndex, Number($event.detail.value))">
+                    <ion-select-option v-for="opt in thicknessOptions" :key="opt.value"
+                      :value="String(opt.value)">{{ opt.label }}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item v-if="zoneIndex < zones.length - 1">
+                  <ion-input label="Number of boards:" label-placement="stacked" type="number" min="1" max="100"
+                    :value="String(zone.count ?? 1)"
+                    @ionInput="setZoneCount(zoneIndex, Number($event.detail.value))"></ion-input>
+                  <ion-button slot="end" fill="clear" color="danger" @click="removeZone(zoneIndex)">
+                    Remove
+                  </ion-button>
+                </ion-item>
+                <ion-item v-else>
+                  <ion-label class="ion-text-wrap">
+                    <p>This thickness fills the rest of the cant.</p>
+                  </ion-label>
+                  <ion-button v-if="zones.length > 1" slot="end" fill="clear" color="danger"
+                    @click="removeZone(zoneIndex)">
+                    Remove
+                  </ion-button>
+                </ion-item>
+              </template>
               <ion-item>
-                <ion-select label="Thickness:" :value="String(thickness)"
-                  @ionChange="thickness = Number($event.detail.value)">
-                  <ion-select-option value="4">1/2"</ion-select-option>
-                  <ion-select-option value="5">5/8"</ion-select-option>
-                  <ion-select-option value="6">3/4"</ion-select-option>
-                  <ion-select-option value="7">7/8"</ion-select-option>
-                  <ion-select-option value="8">1"</ion-select-option>
-                  <ion-select-option value="9">1-1/8"</ion-select-option>
-                  <ion-select-option value="10">1-1/4"</ion-select-option>
-                  <ion-select-option value="11">1-3/8"</ion-select-option>
-                  <ion-select-option value="12">1-1/2"</ion-select-option>
-                  <ion-select-option value="13">1-5/8"</ion-select-option>
-                  <ion-select-option value="14">1-3/4"</ion-select-option>
-                  <ion-select-option value="15">1-7/8"</ion-select-option>
-                  <ion-select-option value="16">2"</ion-select-option>
-                  <ion-select-option value="17">2-1/8"</ion-select-option>
-                  <ion-select-option value="18">2-1/4"</ion-select-option>
-                  <ion-select-option value="19">2-3/8"</ion-select-option>
-                  <ion-select-option value="20">2-1/2"</ion-select-option>
-                  <ion-select-option value="21">2-5/8"</ion-select-option>
-                  <ion-select-option value="22">2-3/4"</ion-select-option>
-                  <ion-select-option value="23">2-7/8"</ion-select-option>
-                  <ion-select-option value="24">3"</ion-select-option>
-                  <ion-select-option value="25">3-1/8"</ion-select-option>
-                  <ion-select-option value="26">3-1/4"</ion-select-option>
-                  <ion-select-option value="27">3-3/8"</ion-select-option>
-                  <ion-select-option value="28">3-1/2"</ion-select-option>
-                  <ion-select-option value="29">3-5/8"</ion-select-option>
-                  <ion-select-option value="30">3-3/4"</ion-select-option>
-                  <ion-select-option value="31">3-7/8"</ion-select-option>
-                  <ion-select-option value="32">4"</ion-select-option>
-                  <ion-select-option value="36">4-1/2"</ion-select-option>
-                  <ion-select-option value="40">5"</ion-select-option>
-                  <ion-select-option value="44">5-1/2"</ion-select-option>
-                  <ion-select-option value="45">5-5/8"</ion-select-option>
-                  <ion-select-option value="48">6"</ion-select-option>
-                  <ion-select-option value="56">7"</ion-select-option>
-                  <ion-select-option value="64">8"</ion-select-option>
-                  <ion-select-option value="72">9"</ion-select-option>
-                  <ion-select-option value="80">10"</ion-select-option>
-                  <ion-select-option value="88">11"</ion-select-option>
-                  <ion-select-option value="96">12"</ion-select-option>
-                  <ion-select-option value="112">14"</ion-select-option>
-                  <ion-select-option value="128">16"</ion-select-option>
-                  <ion-select-option value="144">18"</ion-select-option>
-                  <ion-select-option value="160">20"</ion-select-option>
-                  <ion-select-option value="196">24"</ion-select-option>
-                  <ion-select-option value="240">30"</ion-select-option>
-                  <ion-select-option value="288">36"</ion-select-option>
-                </ion-select>
+                <ion-button expand="block" fill="outline" @click="addZone">Add another thickness</ion-button>
               </ion-item>
 
               <ion-item>
@@ -163,18 +140,138 @@ import {
   IonAccordion,
   IonCheckbox,
   IonText,
+  IonInput,
+  IonButton,
 } from "@ionic/vue";
 import { sideOfBlade } from "../stores/settings";
+import { buildCutPositions, type StackZone } from "../utils/cutStack";
+
+const thicknessOptions = [
+  { value: 4, label: '1/2"' },
+  { value: 5, label: '5/8"' },
+  { value: 6, label: '3/4"' },
+  { value: 7, label: '7/8"' },
+  { value: 8, label: '1"' },
+  { value: 9, label: '1-1/8"' },
+  { value: 10, label: '1-1/4"' },
+  { value: 11, label: '1-3/8"' },
+  { value: 12, label: '1-1/2"' },
+  { value: 13, label: '1-5/8"' },
+  { value: 14, label: '1-3/4"' },
+  { value: 15, label: '1-7/8"' },
+  { value: 16, label: '2"' },
+  { value: 17, label: '2-1/8"' },
+  { value: 18, label: '2-1/4"' },
+  { value: 19, label: '2-3/8"' },
+  { value: 20, label: '2-1/2"' },
+  { value: 21, label: '2-5/8"' },
+  { value: 22, label: '2-3/4"' },
+  { value: 23, label: '2-7/8"' },
+  { value: 24, label: '3"' },
+  { value: 25, label: '3-1/8"' },
+  { value: 26, label: '3-1/4"' },
+  { value: 27, label: '3-3/8"' },
+  { value: 28, label: '3-1/2"' },
+  { value: 29, label: '3-5/8"' },
+  { value: 30, label: '3-3/4"' },
+  { value: 31, label: '3-7/8"' },
+  { value: 32, label: '4"' },
+  { value: 36, label: '4-1/2"' },
+  { value: 40, label: '5"' },
+  { value: 44, label: '5-1/2"' },
+  { value: 45, label: '5-5/8"' },
+  { value: 48, label: '6"' },
+  { value: 56, label: '7"' },
+  { value: 64, label: '8"' },
+  { value: 72, label: '9"' },
+  { value: 80, label: '10"' },
+  { value: 88, label: '11"' },
+  { value: 96, label: '12"' },
+  { value: 112, label: '14"' },
+  { value: 128, label: '16"' },
+  { value: 144, label: '18"' },
+  { value: 160, label: '20"' },
+  { value: 196, label: '24"' },
+  { value: 240, label: '30"' },
+  { value: 288, label: '36"' },
+];
+
+const knownThickness = new Set(thicknessOptions.map((opt) => opt.value));
+
+function loadZones(): StackZone[] {
+  const stored = localStorage.getItem("CutStack");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((zone) => ({
+          thickness: knownThickness.has(Number(zone.thickness))
+            ? Number(zone.thickness)
+            : 13,
+          count:
+            zone.count == null
+              ? null
+              : Math.min(100, Math.max(1, Math.round(Number(zone.count)))),
+        }));
+      }
+    } catch {
+      /* use the single saved thickness */
+    }
+  }
+  const saved = Number(localStorage.getItem("Thickness")) || 13;
+  return [{ thickness: knownThickness.has(saved) ? saved : 13, count: null }];
+}
 
 const kerf = ref(Number(localStorage.getItem("Kerf")) || 2);
-const thickness = ref(Number(localStorage.getItem("Thickness")) || 13);
+const zones = ref<StackZone[]>(loadZones());
 const total = ref(Number(localStorage.getItem("Total")) || 6);
 const flitch = ref(Number(localStorage.getItem("Flitch")) || 0);
 
+function thicknessLabel(index: number): string {
+  if (zones.value.length === 1) return "Thickness:";
+  return `Thickness ${index + 1}:`;
+}
+
+function setZoneThickness(index: number, value: number) {
+  if (!knownThickness.has(value)) return;
+  zones.value[index].thickness = value;
+}
+
+function setZoneCount(index: number, value: number) {
+  const count = Math.min(100, Math.max(1, Math.round(Number(value)) || 1));
+  zones.value[index].count = count;
+}
+
+function addZone() {
+  const next = zones.value.slice();
+  const previous = next[next.length - 1];
+  next[next.length - 1] = {
+    thickness: previous.thickness,
+    count: previous.count ?? 2,
+  };
+  next.push({ thickness: 9, count: null });
+  zones.value = next;
+}
+
+function removeZone(index: number) {
+  if (zones.value.length === 1) return;
+  const next = zones.value.filter((_, i) => i !== index);
+  next[next.length - 1] = { ...next[next.length - 1], count: null };
+  zones.value = next;
+}
+
 watch(kerf, (v) => localStorage.setItem("Kerf", String(v)));
-watch(thickness, (v) => localStorage.setItem("Thickness", String(v)));
 watch(total, (v) => localStorage.setItem("Total", String(v)));
 watch(flitch, (v) => localStorage.setItem("Flitch", String(v)));
+watch(
+  zones,
+  (v) => {
+    localStorage.setItem("CutStack", JSON.stringify(v));
+    const fill = v[v.length - 1];
+    if (fill) localStorage.setItem("Thickness", String(fill.thickness));
+  },
+  { deep: true },
+);
 
 function textFrom32nd(x: number, index: number) {
   var inches = Math.floor(x / 32);
@@ -292,39 +389,15 @@ function textFrom32nd(x: number, index: number) {
 }
 
 const cutList = computed(() => {
-  var list: Array<{ measurement: string; id: string; checked: boolean }> = [];
-  var index = 1;
-
-  // Calculate everything in 32nds of an inch.
-  var currentCut = Number(flitch.value) * 16;
-  // Add the flitch cut if necessary
-  if (currentCut > 0) {
-    if (sideOfBlade.value == "top") {
-      currentCut += Number(kerf.value);
-    }
-    list.push(textFrom32nd(currentCut, index));
-    if (sideOfBlade.value == "bottom") {
-      currentCut += Number(kerf.value);
-    }
-    index++;
-  }
-
-  // Loop and figure out all the cuts.
-  while (currentCut <= Number(total.value * 32)) {
-    currentCut += Number(thickness.value * 4);
-    if (sideOfBlade.value == "top") {
-      currentCut += Number(kerf.value);
-    }
-    if (currentCut > 0) {
-      list.push(textFrom32nd(currentCut, index));
-      index++;
-    }
-    if (sideOfBlade.value == "bottom") {
-      currentCut += Number(kerf.value);
-    }
-  }
-
-  list.reverse();
-  return list;
+  const positions = buildCutPositions({
+    flitchHalfInches: Number(flitch.value),
+    totalInches: Number(total.value),
+    kerf32: Number(kerf.value),
+    side: sideOfBlade.value,
+    zones: zones.value,
+  });
+  return positions
+    .map((position, index) => textFrom32nd(position, index + 1))
+    .reverse();
 });
 </script>
