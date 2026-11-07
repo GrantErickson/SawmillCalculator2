@@ -33,6 +33,20 @@
           </ion-range>
         </ion-item>
         <ion-item>
+          <ion-select label="Scale for price:" :value="priceScale"
+            @ionChange="priceScale = $event.detail.value">
+            <ion-select-option value="doyle">Doyle</ion-select-option>
+            <ion-select-option value="scribner">Scribner</ion-select-option>
+            <ion-select-option value="international">International</ion-select-option>
+            <ion-select-option value="roy">ROY</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Price per 1,000 board feet:" label-placement="stacked" type="number" inputmode="decimal"
+            min="0" :value="String(pricePer1000)"
+            @ionInput="pricePer1000 = Math.max(0, Number($event.detail.value) || 0)"></ion-input>
+        </ion-item>
+        <ion-item>
           <ion-select label="Species:" :value="species" placeholder="Select species"
             @ionChange="updateSpecies($event.detail.value)">
             <ion-select-option value="">None</ion-select-option>
@@ -63,6 +77,10 @@
           <ion-label>ROY</ion-label>
           <ion-note slot="end">{{ formatBft(roy) }} bft</ion-note>
         </ion-item>
+        <ion-item color="primary">
+          <ion-label>{{ scaleName(priceScale) }} price</ion-label>
+          <ion-note slot="end">{{ formatBft(chosenVolume) }} bft · {{ formatMoney(linePrice) }}</ion-note>
+        </ion-item>
       </ion-list>
 
       <div class="ion-padding">
@@ -90,6 +108,10 @@
               Diameter: {{ item.diameter }}" &nbsp; Length: {{ item.length }}'
               &nbsp; Qty: {{ item.quantity }}
               <span v-if="item.species"> &nbsp; {{ item.species }}</span>
+              <span v-if="item.scale">
+                &nbsp; {{ scaleName(item.scale) }} {{ formatBft(item.chosenVolume || 0) }} bft
+                · {{ formatMoney(item.linePrice || 0) }}
+              </span>
             </p>
           </ion-label>
           <ion-button slot="end" fill="clear" color="danger" @click="deleteItem(idx)">
@@ -166,7 +188,7 @@ import {
   alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
-import { formatBft } from "../utils/formatting";
+import { formatBft, formatMoney } from "../utils/formatting";
 import { sendEmail, pdfStyles } from "../utils/email";
 import { logEvent } from "../utils/analytics";
 import { woodSpeciesList, addSpecies } from "../stores/settings";
@@ -175,6 +197,15 @@ const length = ref(Number(localStorage.getItem("VolumeLength")) || 16);
 const diameter = ref(Number(localStorage.getItem("VolumeDiameter")) || 12);
 const quantity = ref(Number(localStorage.getItem("VolumeQuantity")) || 1);
 const species = ref(localStorage.getItem("VolumeSpecies") || "");
+const priceScale = ref(localStorage.getItem("VolumePriceScale") || "doyle");
+const pricePer1000 = ref(Number(localStorage.getItem("VolumePricePer1000")) || 0);
+
+function scaleName(scale: string): string {
+  if (scale === "scribner") return "Scribner";
+  if (scale === "international") return "International";
+  if (scale === "roy") return "ROY";
+  return "Doyle";
+}
 
 const ADD_NEW_VALUE = "__add_new__";
 
@@ -229,6 +260,8 @@ watch(length, (v) => localStorage.setItem("VolumeLength", String(v)));
 watch(diameter, (v) => localStorage.setItem("VolumeDiameter", String(v)));
 watch(quantity, (v) => localStorage.setItem("VolumeQuantity", String(v)));
 watch(species, (v) => localStorage.setItem("VolumeSpecies", v));
+watch(priceScale, (v) => localStorage.setItem("VolumePriceScale", v));
+watch(pricePer1000, (v) => localStorage.setItem("VolumePricePer1000", String(v)));
 
 const doyle = computed(() => {
   var l = Number(length.value),
@@ -265,6 +298,16 @@ const roy = computed(() => {
   return Math.round((((d - 1) * (d - 1) * 0.5 * l) / 10) * q);
 });
 
+const chosenVolume = computed(() => {
+  if (priceScale.value === "scribner") return scribner.value;
+  if (priceScale.value === "international") return international.value;
+  if (priceScale.value === "roy") return roy.value;
+  return doyle.value;
+});
+const linePrice = computed(
+  () => Math.round(((chosenVolume.value * pricePer1000.value) / 1000) * 100) / 100,
+);
+
 interface VolumeItemData {
   diameter: number;
   length: number;
@@ -274,6 +317,10 @@ interface VolumeItemData {
   international: number;
   roy: number;
   species: string;
+  scale?: string;
+  pricePer1000?: number;
+  chosenVolume?: number;
+  linePrice?: number;
 }
 
 const items = ref<VolumeItemData[]>(
@@ -311,6 +358,10 @@ function addItem() {
     international: international.value,
     roy: roy.value,
     species: species.value,
+    scale: priceScale.value,
+    pricePer1000: pricePer1000.value,
+    chosenVolume: chosenVolume.value,
+    linePrice: linePrice.value,
   });
   logEvent("add_volume_item", { unit: "us" });
 }
@@ -336,18 +387,20 @@ function onSendEmail() {
     "<th>Species</th>" +
     "<th>Diameter</th>" +
     "<th>Length</th>" +
-    "<th>Doyle</th>" +
-    "<th>Scribner</th>" +
-    "<th>Int'l</th>" +
-    "<th>ROY</th>" +
+    "<th>Scale</th>" +
+    "<th>Volume</th>" +
+    "<th>Per 1,000</th>" +
+    "<th>Amount</th>" +
     "</tr>\n</thead>\n";
 
   text += "<tbody>\n";
-  var totalDoyle = 0,
-    totalScribner = 0,
-    totalInternational = 0,
-    totalRoy = 0;
+  var totalVolume = 0;
+  var totalAmount = 0;
   items.value.forEach((item, idx) => {
+    const hasScale = !!item.scale;
+    const volumeText = hasScale
+      ? formatBft(item.chosenVolume || 0)
+      : `D ${formatBft(item.doyle)} / S ${formatBft(item.scribner)} / I ${formatBft(item.international)} / R ${formatBft(item.roy)}`;
     text +=
       "<tr>" +
       '<td class="left">' +
@@ -366,41 +419,33 @@ function onSendEmail() {
       item.length +
       "'</td>" +
       "<td>" +
-      formatBft(item.doyle) +
+      (hasScale ? scaleName(item.scale || "") : "All scales") +
       "</td>" +
       "<td>" +
-      formatBft(item.scribner) +
+      volumeText +
       "</td>" +
       "<td>" +
-      formatBft(item.international) +
+      (hasScale ? formatMoney(item.pricePer1000 || 0) : "") +
       "</td>" +
       "<td>" +
-      formatBft(item.roy) +
+      (hasScale ? formatMoney(item.linePrice || 0) : "") +
       "</td>" +
       "</tr>\n";
-    totalDoyle += item.doyle;
-    totalScribner += item.scribner;
-    totalInternational += item.international;
-    totalRoy += item.roy;
+    if (hasScale) {
+      totalVolume += item.chosenVolume || 0;
+      totalAmount += item.linePrice || 0;
+    }
   });
   text += "</tbody>\n";
 
   text +=
     "<tfoot>\n<tr>" +
-    "<th></th><th></th><th></th><th></th><th></th>" +
+    "<th></th><th></th><th></th><th></th><th></th><th></th>" +
     "<th>" +
-    formatBft(totalDoyle) +
-    "</th>" +
-    "<th>" +
-    formatBft(totalScribner) +
-    "</th>" +
-    "<th>" +
-    formatBft(totalInternational) +
-    "</th>" +
-    "<th>" +
-    formatBft(totalRoy) +
-    "</th>" +
-    "</tr></tfoot>\n";
+    formatBft(totalVolume) +
+    "</th><th></th><th>" +
+    formatMoney(totalAmount) +
+    "</th></tr></tfoot>\n";
   text += "</table>\n";
 
   sendEmail(subject, text, "LogVolume.pdf");
