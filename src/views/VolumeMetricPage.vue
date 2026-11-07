@@ -63,6 +63,13 @@
           <ion-label>ROY</ion-label>
           <ion-note slot="end">{{ formatM3(roy, 3) }} m³</ion-note>
         </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Green / wet weight
+            <p>{{ currentWeightNote }}</p>
+          </ion-label>
+          <ion-note slot="end">{{ currentWeightText }}</ion-note>
+        </ion-item>
       </ion-list>
 
       <div class="ion-padding">
@@ -173,6 +180,12 @@ import { sendEmail, pdfStyles } from "../utils/email";
 import { round } from "../utils/formatting";
 import { logEvent } from "../utils/analytics";
 import { woodSpeciesList, addSpecies } from "../stores/settings";
+import {
+  greenWeightFor,
+  lbPerCubicFootToKgPerM3,
+  logWeightKg,
+  transportNote,
+} from "../utils/woodWeight";
 
 const mmPerIn = 25.4;
 const mPerFt = 0.3048;
@@ -275,6 +288,24 @@ const roy = computed(() => {
   var q = Number(quantity.value);
   var value = ((d - 1) * (d - 1) * 0.5 * l) / 10;
   return round(value * q * m3PerBft, 3);
+});
+
+const currentWeightNote = computed(() => {
+  if (!species.value) return "Select a species. Cylinder estimate from the entered diameter.";
+  const note = transportNote(species.value);
+  if (!note) return `No published green weight for ${species.value}`;
+  return `${note}. Cylinder estimate from the entered diameter.`;
+});
+const currentWeightText = computed(() => {
+  const row = greenWeightFor(species.value);
+  if (!row) return "";
+  const kg = logWeightKg(
+    diameter.value,
+    length.value,
+    quantity.value,
+    lbPerCubicFootToKgPerM3(row.greenLbPerCubicFoot),
+  );
+  return `${Math.round(kg)} kg`;
 });
 
 interface VolumeMetricItemData {
