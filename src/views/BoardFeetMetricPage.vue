@@ -63,6 +63,10 @@
             formatMoney(totalPrice)
           }}</ion-label>
         </ion-item>
+        <ion-item>
+          <ion-label>Coverage</ion-label>
+          <ion-note slot="end">{{ formatM3(totalM2, 3) }} m²</ion-note>
+        </ion-item>
       </ion-list>
 
       <div class="ion-padding">
@@ -91,6 +95,7 @@
                 item.quantity
               }}
               <span v-if="item.species"> &nbsp; {{ item.species }}</span>
+              &nbsp; {{ formatM3(coverageOf(item), 3) }} m²
               <span style="float: right">{{ formatMoney(item.pricePerMeter3) }}/m³</span>
             </p>
           </ion-label>
@@ -151,6 +156,7 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
+  IonNote,
   alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
@@ -267,6 +273,18 @@ const totalM3 = computed(() => {
   return Math.round(value / 100) / 10000000;
 });
 
+const totalM2 = computed(() => {
+  return (
+    (Number(width.value) / 1000) *
+    (Number(length.value) / 1000) *
+    Number(quantity.value)
+  );
+});
+
+function coverageOf(item: { width: number; length: number; quantity: number }): number {
+  return (Number(item.width) / 1000) * (Number(item.length) / 1000) * Number(item.quantity);
+}
+
 const totalPrice = computed(() => {
   return (
     Math.round(Number(totalM3.value) * Number(pricePerMeter3.value) * 100) / 100
@@ -359,6 +377,7 @@ function onSendEmail() {
   text += "<tbody>\n";
   var totalBftSum = 0;
   var totalPriceSum = 0;
+  var totalCoverage = 0;
   lumberItems.value.forEach((item, idx) => {
     var itemTotalPrice = round(item.totalPrice, 2);
     var itemTotalBft = round(item.totalBft, 2);
@@ -399,6 +418,7 @@ function onSendEmail() {
       "</td></tr>\n";
     totalPriceSum += itemTotalPrice;
     totalBftSum += itemTotalBft;
+    totalCoverage += coverageOf(item);
   });
   text += "</tbody>\n";
 
@@ -414,6 +434,7 @@ function onSendEmail() {
     "</th>" +
     "</tr></tfoot>\n";
   text += "</table>\n";
+  text += `<p>Coverage ${formatM3(totalCoverage, 3)} m&#178; (width × length × quantity; thickness is not included).</p>\n`;
 
   sendEmail(subject, text, "Lumber.pdf");
 }
