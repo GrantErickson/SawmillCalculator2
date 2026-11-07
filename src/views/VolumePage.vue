@@ -10,13 +10,33 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item lines="none">
+        <ion-item>
+          <ion-select label="Measure:" :value="measureMode" @ionChange="measureMode = $event.detail.value">
+            <ion-select-option value="diameter">Diameter</ion-select-option>
+            <ion-select-option value="circumference">Circumference</ion-select-option>
+            <ion-select-option value="standing">Standing tree girth</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item v-if="measureMode === 'diameter'" lines="none">
           <ion-range label="Diameter in inches:" label-placement="stacked" :min="1" :max="40" :step="1"
             :value="diameter" :pin="true" :pin-formatter="(v: number) => v + '&quot;'"
             @ionInput="updateDiameter($event.detail.value)">
             <ion-input slot="end" type="number" class="range-value-input" :value="String(diameter)"
               @ionFocus="selectOnFocus" @ionInput="updateDiameter($event.detail.value)"></ion-input>
           </ion-range>
+        </ion-item>
+        <ion-item v-else>
+          <ion-input label="Circumference in inches:" label-placement="stacked" type="number" inputmode="decimal"
+            min="3" max="380" :value="String(circumference)"
+            @ionInput="updateCircumference($event.detail.value)"></ion-input>
+          <ion-note slot="end">{{ effectiveDiameter.toFixed(1) }}" diameter</ion-note>
+        </ion-item>
+        <ion-item v-if="measureMode === 'standing'">
+          <ion-label class="ion-text-wrap">
+            Estimated maximum board width
+            <p>The diameter of a circle with this girth. No bark or taper is removed.</p>
+          </ion-label>
+          <ion-note slot="end">{{ effectiveDiameter.toFixed(1) }}"</ion-note>
         </ion-item>
         <ion-item lines="none">
           <ion-range label="Length in feet:" label-placement="stacked" :min="1" :max="40" :step="1" :value="length"
@@ -173,6 +193,8 @@ import { woodSpeciesList, addSpecies } from "../stores/settings";
 
 const length = ref(Number(localStorage.getItem("VolumeLength")) || 16);
 const diameter = ref(Number(localStorage.getItem("VolumeDiameter")) || 12);
+const measureMode = ref(localStorage.getItem("VolumeMeasure") || "diameter");
+const circumference = ref(Number(localStorage.getItem("VolumeCircumference")) || 36);
 const quantity = ref(Number(localStorage.getItem("VolumeQuantity")) || 1);
 const species = ref(localStorage.getItem("VolumeSpecies") || "");
 
@@ -211,6 +233,16 @@ function updateLength(v: any) {
 function updateDiameter(v: any) {
   diameter.value = clamp(Number(v), 1, 40);
 }
+function updateCircumference(v: any) {
+  circumference.value = clamp(Number(v), 3, 380);
+}
+function roundDiameter(value: number): number {
+  return Math.round(value * 10) / 10;
+}
+const effectiveDiameter = computed(() => {
+  if (measureMode.value === "diameter") return diameter.value;
+  return clamp(circumference.value / Math.PI, 1, 120);
+});
 function updateQuantity(v: any) {
   quantity.value = clamp(Number(v), 1, 100);
 }
@@ -227,26 +259,28 @@ function selectOnFocus(event: any) {
 
 watch(length, (v) => localStorage.setItem("VolumeLength", String(v)));
 watch(diameter, (v) => localStorage.setItem("VolumeDiameter", String(v)));
+watch(measureMode, (v) => localStorage.setItem("VolumeMeasure", v));
+watch(circumference, (v) => localStorage.setItem("VolumeCircumference", String(v)));
 watch(quantity, (v) => localStorage.setItem("VolumeQuantity", String(v)));
 watch(species, (v) => localStorage.setItem("VolumeSpecies", v));
 
 const doyle = computed(() => {
   var l = Number(length.value),
-    d = Number(diameter.value),
+    d = Number(effectiveDiameter.value),
     q = Number(quantity.value);
   return Math.round((d - 4) * (d - 4) * (l / 16) * q);
 });
 
 const scribner = computed(() => {
   var l = Number(length.value),
-    d = Number(diameter.value),
+    d = Number(effectiveDiameter.value),
     q = Number(quantity.value);
   return Math.round((((0.79 * d * d - 2 * d - 4) * l) / 16) * q);
 });
 
 const international = computed(() => {
   var l = Number(length.value),
-    d = Number(diameter.value),
+    d = Number(effectiveDiameter.value),
     q = Number(quantity.value);
   var value =
     0.04976191 * l * d * d +
@@ -260,7 +294,7 @@ const international = computed(() => {
 
 const roy = computed(() => {
   var l = Number(length.value),
-    d = Number(diameter.value),
+    d = Number(effectiveDiameter.value),
     q = Number(quantity.value);
   return Math.round((((d - 1) * (d - 1) * 0.5 * l) / 10) * q);
 });
@@ -303,7 +337,7 @@ const grandTotalRoy = computed(() =>
 
 function addItem() {
   items.value.push({
-    diameter: diameter.value,
+    diameter: roundDiameter(effectiveDiameter.value),
     length: length.value,
     quantity: quantity.value,
     doyle: doyle.value,
