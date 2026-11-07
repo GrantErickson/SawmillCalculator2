@@ -76,6 +76,13 @@
             formatMoney(totalPrice)
           }}</ion-label>
         </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Green / wet weight
+            <p>{{ currentWeightNote }}</p>
+          </ion-label>
+          <ion-note slot="end">{{ currentWeightText }}</ion-note>
+        </ion-item>
       </ion-list>
 
       <div class="ion-padding">
@@ -105,6 +112,7 @@
               {{ item.width }}" &nbsp; Length: {{ item.length }}' &nbsp; Qty:
               {{ item.quantity }}
               <span v-if="item.species"> &nbsp; {{ item.species }}</span>
+              <span v-if="lumberPounds(item)"> &nbsp; {{ lumberPounds(item) }} lb green/wet</span>
               <span style="float: right">{{ formatMoney(item.pricePer1000) }}/k</span>
             </p>
           </ion-label>
@@ -167,6 +175,7 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
+  IonNote,
   alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
@@ -177,6 +186,11 @@ import {
   addSpecies,
 } from "../stores/settings";
 import { formatBft2, formatMoney, round } from "../utils/formatting";
+import {
+  greenWeightFor,
+  lumberWeightLb,
+  transportNote,
+} from "../utils/woodWeight";
 import { sendEmail, pdfStyles } from "../utils/email";
 import { logEvent } from "../utils/analytics";
 
@@ -304,6 +318,22 @@ const totalPrice = computed(() => {
     ) / 100
   );
 });
+
+const currentWeightNote = computed(() => {
+  if (!species.value) return "Select a species";
+  return transportNote(species.value) ?? `No published green weight for ${species.value}`;
+});
+const currentWeightText = computed(() => {
+  const row = greenWeightFor(species.value);
+  if (!row) return "";
+  return `${Math.round(lumberWeightLb(totalBft.value, row.greenLbPerCubicFoot))} lb`;
+});
+
+function lumberPounds(item: { species: string; totalBft: number }): string {
+  const row = greenWeightFor(item.species);
+  if (!row) return "";
+  return String(Math.round(lumberWeightLb(item.totalBft, row.greenLbPerCubicFoot)));
+}
 
 const pieceBft = computed(() => round(totalBft.value / quantity.value, 2));
 const piecePrice = computed(() => round(totalPrice.value / quantity.value, 2));

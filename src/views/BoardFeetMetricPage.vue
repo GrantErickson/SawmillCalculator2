@@ -63,6 +63,13 @@
             formatMoney(totalPrice)
           }}</ion-label>
         </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            Green / wet weight
+            <p>{{ currentWeightNote }}</p>
+          </ion-label>
+          <ion-note slot="end">{{ currentWeightText }}</ion-note>
+        </ion-item>
       </ion-list>
 
       <div class="ion-padding">
@@ -151,6 +158,7 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
+  IonNote,
   alertController,
 } from "@ionic/vue";
 import { addOutline, trashOutline, mailOutline } from "ionicons/icons";
@@ -161,6 +169,11 @@ import {
   addSpecies,
 } from "../stores/settings";
 import { formatM3, formatMoney, round } from "../utils/formatting";
+import {
+  greenWeightFor,
+  lbPerCubicFootToKgPerM3,
+  transportNote,
+} from "../utils/woodWeight";
 import { sendEmail, pdfStyles } from "../utils/email";
 import { logEvent } from "../utils/analytics";
 
@@ -257,6 +270,20 @@ watch(pricePerMeter3, (v) =>
   localStorage.setItem("BfPricePerMetric", String(v)),
 );
 watch(species, (v) => localStorage.setItem("BfMetricSpecies", v));
+
+const currentWeightNote = computed(() => {
+  if (!species.value) return "Select a species";
+  return (
+    transportNote(species.value) ??
+    `No published green weight for ${species.value}`
+  );
+});
+const currentWeightText = computed(() => {
+  const row = greenWeightFor(species.value);
+  if (!row) return "";
+  const kg = totalM3.value * lbPerCubicFootToKgPerM3(row.greenLbPerCubicFoot);
+  return `${Math.round(kg)} kg`;
+});
 
 const totalM3 = computed(() => {
   var value =
