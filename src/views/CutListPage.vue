@@ -37,53 +37,8 @@
               <ion-item>
                 <ion-select label="Thickness:" :value="String(thickness)"
                   @ionChange="thickness = Number($event.detail.value)">
-                  <ion-select-option value="4">1/2"</ion-select-option>
-                  <ion-select-option value="5">5/8"</ion-select-option>
-                  <ion-select-option value="6">3/4"</ion-select-option>
-                  <ion-select-option value="7">7/8"</ion-select-option>
-                  <ion-select-option value="8">1"</ion-select-option>
-                  <ion-select-option value="9">1-1/8"</ion-select-option>
-                  <ion-select-option value="10">1-1/4"</ion-select-option>
-                  <ion-select-option value="11">1-3/8"</ion-select-option>
-                  <ion-select-option value="12">1-1/2"</ion-select-option>
-                  <ion-select-option value="13">1-5/8"</ion-select-option>
-                  <ion-select-option value="14">1-3/4"</ion-select-option>
-                  <ion-select-option value="15">1-7/8"</ion-select-option>
-                  <ion-select-option value="16">2"</ion-select-option>
-                  <ion-select-option value="17">2-1/8"</ion-select-option>
-                  <ion-select-option value="18">2-1/4"</ion-select-option>
-                  <ion-select-option value="19">2-3/8"</ion-select-option>
-                  <ion-select-option value="20">2-1/2"</ion-select-option>
-                  <ion-select-option value="21">2-5/8"</ion-select-option>
-                  <ion-select-option value="22">2-3/4"</ion-select-option>
-                  <ion-select-option value="23">2-7/8"</ion-select-option>
-                  <ion-select-option value="24">3"</ion-select-option>
-                  <ion-select-option value="25">3-1/8"</ion-select-option>
-                  <ion-select-option value="26">3-1/4"</ion-select-option>
-                  <ion-select-option value="27">3-3/8"</ion-select-option>
-                  <ion-select-option value="28">3-1/2"</ion-select-option>
-                  <ion-select-option value="29">3-5/8"</ion-select-option>
-                  <ion-select-option value="30">3-3/4"</ion-select-option>
-                  <ion-select-option value="31">3-7/8"</ion-select-option>
-                  <ion-select-option value="32">4"</ion-select-option>
-                  <ion-select-option value="36">4-1/2"</ion-select-option>
-                  <ion-select-option value="40">5"</ion-select-option>
-                  <ion-select-option value="44">5-1/2"</ion-select-option>
-                  <ion-select-option value="45">5-5/8"</ion-select-option>
-                  <ion-select-option value="48">6"</ion-select-option>
-                  <ion-select-option value="56">7"</ion-select-option>
-                  <ion-select-option value="64">8"</ion-select-option>
-                  <ion-select-option value="72">9"</ion-select-option>
-                  <ion-select-option value="80">10"</ion-select-option>
-                  <ion-select-option value="88">11"</ion-select-option>
-                  <ion-select-option value="96">12"</ion-select-option>
-                  <ion-select-option value="112">14"</ion-select-option>
-                  <ion-select-option value="128">16"</ion-select-option>
-                  <ion-select-option value="144">18"</ion-select-option>
-                  <ion-select-option value="160">20"</ion-select-option>
-                  <ion-select-option value="196">24"</ion-select-option>
-                  <ion-select-option value="240">30"</ion-select-option>
-                  <ion-select-option value="288">36"</ion-select-option>
+                  <ion-select-option v-for="opt in thicknessOptions" :key="opt.value"
+                    :value="String(opt.value)">{{ opt.label }}</ion-select-option>
                 </ion-select>
               </ion-item>
 
@@ -166,13 +121,47 @@ import {
 } from "@ionic/vue";
 import { sideOfBlade } from "../stores/settings";
 
+function formatSixteenths(sixteenths: number): string {
+  const whole = Math.floor(sixteenths / 16);
+  let rem = sixteenths - whole * 16;
+  if (rem === 0) return whole > 0 ? `${whole}"` : '0"';
+  let denom = 16;
+  while (rem % 2 === 0) {
+    rem /= 2;
+    denom /= 2;
+  }
+  const frac = `${rem}/${denom}`;
+  return whole > 0 ? `${whole}-${frac}"` : `${frac}"`;
+}
+
+const fineThicknesses = Array.from({ length: 64 - 8 + 1 }, (_, i) => {
+  const value = i + 8;
+  return { value, label: formatSixteenths(value) };
+});
+const coarseSixteenths = [72, 80, 88, 90, 96, 112, 128, 144, 160, 176, 192, 224, 256, 288, 320, 392, 480, 576];
+const thicknessOptions = [
+  ...fineThicknesses,
+  ...coarseSixteenths.map((value) => ({ value, label: formatSixteenths(value) })),
+];
+const knownThickness = new Set(thicknessOptions.map((opt) => opt.value));
+
+function loadThicknessSixteenths(): number {
+  const stored = localStorage.getItem("ThicknessSixteenths");
+  if (stored != null && stored !== "" && knownThickness.has(Number(stored))) {
+    return Number(stored);
+  }
+  const legacyEighths = Number(localStorage.getItem("Thickness")) || 13;
+  const migrated = legacyEighths * 2;
+  return knownThickness.has(migrated) ? migrated : 26;
+}
+
 const kerf = ref(Number(localStorage.getItem("Kerf")) || 2);
-const thickness = ref(Number(localStorage.getItem("Thickness")) || 13);
+const thickness = ref(loadThicknessSixteenths());
 const total = ref(Number(localStorage.getItem("Total")) || 6);
 const flitch = ref(Number(localStorage.getItem("Flitch")) || 0);
 
 watch(kerf, (v) => localStorage.setItem("Kerf", String(v)));
-watch(thickness, (v) => localStorage.setItem("Thickness", String(v)));
+watch(thickness, (v) => localStorage.setItem("ThicknessSixteenths", String(v)));
 watch(total, (v) => localStorage.setItem("Total", String(v)));
 watch(flitch, (v) => localStorage.setItem("Flitch", String(v)));
 
@@ -311,7 +300,7 @@ const cutList = computed(() => {
 
   // Loop and figure out all the cuts.
   while (currentCut <= Number(total.value * 32)) {
-    currentCut += Number(thickness.value * 4);
+    currentCut += Number(thickness.value * 2);
     if (sideOfBlade.value == "top") {
       currentCut += Number(kerf.value);
     }
