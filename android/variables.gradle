@@ -16,6 +16,6 @@ ext {
     cordovaAndroidVersion = '14.0.1'
     googleAndroidPlayReviewVersion = '2.0.2'
     // Override Firebase plugin defaults to latest versions with 16KB page size alignment support
-    firebaseAnalyticsVersion = '23.2.0'
-    firebaseCrashlyticsVersion = '20.0.5'
+    firebaseAnalyticsVersion = '24.0.0'
+    firebaseCrashlyticsVersion = '21.1.0'
 }
