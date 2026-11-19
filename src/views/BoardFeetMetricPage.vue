@@ -45,7 +45,7 @@
             @ionBlur="onPriceBlur" @ionInput="updatePriceRaw($event.detail.value)"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-select label="Species:" :value="species" placeholder="Select species"
+          <ion-select label="Species:" :key="speciesSelectKey" :value="species" placeholder="Select species"
             @ionChange="updateSpecies($event.detail.value)">
             <ion-select-option value="">None</ion-select-option>
             <ion-select-option v-for="s in woodSpeciesList" :key="s" :value="s">{{ s }}</ion-select-option>
@@ -172,6 +172,7 @@ const pricePerMeter3 = ref(
   Number(localStorage.getItem("BfPricePerMetric")) || 1,
 );
 const species = ref(localStorage.getItem("BfMetricSpecies") || "");
+const speciesSelectKey = ref(0);
 
 const ADD_NEW_VALUE = "__add_new__";
 
@@ -197,6 +198,9 @@ async function updateSpecies(v: any) {
       ],
     });
     await alert.present();
+    await alert.onDidDismiss();
+    // Ionic 9 does not re-emit ionChange when the same option is confirmed again.
+    speciesSelectKey.value += 1;
     return;
   }
   species.value = v || "";
