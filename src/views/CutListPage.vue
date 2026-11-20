@@ -90,30 +90,26 @@
               <ion-item>
                 <ion-select label="Approximate Total Thickness:" :value="String(total)"
                   @ionChange="total = Number($event.detail.value)">
-                  <ion-select-option v-for="n in 24" :key="n" :value="String(n)">{{ n }}"</ion-select-option>
-                  <ion-select-option value="28">28"</ion-select-option>
-                  <ion-select-option value="32">32"</ion-select-option>
-                  <ion-select-option value="36">36"</ion-select-option>
+                  <ion-select-option v-for="n in 36" :key="n" :value="String(n)">{{ n }}"</ion-select-option>
                 </ion-select>
               </ion-item>
 
               <ion-item>
-                <ion-select label="Flitch Remaining (Slab):" :value="String(flitch)"
-                  @ionChange="flitch = Number($event.detail.value)">
-                  <ion-select-option value="0">None</ion-select-option>
-                  <ion-select-option value="1">1/2"</ion-select-option>
-                  <ion-select-option value="2">1"</ion-select-option>
-                  <ion-select-option value="3">1-1/2"</ion-select-option>
-                  <ion-select-option value="4">2"</ion-select-option>
-                  <ion-select-option value="5">2-1/2"</ion-select-option>
-                  <ion-select-option value="6">3"</ion-select-option>
-                  <ion-select-option value="7">3-1/2"</ion-select-option>
-                  <ion-select-option value="8">4"</ion-select-option>
-                  <ion-select-option value="9">4-1/2"</ion-select-option>
-                  <ion-select-option value="10">5"</ion-select-option>
-                  <ion-select-option value="11">5-1/2"</ion-select-option>
-                  <ion-select-option value="12">6"</ion-select-option>
+                <ion-select label="Flitch step:" :value="String(flitchStepEighths)"
+                  @ionChange="setFlitchStep(Number($event.detail.value))">
+                  <ion-select-option value="1">1/8"</ion-select-option>
+                  <ion-select-option value="2">1/4"</ion-select-option>
+                  <ion-select-option value="4">1/2"</ion-select-option>
+                  <ion-select-option value="8">1"</ion-select-option>
                 </ion-select>
+              </ion-item>
+
+              <ion-item>
+                <ion-input label="Flitch Remaining (Slab), inches:" label-placement="stacked" type="number"
+                  inputmode="decimal" min="0" max="30" :step="flitchStepInches" :value="flitchDraft"
+                  @ionFocus="selectOnFocus" @ionInput="flitchDraft = String($event.detail.value ?? '')"
+                  @ionBlur="commitFlitch" @ionChange="commitFlitch"></ion-input>
+                <ion-note slot="end">{{ flitchLabel }}</ion-note>
               </ion-item>
             </ion-list>
           </div>
@@ -163,18 +159,66 @@ import {
   IonAccordion,
   IonCheckbox,
   IonText,
+  IonInput,
+  IonNote,
 } from "@ionic/vue";
 import { sideOfBlade } from "../stores/settings";
+import {
+  eighthsToInches,
+  formatEighths,
+  snapEighths,
+} from "../utils/inches";
 
 const kerf = ref(Number(localStorage.getItem("Kerf")) || 2);
 const thickness = ref(Number(localStorage.getItem("Thickness")) || 13);
 const total = ref(Number(localStorage.getItem("Total")) || 6);
-const flitch = ref(Number(localStorage.getItem("Flitch")) || 0);
+
+function loadFlitchEighths(): number {
+  const stored = localStorage.getItem("FlitchEighths");
+  if (stored != null && stored !== "") return snapEighths(Number(stored), 1);
+  // Older builds stored the flitch in half-inches, maximum 6 inches.
+  const legacyHalfInches = Number(localStorage.getItem("Flitch")) || 0;
+  return snapEighths(legacyHalfInches * 4, 1);
+}
+
+const flitchStepEighths = ref(
+  Number(localStorage.getItem("FlitchStepEighths")) || 1,
+);
+const flitchEighths = ref(
+  snapEighths(loadFlitchEighths(), flitchStepEighths.value),
+);
+const flitchDraft = ref(String(eighthsToInches(flitchEighths.value)));
+
+const flitchStepInches = computed(() => flitchStepEighths.value / 8);
+const flitchLabel = computed(() => formatEighths(flitchEighths.value));
+
+function commitFlitch() {
+  const inches = Number(flitchDraft.value);
+  flitchEighths.value = snapEighths(
+    Number.isFinite(inches) ? inches * 8 : 0,
+    flitchStepEighths.value,
+  );
+  flitchDraft.value = String(eighthsToInches(flitchEighths.value));
+}
+
+function setFlitchStep(step: number) {
+  const allowed = [1, 2, 4, 8];
+  flitchStepEighths.value = allowed.includes(step) ? step : 1;
+  commitFlitch();
+}
+
+function selectOnFocus(event: any) {
+  const input = event.target?.querySelector("input");
+  if (input) input.select();
+}
 
 watch(kerf, (v) => localStorage.setItem("Kerf", String(v)));
 watch(thickness, (v) => localStorage.setItem("Thickness", String(v)));
 watch(total, (v) => localStorage.setItem("Total", String(v)));
-watch(flitch, (v) => localStorage.setItem("Flitch", String(v)));
+watch(flitchEighths, (v) => localStorage.setItem("FlitchEighths", String(v)));
+watch(flitchStepEighths, (v) =>
+  localStorage.setItem("FlitchStepEighths", String(v)),
+);
 
 function textFrom32nd(x: number, index: number) {
   var inches = Math.floor(x / 32);
@@ -295,8 +339,8 @@ const cutList = computed(() => {
   var list: Array<{ measurement: string; id: string; checked: boolean }> = [];
   var index = 1;
 
-  // Calculate everything in 32nds of an inch.
-  var currentCut = Number(flitch.value) * 16;
+  // Calculate everything in 32nds of an inch. Flitch is stored in eighths.
+  var currentCut = Number(flitchEighths.value) * 4;
   // Add the flitch cut if necessary
   if (currentCut > 0) {
     if (sideOfBlade.value == "top") {
